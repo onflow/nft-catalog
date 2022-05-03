@@ -1,8 +1,8 @@
 import { mintFlow, deployContractByName, sendTransaction, executeScript } from 'flow-js-testing'
-import { getExampleNFTAdminAddress } from './common'
+import { getAdminAddress } from './common'
 
 export const deployExampleNFT = async () => {
-    const ExampleNFTAdmin = await getExampleNFTAdminAddress()
+    const ExampleNFTAdmin = await getAdminAddress()
     await mintFlow(ExampleNFTAdmin, '10.0')
 
     await deployContractByName({ to: ExampleNFTAdmin, name: 'NonFungibleToken' })
@@ -18,7 +18,7 @@ export const setupExampleNFTCollection = async (account) => {
 }
 
 export const mintExampleNFT = async (recipient, nftName, description, thumbnail, cuts, royaltyDescriptions, royaltyBeneficiaries) => {
-    const ExampleNFTAdmin = await getExampleNFTAdminAddress();
+    const ExampleNFTAdmin = await getAdminAddress();
 
     const name = "mint_example_nft";
     const args = [recipient, nftName, description, thumbnail, cuts, royaltyDescriptions, royaltyBeneficiaries];

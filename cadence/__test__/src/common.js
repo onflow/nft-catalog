@@ -1,3 +1,3 @@
 import { getAccountAddress } from 'flow-js-testing'
 
-export const getExampleNFTAdminAddress = async () => getAccountAddress('ExampleNFTAdmin')
+export const getAdminAddress = async () => getAccountAddress('Admin')
