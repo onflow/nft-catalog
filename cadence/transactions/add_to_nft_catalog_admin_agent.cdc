@@ -1,4 +1,5 @@
 import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
 
 transaction(
   name : String,
@@ -7,8 +8,12 @@ transaction(
   storagePathIdentifier: String,
   publicPathIdentifier: String
 ) {
-  prepare(acct: AuthAccount) {}
-  
+  let adminAgentResource : &NFTCatalogAdmin.AdminAgent
+
+  prepare(acct: AuthAccount) {
+    self.adminAgentResource = acct.borrow<&NFTCatalogAdmin.AdminAgent>(from : NFTCatalogAdmin.AdminAgentStoragePath)!
+  }
+
   execute {
     let collectionView = NFTCatalog.NFTCollectionView(
       storagePath: StoragePath(identifier: storagePathIdentifier)!,
@@ -22,7 +27,7 @@ transaction(
     )
 
     let catalogData = NFTCatalog.NFTCatalogMetadata(name: name, collectionMetadata: collectionMetadata)
-
-    NFTCatalog.addToCatalog(name : name, metadata : catalogData)
+    
+    self.adminAgentResource.getCapability()!.borrow()!.addCatalogEntry(name : name, metadata : catalogData)
   }
 }

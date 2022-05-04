@@ -40,7 +40,6 @@ pub contract NFTCatalog {
     }
   }
 
-
   pub fun getCatalog() : {String : NFTCatalogMetadata} {
     return self.catalog
   }
@@ -49,8 +48,7 @@ pub contract NFTCatalog {
     return self.catalog[name]
   }
 
-  //TODO: Restric this to Admins
-  pub fun addToCatalog(name : String, metadata: NFTCatalogMetadata) {
+  access(account) fun addToCatalog(name : String, metadata: NFTCatalogMetadata) {
     pre {
       self.catalog[name] == nil : "The nft name has already been added to the catalog"
     }
@@ -63,3 +61,4 @@ pub contract NFTCatalog {
   }
   
 }
+ 

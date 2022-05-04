@@ -3,12 +3,16 @@ import {
   emulator,
   init,
   shallPass,
-  shallResolve
+  shallResolve,
+  getAccountAddress
 } from 'flow-js-testing';
 import {
   deployNFTCatalog,
-  addToCatalog,
-  getNFTMetadataForName
+  addToCatalogAdmin,
+  getNFTMetadataForName,
+  setupNFTCatalogAdminAgent,
+  sendAdminAgentCapability,
+  addToCatalogAdminAgent
 } from '../src/nftcatalog';
 import {
   deployExampleNFT
@@ -34,13 +38,51 @@ describe('NFT Catalog Test Suite', () => {
     await shallPass(deployNFTCatalog());
   });
 
-  it('should add to catalog', async () => {
+  it('main admin should add to catalog', async () => {
     await deployNFTCatalog();
 
     let res = await deployExampleNFT();
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
 
-    await shallPass(addToCatalog(
+    await shallPass(addToCatalogAdmin(
+      nftCreationEvent.data.contract,
+      nftCreationEvent.data.contract,
+      nftCreationEvent.data.address,
+      'exampleNFTCollection',
+      'exampleNFTCollection'
+    ));
+
+    let [result, error] = await shallResolve(getNFTMetadataForName('ExampleNFT'));
+    expect(result).not.toBe(null);
+    expect(result.name).toBe(nftCreationEvent.data.contract);
+    expect(error).toBe(null);
+  });
+
+  it('non-admin accounts should be able to receive admin capability', async () => {
+    await deployNFTCatalog();
+
+    const Alice = await getAccountAddress('Alice');
+
+    await shallResolve(setupNFTCatalogAdminAgent(Alice));
+
+    await shallResolve(sendAdminAgentCapability(Alice));
+  });
+
+
+  it('non-admin accounts with agents should be able to add NFT to catalog', async () => {
+    await deployNFTCatalog();
+
+    const Alice = await getAccountAddress('Alice');
+
+    await shallResolve(setupNFTCatalogAdminAgent(Alice));
+
+    await shallResolve(sendAdminAgentCapability(Alice));
+
+    let res = await deployExampleNFT();
+    const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
+
+    await shallPass(addToCatalogAdminAgent(
+      Alice,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.address,
