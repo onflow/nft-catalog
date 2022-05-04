@@ -1,6 +1,9 @@
 pub contract NFTCatalog {
   
   access(self) let catalog: {String : NFTCatalogMetadata}
+  access(self) let catalogProposals : {UInt64 : NFTCatalogProposal}
+
+  access(self) var totalProposals : UInt64
 
   pub struct NFTCollectionView {
     
@@ -40,12 +43,40 @@ pub contract NFTCatalog {
     }
   }
 
+  pub struct NFTCatalogProposal {
+    pub let metadata : NFTCatalogMetadata
+    pub let message : String
+    pub let status : String
+
+    init(metadata : NFTCatalogMetadata, message : String, status : String) {
+      self.metadata = metadata
+      self.message = message
+      self.status = status
+    }
+  }
+
   pub fun getCatalog() : {String : NFTCatalogMetadata} {
     return self.catalog
   }
 
   pub fun getCatalogEntry(name : String) : NFTCatalogMetadata? {
     return self.catalog[name]
+  }
+
+  //TODO: Add authz
+  pub fun proposeNFTMetadata(metadata : NFTCatalogMetadata, message : String) : UInt64 {
+    let catalogProposal = NFTCatalogProposal(metadata : metadata, message : message, status: "IN_REVIEW")
+    self.totalProposals = self.totalProposals + 1
+    self.catalogProposals[self.totalProposals] = catalogProposal
+    return self.totalProposals
+  }
+
+  pub fun getCatalogProposals() : {UInt64 : NFTCatalogProposal} {
+    return self.catalogProposals
+  }
+
+  pub fun getCatalogProposalEntry(proposalID : UInt64) : NFTCatalogProposal? {
+    return self.catalogProposals[proposalID]
   }
 
   access(account) fun addToCatalog(name : String, metadata: NFTCatalogMetadata) {
@@ -56,8 +87,18 @@ pub contract NFTCatalog {
     self.catalog[name] = metadata
   }
 
+  access(account) fun updateCatalogProposal(proposalID: UInt64, proposalMetadata : NFTCatalogProposal) {
+    self.catalogProposals[proposalID] = proposalMetadata
+  }
+
+  access(account) fun removeCatalogProposal(proposalID : UInt64) {
+    self.catalogProposals.remove(key : proposalID)
+  }
+
   init() {
+    self.totalProposals = 0
     self.catalog = {}
+    self.catalogProposals = {}
   }
   
 }

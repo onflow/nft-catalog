@@ -14,6 +14,36 @@ pub contract NFTCatalogAdmin {
       NFTCatalog.addToCatalog(name: name, metadata : metadata)
     }
 
+    pub fun approveCatalogProposal(proposalID : UInt64) {
+      pre {
+        NFTCatalog.getCatalogProposalEntry(proposalID : proposalID) != nil : "Invalid Proposal ID"
+        NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!.status == "IN_REVIEW" : "Invalid Proposal"
+      }
+      let catalogProposalEntry = NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!
+      let newCatalogProposalEntry = NFTCatalog.NFTCatalogProposal(metadata : catalogProposalEntry.metadata, message : catalogProposalEntry.message, status: "APPROVED")
+      NFTCatalog.updateCatalogProposal(proposalID : proposalID, proposalMetadata : newCatalogProposalEntry)
+
+      // Add to catalog
+      NFTCatalog.addToCatalog(name: newCatalogProposalEntry.metadata.name, metadata : newCatalogProposalEntry.metadata)
+    }
+
+    pub fun rejectCatalogProposal(proposalID : UInt64) {
+      pre {
+        NFTCatalog.getCatalogProposalEntry(proposalID : proposalID) != nil : "Invalid Proposal ID"
+        NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!.status == "IN_REVIEW" : "Invalid Proposal"
+      }
+      let catalogProposalEntry = NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!
+      let newCatalogProposalEntry = NFTCatalog.NFTCatalogProposal(metadata : catalogProposalEntry.metadata, message : catalogProposalEntry.message, status: "REJECTED")
+      NFTCatalog.updateCatalogProposal(proposalID : proposalID, proposalMetadata : newCatalogProposalEntry)
+    }
+
+    pub fun removeCatalogProposal(proposalID : UInt64) {
+      pre {
+        NFTCatalog.getCatalogProposalEntry(proposalID : proposalID) != nil : "Invalid Proposal ID"
+      }
+      NFTCatalog.removeCatalogProposal(proposalID : proposalID)
+    }
+
     init () {}
 
   }
