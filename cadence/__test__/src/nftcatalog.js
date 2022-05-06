@@ -18,27 +18,27 @@ export const addToCatalogAdmin = async (nftName, contractName, nftAddressLocatio
   return sendTransaction({ name, args, signers });
 }
 
-export const addToCatalog = async (agentAccount, nftName, contractName, nftAddressLocation, storagePath, publicPath) => {
+export const addToCatalog = async (proxyAccount, nftName, contractName, nftAddressLocation, storagePath, publicPath) => {
   const name = 'add_to_nft_catalog';
 
-  const signers = [agentAccount];
+  const signers = [proxyAccount];
   const args = [nftName, contractName, nftAddressLocation, storagePath, publicPath];
 
   return sendTransaction({ name, args, signers });
 }
 
-export const setupNFTCatalogAdminAgent = async (account) => {
-  const name = 'setup_nft_catalog_admin_agent';
+export const setupNFTCatalogAdminProxy = async (account) => {
+  const name = 'setup_nft_catalog_admin_proxy';
   const signers = [account];
 
   return sendTransaction({ name, signers })
 }
 
-export const sendAdminAgentCapability = async (ownerAccount) => {
+export const sendAdminProxyCapability = async (ownerAccount) => {
   const NFTCatalogAdmin = await getAdminAddress();
   const signers = [NFTCatalogAdmin];
 
-  const name = 'send_admin_capability_to_agent';
+  const name = 'send_admin_capability_to_proxy';
 
   const args = [ownerAccount];
 

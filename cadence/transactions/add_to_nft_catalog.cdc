@@ -8,10 +8,10 @@ transaction(
   storagePathIdentifier: String,
   publicPathIdentifier: String
 ) {
-  let adminAgentResource : &NFTCatalogAdmin.AdminAgent
+  let adminProxyResource : &NFTCatalogAdmin.AdminProxy
 
   prepare(acct: AuthAccount) {
-    self.adminAgentResource = acct.borrow<&NFTCatalogAdmin.AdminAgent>(from : NFTCatalogAdmin.AdminAgentStoragePath)!
+    self.adminProxyResource = acct.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
   }
 
   execute {
@@ -28,6 +28,6 @@ transaction(
 
     let catalogData = NFTCatalog.NFTCatalogMetadata(name: name, collectionMetadata: collectionMetadata)
     
-    self.adminAgentResource.getCapability()!.borrow()!.addCatalogEntry(name : name, metadata : catalogData)
+    self.adminProxyResource.getCapability()!.borrow()!.addCatalogEntry(name : name, metadata : catalogData)
   }
 }

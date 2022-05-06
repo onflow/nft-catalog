@@ -10,8 +10,8 @@ import {
   deployNFTCatalog,
   addToCatalogAdmin,
   getNFTMetadataForName,
-  setupNFTCatalogAdminAgent,
-  sendAdminAgentCapability,
+  setupNFTCatalogAdminProxy,
+  sendAdminProxyCapability,
   addToCatalog,
   proposeNFTToCatalog,
   getNFTProposalForID,
@@ -68,20 +68,20 @@ describe('NFT Catalog Test Suite', () => {
 
     const Alice = await getAccountAddress('Alice');
 
-    await shallResolve(setupNFTCatalogAdminAgent(Alice));
+    await shallResolve(setupNFTCatalogAdminProxy(Alice));
 
-    await shallResolve(sendAdminAgentCapability(Alice));
+    await shallResolve(sendAdminProxyCapability(Alice));
   });
 
 
-  it('non-admin accounts with agents should be able to add NFT to catalog', async () => {
+  it('non-admin accounts with proxies should be able to add NFT to catalog', async () => {
     await deployNFTCatalog();
 
     const Alice = await getAccountAddress('Alice');
 
-    await shallResolve(setupNFTCatalogAdminAgent(Alice));
+    await shallResolve(setupNFTCatalogAdminProxy(Alice));
 
-    await shallResolve(sendAdminAgentCapability(Alice));
+    await shallResolve(sendAdminProxyCapability(Alice));
 
     let res = await deployExampleNFT();
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
@@ -106,9 +106,9 @@ describe('NFT Catalog Test Suite', () => {
 
     const Alice = await getAccountAddress('Alice');
 
-    await shallResolve(setupNFTCatalogAdminAgent(Alice));
+    await shallResolve(setupNFTCatalogAdminProxy(Alice));
 
-    await shallResolve(sendAdminAgentCapability(Alice));
+    await shallResolve(sendAdminProxyCapability(Alice));
 
     let res = await deployExampleNFT();
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
@@ -147,9 +147,9 @@ describe('NFT Catalog Test Suite', () => {
 
     const Alice = await getAccountAddress('Alice');
 
-    await shallResolve(setupNFTCatalogAdminAgent(Alice));
+    await shallResolve(setupNFTCatalogAdminProxy(Alice));
 
-    await shallResolve(sendAdminAgentCapability(Alice));
+    await shallResolve(sendAdminProxyCapability(Alice));
 
     let res = await deployExampleNFT();
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
@@ -186,9 +186,9 @@ describe('NFT Catalog Test Suite', () => {
 
     const Alice = await getAccountAddress('Alice');
 
-    await shallResolve(setupNFTCatalogAdminAgent(Alice));
+    await shallResolve(setupNFTCatalogAdminProxy(Alice));
 
-    await shallResolve(sendAdminAgentCapability(Alice));
+    await shallResolve(sendAdminProxyCapability(Alice));
 
     let res = await deployExampleNFT();
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');

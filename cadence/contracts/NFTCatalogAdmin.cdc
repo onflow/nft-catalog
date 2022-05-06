@@ -5,8 +5,8 @@ pub contract NFTCatalogAdmin {
   pub let AdminPrivatePath: PrivatePath
   pub let AdminStoragePath: StoragePath
 
-  pub let AdminAgentPublicPath: PublicPath
-  pub let AdminAgentStoragePath: StoragePath
+  pub let AdminProxyPublicPath: PublicPath
+  pub let AdminProxyStoragePath: StoragePath
 
   pub resource Admin {
 
@@ -48,20 +48,20 @@ pub contract NFTCatalogAdmin {
 
   }
 
-  pub resource interface IAdminAgent {
+  pub resource interface IAdminProxy {
 		
     pub fun addCapability(capability : Capability<&Admin>)
 
 	}
 
-  pub resource AdminAgent : IAdminAgent {
+  pub resource AdminProxy : IAdminProxy {
     
     access(self) var capability : Capability<&Admin>?
 
     pub fun addCapability(capability : Capability<&Admin>) {
       pre {
         capability.check() : "Invalid Admin Capability"
-        self.capability == nil : "Admin Agent already set"
+        self.capability == nil : "Admin Proxy already set"
       }
       self.capability = capability
     }
@@ -76,13 +76,13 @@ pub contract NFTCatalogAdmin {
     
   }
 
-  pub fun createAdminAgent() : @AdminAgent {
-		return <- create AdminAgent()
+  pub fun createAdminProxy() : @AdminProxy {
+		return <- create AdminProxy()
 	}
 
   init () {
-    self.AdminAgentPublicPath = /public/nftCatalogAdminAgent
-    self.AdminAgentStoragePath = /storage/nftCatalogAdminAgent
+    self.AdminProxyPublicPath = /public/nftCatalogAdminProxy
+    self.AdminProxyStoragePath = /storage/nftCatalogAdminProxy
     
     self.AdminPrivatePath = /private/nftCatalogAdmin
     self.AdminStoragePath = /storage/nftCatalogAdmin
