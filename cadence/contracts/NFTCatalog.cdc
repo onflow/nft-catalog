@@ -4,7 +4,7 @@ pub contract NFTCatalog {
   access(self) let catalogProposals : {UInt64 : NFTCatalogProposal}
 
   access(self) var totalProposals : UInt64
-
+  //TODO: Switch to struct from Metadata View when launched
   pub struct NFTCollectionView {
     
     pub let storagePath : StoragePath
@@ -65,6 +65,9 @@ pub contract NFTCatalog {
 
   //TODO: Add authz
   pub fun proposeNFTMetadata(metadata : NFTCatalogMetadata, message : String) : UInt64 {
+    pre {
+      self.catalog[metadata.name] == nil : "The nft name has already been added to the catalog"
+    }
     let catalogProposal = NFTCatalogProposal(metadata : metadata, message : message, status: "IN_REVIEW")
     self.totalProposals = self.totalProposals + 1
     self.catalogProposals[self.totalProposals] = catalogProposal
