@@ -18,6 +18,7 @@ pub contract NFTCatalogAdmin {
       pre {
         NFTCatalog.getCatalogProposalEntry(proposalID : proposalID) != nil : "Invalid Proposal ID"
         NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!.status == "IN_REVIEW" : "Invalid Proposal"
+        NFTCatalog.getCatalogEntry(name : NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!.metadata.name) == nil : "The nft name has already been added to the catalog"
       }
       let catalogProposalEntry = NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!
       let newCatalogProposalEntry = NFTCatalog.NFTCatalogProposal(metadata : catalogProposalEntry.metadata, message : catalogProposalEntry.message, status: "APPROVED")
