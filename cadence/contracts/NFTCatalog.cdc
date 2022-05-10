@@ -55,11 +55,13 @@ pub contract NFTCatalog {
     pub let metadata : NFTCatalogMetadata
     pub let message : String
     pub let status : String
+    pub let createdTime : UFix64
 
     init(metadata : NFTCatalogMetadata, message : String, status : String) {
       self.metadata = metadata
       self.message = message
       self.status = status
+      self.createdTime = getCurrentBlock().timestamp
     }
   }
 
