@@ -1,12 +1,12 @@
 pub contract NFTCatalog {
 
-  pub event CatalogEntryAdded(name : String, contractName : String, address : Address, storagePath: StoragePath, publicPath: PublicPath)
+  pub event EntryAdded(name : String, contractName : String, address : Address, storagePath: StoragePath, publicPath: PublicPath)
 
-  pub event CatalogProposalEntryAdded(proposalID : UInt64, message: String, status: String, contractName : String, address : Address, storagePath: StoragePath, publicPath: PublicPath)
+  pub event ProposalEntryAdded(proposalID : UInt64, message: String, status: String)
   
-  pub event CatalogProposalEntryUpdated(proposalID : UInt64, message: String, status: String, contractName : String, address : Address, storagePath: StoragePath, publicPath: PublicPath)
+  pub event ProposalEntryUpdated(proposalID : UInt64, message: String, status: String)
   
-  pub event CatalogProposalEntryRemoved(proposalID : UInt64)
+  pub event ProposalEntryRemoved(proposalID : UInt64)
   
   access(self) let catalog: {String : NFTCatalogMetadata}
   access(self) let catalogProposals : {UInt64 : NFTCatalogProposal}
@@ -82,7 +82,7 @@ pub contract NFTCatalog {
     self.totalProposals = self.totalProposals + 1
     self.catalogProposals[self.totalProposals] = catalogProposal
 
-    emit CatalogProposalEntryAdded(proposalID : self.totalProposals, message: catalogProposal.message, status: catalogProposal.status, contractName : catalogProposal.metadata.collectionMetadata.contractName, address : catalogProposal.metadata.collectionMetadata.address, storagePath: catalogProposal.metadata.collectionMetadata.collectionData.storagePath, publicPath: catalogProposal.metadata.collectionMetadata.collectionData.publicPath)
+    emit ProposalEntryAdded(proposalID : self.totalProposals, message: catalogProposal.message, status: catalogProposal.status)
     return self.totalProposals
   }
 
@@ -101,19 +101,19 @@ pub contract NFTCatalog {
 
     self.catalog[name] = metadata
 
-    emit CatalogEntryAdded(name : name, contractName : metadata.collectionMetadata.contractName, address : metadata.collectionMetadata.address, storagePath: metadata.collectionMetadata.collectionData.storagePath, publicPath: metadata.collectionMetadata.collectionData.publicPath)
+    emit EntryAdded(name : name, contractName : metadata.collectionMetadata.contractName, address : metadata.collectionMetadata.address, storagePath: metadata.collectionMetadata.collectionData.storagePath, publicPath: metadata.collectionMetadata.collectionData.publicPath)
   }
 
   access(account) fun updateCatalogProposal(proposalID: UInt64, proposalMetadata : NFTCatalogProposal) {
     self.catalogProposals[proposalID] = proposalMetadata
 
-    emit CatalogProposalEntryUpdated(proposalID : proposalID, message: proposalMetadata.message, status: proposalMetadata.status, contractName : proposalMetadata.metadata.collectionMetadata.contractName, address : proposalMetadata.metadata.collectionMetadata.address, storagePath: proposalMetadata.metadata.collectionMetadata.collectionData.storagePath, publicPath: proposalMetadata.metadata.collectionMetadata.collectionData.publicPath)
+    emit ProposalEntryUpdated(proposalID : proposalID, message: proposalMetadata.message, status: proposalMetadata.status)
   }
 
   access(account) fun removeCatalogProposal(proposalID : UInt64) {
     self.catalogProposals.remove(key : proposalID)
 
-    emit CatalogProposalEntryRemoved(proposalID : proposalID)
+    emit ProposalEntryRemoved(proposalID : proposalID)
   }
 
   init() {
