@@ -1,6 +1,6 @@
 pub contract NFTCatalog {
 
-  pub event EntryAdded(name : String, contractName : String, address : Address, storagePath: StoragePath, publicPath: PublicPath)
+  pub event EntryAdded(name : String, contractName : String, address : Address, nftType : Type, storagePath: StoragePath, publicPath: PublicPath)
 
   pub event ProposalEntryAdded(proposalID : UInt64, message: String, status: String)
   
@@ -31,11 +31,13 @@ pub contract NFTCatalog {
     
     pub let contractName : String
     pub let address : Address
+    pub let nftType: Type
     pub let collectionData: NFTCollectionView
 
-    init (contractName : String, address : Address, collectionData : NFTCollectionView) {
+    init (contractName : String, address : Address, nftType: Type, collectionData : NFTCollectionView) {
       self.contractName = contractName
       self.address = address
+      self.nftType = nftType
       self.collectionData = collectionData
     }
   }
@@ -101,7 +103,7 @@ pub contract NFTCatalog {
 
     self.catalog[name] = metadata
 
-    emit EntryAdded(name : name, contractName : metadata.collectionMetadata.contractName, address : metadata.collectionMetadata.address, storagePath: metadata.collectionMetadata.collectionData.storagePath, publicPath: metadata.collectionMetadata.collectionData.publicPath)
+    emit EntryAdded(name : name, contractName : metadata.collectionMetadata.contractName, address : metadata.collectionMetadata.address, nftType: metadata.collectionMetadata.nftType, storagePath: metadata.collectionMetadata.collectionData.storagePath, publicPath: metadata.collectionMetadata.collectionData.publicPath)
   }
 
   access(account) fun updateCatalogProposal(proposalID: UInt64, proposalMetadata : NFTCatalogProposal) {

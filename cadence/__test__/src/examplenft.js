@@ -43,3 +43,9 @@ export const getExampleNFTCollectionLength = async (account) => {
 
     return executeScript({ name, args });
 };
+
+export const getExampleNFTType = async () => {
+    const name = 'get_examplenft_type';
+
+    return executeScript({ name })
+}
