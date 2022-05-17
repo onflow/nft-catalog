@@ -5,6 +5,7 @@ transaction(
   name : String,
   contractName: String,
   address: Address,
+  nftTypeIdentifer: String,
   storagePathIdentifier: String,
   publicPathIdentifier: String
 ) {
@@ -24,7 +25,8 @@ transaction(
     let collectionMetadata = NFTCatalog.NFTCollectionMetadata(
       contractName: contractName,
       address: address,
-      collectionData: collectionView
+      nftType: CompositeType(nftTypeIdentifer)!,
+      collectionData: collectionView,
     )
 
     let catalogData = NFTCatalog.NFTCatalogMetadata(name: name, collectionMetadata: collectionMetadata)

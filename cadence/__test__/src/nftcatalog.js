@@ -8,21 +8,21 @@ export const deployNFTCatalog = async () => {
   return deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
 }
 
-export const addToCatalogAdmin = async (nftName, contractName, nftAddressLocation, storagePath, publicPath) => {
+export const addToCatalogAdmin = async (nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath) => {
   const NFTCatalogAdmin = await getAdminAddress();
   const name = 'add_to_nft_catalog_admin';
 
   const signers = [NFTCatalogAdmin];
-  const args = [nftName, contractName, nftAddressLocation, storagePath, publicPath];
+  const args = [nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath];
 
   return sendTransaction({ name, args, signers });
 }
 
-export const addToCatalog = async (proxyAccount, nftName, contractName, nftAddressLocation, storagePath, publicPath) => {
+export const addToCatalog = async (proxyAccount, nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath) => {
   const name = 'add_to_nft_catalog';
 
   const signers = [proxyAccount];
-  const args = [nftName, contractName, nftAddressLocation, storagePath, publicPath];
+  const args = [nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath];
 
   return sendTransaction({ name, args, signers });
 }
@@ -45,9 +45,9 @@ export const sendAdminProxyCapability = async (ownerAccount) => {
   return sendTransaction({ name, args, signers });
 }
 
-export const proposeNFTToCatalog = async (account, nftName, contractName, nftAddressLocation, storagePath, publicPath, message) => {
+export const proposeNFTToCatalog = async (account, nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath, message) => {
   const name = 'propose_nft_to_catalog';
-  const args = [nftName, contractName, nftAddressLocation, storagePath, publicPath, message];
+  const args = [nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath, message];
   const signers = [account];
 
   return sendTransaction({ name, args, signers });

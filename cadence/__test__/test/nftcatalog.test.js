@@ -20,7 +20,8 @@ import {
   removeNFTProposal
 } from '../src/nftcatalog';
 import {
-  deployExampleNFT
+  deployExampleNFT,
+  getExampleNFTType
 } from '../src/examplenft';
 
 
@@ -49,10 +50,13 @@ describe('NFT Catalog Test Suite', () => {
     let res = await deployExampleNFT();
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
 
+    const [nftTypeIdentifier, _] = await getExampleNFTType();
+
     await shallPass(addToCatalogAdmin(
       nftCreationEvent.data.contract,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.address,
+      nftTypeIdentifier,
       'exampleNFTCollection',
       'exampleNFTCollection'
     ));
@@ -86,11 +90,14 @@ describe('NFT Catalog Test Suite', () => {
     let res = await deployExampleNFT();
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
 
+    const [nftTypeIdentifier, _] = await getExampleNFTType();
+
     await shallPass(addToCatalog(
       Alice,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.address,
+      nftTypeIdentifier,
       'exampleNFTCollection',
       'exampleNFTCollection'
     ));
@@ -100,6 +107,7 @@ describe('NFT Catalog Test Suite', () => {
     expect(result.name).toBe(nftCreationEvent.data.contract);
     expect(error).toBe(null);
   });
+
 
   it('should be able to approve proposals', async () => {
     await deployNFTCatalog();
@@ -114,11 +122,15 @@ describe('NFT Catalog Test Suite', () => {
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
 
     const Bob = await getAccountAddress('Bob');
+
+    const [nftTypeIdentifier, _] = await getExampleNFTType();
+
     await shallPass(proposeNFTToCatalog(
       Bob,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.address,
+      nftTypeIdentifier,
       'exampleNFTCollection',
       'exampleNFTCollection',
       'Please add my NFT to the Catalog'
@@ -142,6 +154,7 @@ describe('NFT Catalog Test Suite', () => {
     expect(error).toBe(null);
   });
 
+
   it('should be able to reject proposals', async () => {
     await deployNFTCatalog();
 
@@ -155,11 +168,15 @@ describe('NFT Catalog Test Suite', () => {
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
 
     const Bob = await getAccountAddress('Bob');
+
+    const [nftTypeIdentifier, _] = await getExampleNFTType();
+
     await shallPass(proposeNFTToCatalog(
       Bob,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.address,
+      nftTypeIdentifier,
       'exampleNFTCollection',
       'exampleNFTCollection',
       'Please add my NFT to the Catalog'
@@ -181,6 +198,7 @@ describe('NFT Catalog Test Suite', () => {
     expect(result).toBe(null);
   });
 
+
   it('should be able to remove proposals', async () => {
     await deployNFTCatalog();
 
@@ -194,11 +212,15 @@ describe('NFT Catalog Test Suite', () => {
     const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
 
     const Bob = await getAccountAddress('Bob');
+
+    const [nftTypeIdentifier, _] = await getExampleNFTType();
+
     await shallPass(proposeNFTToCatalog(
       Bob,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.address,
+      nftTypeIdentifier,
       'exampleNFTCollection',
       'exampleNFTCollection',
       'Please add my NFT to the Catalog'
