@@ -10,22 +10,22 @@ pub contract NFTCatalogAdmin {
 
   pub resource Admin {
 
-    pub fun addCatalogEntry(name: String, metadata : NFTCatalog.NFTCatalogMetadata) {
-      NFTCatalog.addToCatalog(name: name, metadata : metadata)
+    pub fun addCatalogEntry(collectionName: String, metadata : NFTCatalog.NFTCatalogMetadata) {
+      NFTCatalog.addToCatalog(collectionName: collectionName, metadata : metadata)
     }
 
     pub fun approveCatalogProposal(proposalID : UInt64) {
       pre {
         NFTCatalog.getCatalogProposalEntry(proposalID : proposalID) != nil : "Invalid Proposal ID"
         NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!.status == "IN_REVIEW" : "Invalid Proposal"
-        NFTCatalog.getCatalogEntry(name : NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!.metadata.name) == nil : "The nft name has already been added to the catalog"
+        NFTCatalog.getCatalogEntry(collectionName : NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!.metadata.collectionName) == nil : "The nft name has already been added to the catalog"
       }
       let catalogProposalEntry = NFTCatalog.getCatalogProposalEntry(proposalID : proposalID)!
       let newCatalogProposalEntry = NFTCatalog.NFTCatalogProposal(metadata : catalogProposalEntry.metadata, message : catalogProposalEntry.message, status: "APPROVED", proposer: catalogProposalEntry.proposer)
       NFTCatalog.updateCatalogProposal(proposalID : proposalID, proposalMetadata : newCatalogProposalEntry)
 
       // Add to catalog
-      NFTCatalog.addToCatalog(name: newCatalogProposalEntry.metadata.name, metadata : newCatalogProposalEntry.metadata)
+      NFTCatalog.addToCatalog(collectionName: newCatalogProposalEntry.metadata.collectionName, metadata : newCatalogProposalEntry.metadata)
     }
 
     pub fun rejectCatalogProposal(proposalID : UInt64) {

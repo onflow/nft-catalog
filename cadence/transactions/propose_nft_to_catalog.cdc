@@ -1,11 +1,13 @@
+import MetadataViews from "../contracts/MetadataViews.cdc"
 import NFTCatalog from "../contracts/NFTCatalog.cdc"
 
 transaction(
-  name : String,
+  collectionName : String,
   contractName: String,
-  address: Address,
+  contractAddress: Address,
   nftTypeIdentifer: String,
-  storagePathIdentifier: String,
+  addressWithNFT: Address,
+  nftID: UInt64,
   publicPathIdentifier: String,
   message: String
 ) {
@@ -24,19 +26,33 @@ transaction(
   }
   
   execute {
-    let collectionView = NFTCatalog.NFTCollectionView(
-      storagePath: StoragePath(identifier: storagePathIdentifier)!,
-      publicPath: PublicPath(identifier: publicPathIdentifier)!
+    let nftAccount = getAccount(addressWithNFT)
+    let pubPath = PublicPath(identifier: publicPathIdentifier)!
+    let collectionRef = nftAccount.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(pubPath).borrow() ?? panic("Invalid NFT data")
+    let nftResolver = collectionRef.borrowViewResolver(id: nftID)
+    
+    let metadataCollectionData = nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
+    
+    let collectionData = NFTCatalog.NFTCollectionData(
+      storagePath: metadataCollectionData.storagePath,
+      publicPath: metadataCollectionData.publicPath,
+      privatePath: metadataCollectionData.providerPath,
+      publicLinkedType : metadataCollectionData.publicLinkedType,
+      privateLinkedType : metadataCollectionData.providerLinkedType
     )
+
+    let collectionDisplay = nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
 
     let collectionMetadata = NFTCatalog.NFTCollectionMetadata(
       contractName: contractName,
-      address: address,
+      contractAddress: contractAddress,
       nftType: CompositeType(nftTypeIdentifer)!,
-      collectionData: collectionView
+      collectionData: collectionData,
+      collectionDisplay : collectionDisplay
     )
-    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(name : name)
-    let catalogData = NFTCatalog.NFTCatalogMetadata(name: name, collectionMetadata: collectionMetadata)
+
+    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(name : collectionName)
+    let catalogData = NFTCatalog.NFTCatalogMetadata(collectionName: collectionName, collectionMetadata: collectionMetadata)
 
     NFTCatalog.proposeNFTMetadata(metadata : catalogData, message: message, proposer: self.nftCatalogProposalResourceRef.owner!.address)
 

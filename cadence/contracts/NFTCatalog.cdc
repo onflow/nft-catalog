@@ -1,6 +1,21 @@
+import MetadataViews from "./MetadataViews.cdc"
+
 pub contract NFTCatalog {
 
-  pub event EntryAdded(name : String, contractName : String, address : Address, nftType : Type, storagePath: StoragePath, publicPath: PublicPath)
+  pub event EntryAdded(
+    collectionName : String, 
+    contractName : String, 
+    contractAddress : Address, 
+    nftType : Type, 
+    storagePath: StoragePath, 
+    publicPath: PublicPath, 
+    privatePath: PrivatePath, 
+    publicLinkedType : Type, 
+    privateLinkedType : Type,
+    displayName : String,
+    description: String,
+    externalURL : String
+  )
 
   pub event ProposalEntryAdded(proposalID : UInt64, message: String, status: String, proposer : Address)
   
@@ -13,7 +28,7 @@ pub contract NFTCatalog {
   pub let ProposalManagerPublicPath: PublicPath
 
   
-  access(self) let catalog: {String : NFTCatalogMetadata}
+  access(self) let catalog: {String : NFTCatalog.NFTCatalogMetadata}
   access(self) let catalogProposals : {UInt64 : NFTCatalogProposal}
 
   access(self) var totalProposals : UInt64
@@ -37,43 +52,53 @@ pub contract NFTCatalog {
       }
   }
 
-  //TODO: Switch to struct from Metadata View when launched
-  pub struct NFTCollectionView {
+  pub struct NFTCollectionData {
     
     pub let storagePath : StoragePath
     pub let publicPath : PublicPath
+    pub let privatePath: PrivatePath
+    pub let publicLinkedType: Type
+    pub let privateLinkedType: Type
 
     init(
       storagePath : StoragePath,
-      publicPath : PublicPath
+      publicPath : PublicPath,
+      privatePath : PrivatePath,
+      publicLinkedType : Type,
+      privateLinkedType : Type
     ) {
       self.storagePath = storagePath
       self.publicPath = publicPath
+      self.privatePath = privatePath
+      self.publicLinkedType = publicLinkedType
+      self.privateLinkedType = privateLinkedType
     }
   }
+
 
   pub struct NFTCollectionMetadata {
     
     pub let contractName : String
-    pub let address : Address
+    pub let contractAddress : Address
     pub let nftType: Type
-    pub let collectionData: NFTCollectionView
+    pub let collectionData: NFTCollectionData
+    pub let collectionDisplay: MetadataViews.NFTCollectionDisplay
 
-    init (contractName : String, address : Address, nftType: Type, collectionData : NFTCollectionView) {
+    init (contractName : String, contractAddress : Address, nftType: Type, collectionData : NFTCollectionData, collectionDisplay : MetadataViews.NFTCollectionDisplay) {
       self.contractName = contractName
-      self.address = address
+      self.contractAddress = contractAddress
       self.nftType = nftType
       self.collectionData = collectionData
+      self.collectionDisplay = collectionDisplay
     }
   }
 
   pub struct NFTCatalogMetadata {
-    
-    pub let name : String
+    pub let collectionName : String // Unique
     pub let collectionMetadata : NFTCollectionMetadata
 
-    init(name : String, collectionMetadata: NFTCollectionMetadata) {
-      self.name = name
+    init(collectionName : String, collectionMetadata: NFTCollectionMetadata) {
+      self.collectionName = collectionName
       self.collectionMetadata = collectionMetadata
     }
   }
@@ -98,13 +123,13 @@ pub contract NFTCatalog {
     return self.catalog
   }
 
-  pub fun getCatalogEntry(name : String) : NFTCatalogMetadata? {
-    return self.catalog[name]
+  pub fun getCatalogEntry(collectionName : String) : NFTCatalogMetadata? {
+    return self.catalog[collectionName]
   }
 
   pub fun proposeNFTMetadata(metadata : NFTCatalogMetadata, message : String, proposer : Address) : UInt64 {
     pre {
-      self.catalog[metadata.name] == nil : "The nft name has already been added to the catalog"
+      self.catalog[metadata.collectionName] == nil : "The nft name has already been added to the catalog"
     }
     let proposerManagerCap = getAccount(proposer).getCapability<&NFTCatalogProposalManager{NFTCatalog.NFTCatalogProposalManagerPublic}>(NFTCatalog.ProposalManagerPublicPath)
 
@@ -112,7 +137,7 @@ pub contract NFTCatalog {
 
     let proposerManagerRef = proposerManagerCap.borrow()!
 
-    assert(proposerManagerRef.getCurrentProposalEntry()! == metadata.name, message: "Expected proposal entry does not match entry for the proposer")
+    assert(proposerManagerRef.getCurrentProposalEntry()! == metadata.collectionName, message: "Expected proposal entry does not match entry for the proposer")
     
     let catalogProposal = NFTCatalogProposal(metadata : metadata, message : message, status: "IN_REVIEW", proposer: proposer)
     self.totalProposals = self.totalProposals + 1
@@ -135,7 +160,7 @@ pub contract NFTCatalog {
 
     let proposerManagerRef = proposerManagerCap.borrow()!
 
-    assert(proposerManagerRef.getCurrentProposalEntry()! == proposal.metadata.name, message: "Expected proposal entry does not match entry for the proposer")
+    assert(proposerManagerRef.getCurrentProposalEntry()! == proposal.metadata.collectionName, message: "Expected proposal entry does not match entry for the proposer")
 
     self.removeCatalogProposal(proposalID : proposalID)
   }
@@ -152,14 +177,27 @@ pub contract NFTCatalog {
     return <-create NFTCatalogProposalManager()
   }
 
-  access(account) fun addToCatalog(name : String, metadata: NFTCatalogMetadata) {
+  access(account) fun addToCatalog(collectionName : String, metadata: NFTCatalogMetadata) {
     pre {
-      self.catalog[name] == nil : "The nft name has already been added to the catalog"
+      self.catalog[collectionName] == nil : "The nft name has already been added to the catalog"
     }
 
-    self.catalog[name] = metadata
+    self.catalog[collectionName] = metadata
 
-    emit EntryAdded(name : name, contractName : metadata.collectionMetadata.contractName, address : metadata.collectionMetadata.address, nftType: metadata.collectionMetadata.nftType, storagePath: metadata.collectionMetadata.collectionData.storagePath, publicPath: metadata.collectionMetadata.collectionData.publicPath)
+    emit EntryAdded(
+      collectionName : collectionName, 
+      contractName : metadata.collectionMetadata.contractName, 
+      contractAddress : metadata.collectionMetadata.contractAddress, 
+      nftType: metadata.collectionMetadata.nftType,
+      storagePath: metadata.collectionMetadata.collectionData.storagePath, 
+      publicPath: metadata.collectionMetadata.collectionData.publicPath, 
+      privatePath: metadata.collectionMetadata.collectionData.privatePath, 
+      publicLinkedType : metadata.collectionMetadata.collectionData.publicLinkedType, 
+      privateLinkedType : metadata.collectionMetadata.collectionData.privateLinkedType,
+      displayName : metadata.collectionMetadata.collectionDisplay.name,
+      description: metadata.collectionMetadata.collectionDisplay.description,
+      externalURL : metadata.collectionMetadata.collectionDisplay.externalURL.url
+    )
   }
 
   access(account) fun updateCatalogProposal(proposalID: UInt64, proposalMetadata : NFTCatalogProposal) {
