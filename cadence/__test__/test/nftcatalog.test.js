@@ -25,7 +25,9 @@ import {
   deployExampleNFT,
   getExampleNFTType
 } from '../src/examplenft';
+import { TIMEOUT } from '../src/common';
 
+jest.setTimeout(TIMEOUT);
 
 describe('NFT Catalog Test Suite', () => {
   beforeEach(async () => {

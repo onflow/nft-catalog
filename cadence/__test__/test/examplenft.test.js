@@ -9,10 +9,13 @@ import {
 import {
     deployExampleNFT, setupExampleNFTCollection, mintExampleNFT, getExampleNFTCollectionLength, transferExampleNFT
 } from '../src/examplenft';
+import { TIMEOUT } from '../src/common';
 
 const TEST_NFT_NAME = 'Test Name';
 const TEST_NFT_DESCRIPTION = 'Test Description';
 const TEST_NFT_THUMBNAIL = 'https://flow.com/';
+
+jest.setTimeout(TIMEOUT);
 
 describe('Skeleton Example NFT Test Suite', () => {
     beforeEach(async () => {
