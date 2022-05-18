@@ -4,7 +4,8 @@ import {
   init,
   shallPass,
   shallResolve,
-  getAccountAddress
+  getAccountAddress,
+  shallRevert
 } from 'flow-js-testing';
 import {
   deployNFTCatalog,
@@ -17,7 +18,8 @@ import {
   getNFTProposalForID,
   approveNFTProposal,
   rejectNFTProposal,
-  removeNFTProposal
+  removeNFTProposal,
+  withdrawNFTProposalFromCatalog
 } from '../src/nftcatalog';
 import {
   deployExampleNFT,
@@ -239,6 +241,40 @@ describe('NFT Catalog Test Suite', () => {
     expect(result).toBe(null);
 
     [result, error] = await shallResolve(getNFTMetadataForName('ExampleNFT'));
+    expect(result).toBe(null);
+  });
+
+  it('should be able to withdraw proposals', async () => {
+    await deployNFTCatalog();
+
+    let res = await deployExampleNFT();
+    const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
+
+    const Bob = await getAccountAddress('Bob');
+
+    const [nftTypeIdentifier, _] = await getExampleNFTType();
+
+    await shallPass(proposeNFTToCatalog(
+      Bob,
+      nftCreationEvent.data.contract,
+      nftCreationEvent.data.contract,
+      nftCreationEvent.data.address,
+      nftTypeIdentifier,
+      'exampleNFTCollection',
+      'exampleNFTCollection',
+      'Please add my NFT to the Catalog'
+    ));
+
+    let [result, error] = await shallResolve(getNFTProposalForID(1));
+    expect(result.status).toBe("IN_REVIEW");
+    expect(result.metadata.name).toBe(nftCreationEvent.data.contract);
+
+    const Alice = await getAccountAddress('Alice');
+    await shallRevert(withdrawNFTProposalFromCatalog(Alice, 1));
+
+    await shallPass(withdrawNFTProposalFromCatalog(Bob, 1));
+
+    [result, error] = await shallResolve(getNFTProposalForID(1));
     expect(result).toBe(null);
   });
 

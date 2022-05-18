@@ -53,6 +53,14 @@ export const proposeNFTToCatalog = async (account, nftName, contractName, nftAdd
   return sendTransaction({ name, args, signers });
 }
 
+export const withdrawNFTProposalFromCatalog = async(account, proposalID) => {
+  const name = 'withdraw_nft_proposal_from_catalog';
+  const args = [proposalID];
+  const signers = [account];
+  
+  return sendTransaction({ name, args, signers });
+}
+
 export const approveNFTProposal = async (account, proposalID) => {
   const name = 'approve_nft_catalog_proposal';
   const args = [proposalID];
