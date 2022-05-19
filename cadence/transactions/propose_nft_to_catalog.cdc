@@ -43,7 +43,7 @@ transaction(
 
     let collectionDisplay = nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
 
-    let collectionMetadata = NFTCatalog.NFTCollectionMetadata(
+    let catalogData = NFTCatalog.NFTCatalogMetadata(
       contractName: contractName,
       contractAddress: contractAddress,
       nftType: CompositeType(nftTypeIdentifer)!,
@@ -52,9 +52,8 @@ transaction(
     )
 
     self.nftCatalogProposalResourceRef.setCurrentProposalEntry(name : collectionName)
-    let catalogData = NFTCatalog.NFTCatalogMetadata(collectionName: collectionName, collectionMetadata: collectionMetadata)
 
-    NFTCatalog.proposeNFTMetadata(metadata : catalogData, message: message, proposer: self.nftCatalogProposalResourceRef.owner!.address)
+    NFTCatalog.proposeNFTMetadata(collectionName : collectionName, metadata : catalogData, message: message, proposer: self.nftCatalogProposalResourceRef.owner!.address)
 
     self.nftCatalogProposalResourceRef.setCurrentProposalEntry(name : nil)
   }

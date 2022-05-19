@@ -40,7 +40,7 @@ pub contract NFTRetrieval {
       let items : [BaseNFTViewsV1] = []
       let value = catalog[key]!
       // Get users collection
-      let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(value.collectionMetadata.collectionData.publicPath)
+      let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(value.collectionData.publicPath)
       if collectionCap.check() {
         let collectionRef = collectionCap.borrow()!
         for id in collectionRef.getIDs() {

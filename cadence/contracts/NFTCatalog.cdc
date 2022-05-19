@@ -17,7 +17,7 @@ pub contract NFTCatalog {
     externalURL : String
   )
 
-  pub event ProposalEntryAdded(proposalID : UInt64, message: String, status: String, proposer : Address)
+  pub event ProposalEntryAdded(proposalID : UInt64, collectionName : String, message: String, status: String, proposer : Address)
   
   pub event ProposalEntryUpdated(proposalID : UInt64, message: String, status: String, proposer : Address)
   
@@ -76,8 +76,7 @@ pub contract NFTCatalog {
   }
 
 
-  pub struct NFTCollectionMetadata {
-    
+  pub struct NFTCatalogMetadata {
     pub let contractName : String
     pub let contractAddress : Address
     pub let nftType: Type
@@ -93,24 +92,16 @@ pub contract NFTCatalog {
     }
   }
 
-  pub struct NFTCatalogMetadata {
-    pub let collectionName : String // Unique
-    pub let collectionMetadata : NFTCollectionMetadata
-
-    init(collectionName : String, collectionMetadata: NFTCollectionMetadata) {
-      self.collectionName = collectionName
-      self.collectionMetadata = collectionMetadata
-    }
-  }
-
   pub struct NFTCatalogProposal {
+    pub let collectionName : String
     pub let metadata : NFTCatalogMetadata
     pub let message : String
     pub let status : String
     pub let proposer : Address
     pub let createdTime : UFix64
 
-    init(metadata : NFTCatalogMetadata, message : String, status : String, proposer : Address) {
+    init(collectionName : String, metadata : NFTCatalogMetadata, message : String, status : String, proposer : Address) {
+      self.collectionName = collectionName
       self.metadata = metadata
       self.message = message
       self.status = status
@@ -127,9 +118,9 @@ pub contract NFTCatalog {
     return self.catalog[collectionName]
   }
 
-  pub fun proposeNFTMetadata(metadata : NFTCatalogMetadata, message : String, proposer : Address) : UInt64 {
+  pub fun proposeNFTMetadata(collectionName : String, metadata : NFTCatalogMetadata, message : String, proposer : Address) : UInt64 {
     pre {
-      self.catalog[metadata.collectionName] == nil : "The nft name has already been added to the catalog"
+      self.catalog[collectionName] == nil : "The nft name has already been added to the catalog"
     }
     let proposerManagerCap = getAccount(proposer).getCapability<&NFTCatalogProposalManager{NFTCatalog.NFTCatalogProposalManagerPublic}>(NFTCatalog.ProposalManagerPublicPath)
 
@@ -137,13 +128,13 @@ pub contract NFTCatalog {
 
     let proposerManagerRef = proposerManagerCap.borrow()!
 
-    assert(proposerManagerRef.getCurrentProposalEntry()! == metadata.collectionName, message: "Expected proposal entry does not match entry for the proposer")
+    assert(proposerManagerRef.getCurrentProposalEntry()! == collectionName, message: "Expected proposal entry does not match entry for the proposer")
     
-    let catalogProposal = NFTCatalogProposal(metadata : metadata, message : message, status: "IN_REVIEW", proposer: proposer)
+    let catalogProposal = NFTCatalogProposal(collectionName : collectionName, metadata : metadata, message : message, status: "IN_REVIEW", proposer: proposer)
     self.totalProposals = self.totalProposals + 1
     self.catalogProposals[self.totalProposals] = catalogProposal
 
-    emit ProposalEntryAdded(proposalID : self.totalProposals, message: catalogProposal.message, status: catalogProposal.status, proposer: catalogProposal.proposer)
+    emit ProposalEntryAdded(proposalID : self.totalProposals, collectionName : collectionName, message: catalogProposal.message, status: catalogProposal.status, proposer: catalogProposal.proposer)
     return self.totalProposals
   }
 
@@ -160,7 +151,7 @@ pub contract NFTCatalog {
 
     let proposerManagerRef = proposerManagerCap.borrow()!
 
-    assert(proposerManagerRef.getCurrentProposalEntry()! == proposal.metadata.collectionName, message: "Expected proposal entry does not match entry for the proposer")
+    assert(proposerManagerRef.getCurrentProposalEntry()! == proposal.collectionName, message: "Expected proposal entry does not match entry for the proposer")
 
     self.removeCatalogProposal(proposalID : proposalID)
   }
@@ -186,17 +177,17 @@ pub contract NFTCatalog {
 
     emit EntryAdded(
       collectionName : collectionName, 
-      contractName : metadata.collectionMetadata.contractName, 
-      contractAddress : metadata.collectionMetadata.contractAddress, 
-      nftType: metadata.collectionMetadata.nftType,
-      storagePath: metadata.collectionMetadata.collectionData.storagePath, 
-      publicPath: metadata.collectionMetadata.collectionData.publicPath, 
-      privatePath: metadata.collectionMetadata.collectionData.privatePath, 
-      publicLinkedType : metadata.collectionMetadata.collectionData.publicLinkedType, 
-      privateLinkedType : metadata.collectionMetadata.collectionData.privateLinkedType,
-      displayName : metadata.collectionMetadata.collectionDisplay.name,
-      description: metadata.collectionMetadata.collectionDisplay.description,
-      externalURL : metadata.collectionMetadata.collectionDisplay.externalURL.url
+      contractName : metadata.contractName, 
+      contractAddress : metadata.contractAddress, 
+      nftType: metadata.nftType,
+      storagePath: metadata.collectionData.storagePath, 
+      publicPath: metadata.collectionData.publicPath, 
+      privatePath: metadata.collectionData.privatePath, 
+      publicLinkedType : metadata.collectionData.publicLinkedType, 
+      privateLinkedType : metadata.collectionData.privateLinkedType,
+      displayName : metadata.collectionDisplay.name,
+      description: metadata.collectionDisplay.description,
+      externalURL : metadata.collectionDisplay.externalURL.url
     )
   }
 

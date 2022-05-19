@@ -78,7 +78,6 @@ describe('NFT Retrieval Test Suite', () => {
     expect(result['ExampleNFT'][0].display.thumbnail.url).toBe(thumbnail);
   });
 
-
   it('should retrieve some NFTs', async () => {
     await deployNFTCatalog();
     const Bob = await getAccountAddress('Bob');
@@ -124,7 +123,6 @@ describe('NFT Retrieval Test Suite', () => {
     expect(Object.keys(result).length).toBe(0);
     expect(error).toBe(null);
   });
-
 
   it('should retrieve specific NFT', async () => {
     await deployNFTCatalog();

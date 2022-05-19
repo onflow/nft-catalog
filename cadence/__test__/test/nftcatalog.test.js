@@ -50,11 +50,9 @@ describe('NFT Catalog Test Suite', () => {
     return new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
-
   it('should deploy NFTCatalog contract', async () => {
     await shallPass(deployNFTCatalog());
   });
-
 
   it('main admin should add to catalog', async () => {
     await deployNFTCatalog();
@@ -81,7 +79,7 @@ describe('NFT Catalog Test Suite', () => {
 
     let [result, error] = await shallResolve(getNFTMetadataForCollectionName('ExampleNFT'));
     expect(result).not.toBe(null);
-    expect(result.collectionName).toBe(nftCreationEvent.data.contract);
+    expect(result.contractName).toBe(nftCreationEvent.data.contract);
     expect(error).toBe(null);
   });
 
@@ -94,7 +92,6 @@ describe('NFT Catalog Test Suite', () => {
 
     await shallResolve(sendAdminProxyCapability(Alice));
   });
-
 
   it('non-admin accounts with proxies should be able to add NFT to catalog', async () => {
     await deployNFTCatalog();
@@ -126,11 +123,9 @@ describe('NFT Catalog Test Suite', () => {
 
     let [result, error] = await shallResolve(getNFTMetadataForCollectionName('ExampleNFT'));
     expect(result).not.toBe(null);
-    expect(result.collectionName).toBe(nftCreationEvent.data.contract);
+    expect(result.contractName).toBe(nftCreationEvent.data.contract);
     expect(error).toBe(null);
   });
-
-
 
   it('should be able to approve proposals', async () => {
     await deployNFTCatalog();
@@ -168,7 +163,7 @@ describe('NFT Catalog Test Suite', () => {
 
     [result, error] = await shallResolve(getNFTProposalForID(1));
     expect(result.status).toBe("IN_REVIEW");
-    expect(result.metadata.collectionName).toBe(nftCreationEvent.data.contract);
+    expect(result.collectionName).toBe(nftCreationEvent.data.contract);
 
     await shallPass(approveNFTProposal(Alice, 1));
 
@@ -177,11 +172,9 @@ describe('NFT Catalog Test Suite', () => {
 
     [result, error] = await shallResolve(getNFTMetadataForCollectionName('ExampleNFT'));
     expect(result).not.toBe(null);
-    expect(result.collectionName).toBe(nftCreationEvent.data.contract);
+    expect(result.contractName).toBe(nftCreationEvent.data.contract);
     expect(error).toBe(null);
   });
-
-
 
   it('should be able to reject proposals', async () => {
     await deployNFTCatalog();
@@ -219,7 +212,7 @@ describe('NFT Catalog Test Suite', () => {
 
     [result, error] = await shallResolve(getNFTProposalForID(1));
     expect(result.status).toBe("IN_REVIEW");
-    expect(result.metadata.collectionName).toBe(nftCreationEvent.data.contract);
+    expect(result.collectionName).toBe(nftCreationEvent.data.contract);
 
     await shallPass(rejectNFTProposal(Alice, 1));
 
@@ -229,8 +222,6 @@ describe('NFT Catalog Test Suite', () => {
     [result, error] = await shallResolve(getNFTMetadataForCollectionName('ExampleNFT'));
     expect(result).toBe(null);
   });
-
-
 
   it('should be able to remove proposals', async () => {
     await deployNFTCatalog();
@@ -268,7 +259,7 @@ describe('NFT Catalog Test Suite', () => {
 
     [result, error] = await shallResolve(getNFTProposalForID(1));
     expect(result.status).toBe("IN_REVIEW");
-    expect(result.metadata.collectionName).toBe(nftCreationEvent.data.contract);
+    expect(result.collectionName).toBe(nftCreationEvent.data.contract);
 
     await shallPass(removeNFTProposal(Alice, 1));
 
@@ -278,7 +269,6 @@ describe('NFT Catalog Test Suite', () => {
     [result, error] = await shallResolve(getNFTMetadataForCollectionName('ExampleNFT'));
     expect(result).toBe(null);
   });
-
 
   it('should be able to withdraw proposals', async () => {
     await deployNFTCatalog();
@@ -307,7 +297,7 @@ describe('NFT Catalog Test Suite', () => {
 
     let [result, error] = await shallResolve(getNFTProposalForID(1));
     expect(result.status).toBe("IN_REVIEW");
-    expect(result.metadata.collectionName).toBe(nftCreationEvent.data.contract);
+    expect(result.collectionName).toBe(nftCreationEvent.data.contract);
 
     const Alice = await getAccountAddress('Alice');
     await shallRevert(withdrawNFTProposalFromCatalog(Alice, 1));

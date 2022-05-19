@@ -37,15 +37,13 @@ transaction(
 
     let collectionDisplay = nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
 
-    let collectionMetadata = NFTCatalog.NFTCollectionMetadata(
+    let catalogData = NFTCatalog.NFTCatalogMetadata(
       contractName: contractName,
       contractAddress: contractAddress,
       nftType: CompositeType(nftTypeIdentifer)!,
       collectionData: collectionData,
       collectionDisplay : collectionDisplay
     )
-
-    let catalogData = NFTCatalog.NFTCatalogMetadata(collectionName: collectionName, collectionMetadata: collectionMetadata)
 
     self.adminResource.addCatalogEntry(collectionName : collectionName, metadata : catalogData)
   }
