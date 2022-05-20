@@ -17,9 +17,26 @@ pub contract NFTCatalog {
     externalURL : String
   )
 
+  pub event EntryUpdated(
+    collectionName : String, 
+    contractName : String, 
+    contractAddress : Address, 
+    nftType : Type, 
+    storagePath: StoragePath, 
+    publicPath: PublicPath, 
+    privatePath: PrivatePath, 
+    publicLinkedType : Type, 
+    privateLinkedType : Type,
+    displayName : String,
+    description: String,
+    externalURL : String
+  )
+
+  pub event EntryRemoved(collectionName : String)
+
   pub event ProposalEntryAdded(proposalID : UInt64, collectionName : String, message: String, status: String, proposer : Address)
   
-  pub event ProposalEntryUpdated(proposalID : UInt64, message: String, status: String, proposer : Address)
+  pub event ProposalEntryUpdated(proposalID : UInt64, collectionName : String, message: String, status: String, proposer : Address)
   
   pub event ProposalEntryRemoved(proposalID : UInt64)
 
@@ -168,7 +185,7 @@ pub contract NFTCatalog {
     return <-create NFTCatalogProposalManager()
   }
 
-  access(account) fun addToCatalog(collectionName : String, metadata: NFTCatalogMetadata) {
+  access(account) fun addCatalogEntry(collectionName : String, metadata: NFTCatalogMetadata) {
     pre {
       self.catalog[collectionName] == nil : "The nft name has already been added to the catalog"
     }
@@ -191,10 +208,35 @@ pub contract NFTCatalog {
     )
   }
 
+  access(account) fun updateCatalogEntry(collectionName : String , metadata: NFTCatalogMetadata) {
+    self.catalog[collectionName] = metadata
+
+    emit EntryUpdated(
+      collectionName : collectionName, 
+      contractName : metadata.contractName, 
+      contractAddress : metadata.contractAddress, 
+      nftType: metadata.nftType,
+      storagePath: metadata.collectionData.storagePath, 
+      publicPath: metadata.collectionData.publicPath, 
+      privatePath: metadata.collectionData.privatePath, 
+      publicLinkedType : metadata.collectionData.publicLinkedType, 
+      privateLinkedType : metadata.collectionData.privateLinkedType,
+      displayName : metadata.collectionDisplay.name,
+      description: metadata.collectionDisplay.description,
+      externalURL : metadata.collectionDisplay.externalURL.url
+    )
+  }
+
+  access(account) fun removeCatalogEntry(collectionName : String) {
+    self.catalog.remove(key: collectionName)
+
+    emit EntryRemoved(collectionName : collectionName)
+  }
+
   access(account) fun updateCatalogProposal(proposalID: UInt64, proposalMetadata : NFTCatalogProposal) {
     self.catalogProposals[proposalID] = proposalMetadata
 
-    emit ProposalEntryUpdated(proposalID : proposalID, message: proposalMetadata.message, status: proposalMetadata.status, proposer: proposalMetadata.proposer)
+    emit ProposalEntryUpdated(proposalID : proposalID, collectionName : proposalMetadata.collectionName, message: proposalMetadata.message, status: proposalMetadata.status, proposer: proposalMetadata.proposer)
   }
 
   access(account) fun removeCatalogProposal(proposalID : UInt64) {

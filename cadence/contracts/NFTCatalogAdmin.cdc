@@ -11,7 +11,15 @@ pub contract NFTCatalogAdmin {
   pub resource Admin {
 
     pub fun addCatalogEntry(collectionName: String, metadata : NFTCatalog.NFTCatalogMetadata) {
-      NFTCatalog.addToCatalog(collectionName: collectionName, metadata : metadata)
+      NFTCatalog.addCatalogEntry(collectionName: collectionName, metadata : metadata)
+    }
+
+    pub fun updateCatalogEntry(collectionName : String , metadata : NFTCatalog.NFTCatalogMetadata) {
+      NFTCatalog.updateCatalogEntry(collectionName: collectionName, metadata : metadata)
+    }
+
+    pub fun removeCatalogEntry(collectionName : String) {
+      NFTCatalog.removeCatalogEntry(collectionName : collectionName)
     }
 
     pub fun approveCatalogProposal(proposalID : UInt64) {
@@ -25,7 +33,7 @@ pub contract NFTCatalogAdmin {
       NFTCatalog.updateCatalogProposal(proposalID : proposalID, proposalMetadata : newCatalogProposalEntry)
 
       // Add to catalog
-      NFTCatalog.addToCatalog(collectionName: newCatalogProposalEntry.collectionName, metadata : newCatalogProposalEntry.metadata)
+      NFTCatalog.addCatalogEntry(collectionName: newCatalogProposalEntry.collectionName, metadata : newCatalogProposalEntry.metadata)
     }
 
     pub fun rejectCatalogProposal(proposalID : UInt64) {
