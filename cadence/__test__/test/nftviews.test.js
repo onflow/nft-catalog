@@ -19,7 +19,9 @@ import {
   getExampleNFTType
 } from '../src/examplenft';
 import { getAllNFTsInAccount, getNFTsInAccount, deployNFTRetrieval, getNFTInAccount } from '../src/nftviews';
+import { TIMEOUT } from '../src/common';
 
+jest.setTimeout(TIMEOUT);
 
 describe('NFT Retrieval Test Suite', () => {
   beforeEach(async () => {
