@@ -29,6 +29,25 @@ export const addToCatalog = async (proxyAccount, collectionName, contractName, c
   return sendTransaction({ name, args, signers });
 }
 
+export const removeFromNFTCatalog = async (proxyAccount, collectionName) => {
+  const name = 'remove_from_nft_catalog';
+
+  const signers = [proxyAccount];
+
+  const args = [collectionName];
+
+  return sendTransaction({ name, args, signers });
+}
+
+export const updateNFTCatalogEntry = async (proxyAccount, collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier) => {
+  const name = 'update_nft_catalog_entry';
+
+  const signers = [proxyAccount];
+  const args = [collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier];
+
+  return sendTransaction({ name, args, signers });
+}
+
 export const setupNFTCatalogAdminProxy = async (account) => {
   const name = 'setup_nft_catalog_admin_proxy';
   const signers = [account];
@@ -90,6 +109,13 @@ export const removeNFTProposal = async (account, proposalID) => {
 export const getNFTMetadataForCollectionName = async (collectionName) => {
   const name = 'get_nft_metadata_for_collection_name';
   const args = [collectionName];
+
+  return executeScript({ name, args });
+}
+
+export const getNFTCollectionsForNFTType = async (nftTypeIdentifier) => {
+  const name = 'get_nft_collections_for_nft_type';
+  const args = [nftTypeIdentifier];
 
   return executeScript({ name, args });
 }
