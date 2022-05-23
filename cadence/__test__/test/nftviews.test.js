@@ -23,6 +23,7 @@ import { TIMEOUT } from '../src/common';
 
 jest.setTimeout(TIMEOUT);
 
+
 describe('NFT Retrieval Test Suite', () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, '../../');
@@ -52,19 +53,23 @@ describe('NFT Retrieval Test Suite', () => {
     await deployNFTRetrieval();
 
     const [nftTypeIdentifier, _] = await getExampleNFTType();
+
+
+    const nftName = 'Test Name';
+    const nftDescription = 'Test Description';
+    const thumbnail = 'https://flow.com/';
+    await mintExampleNFT(Alice, nftName, nftDescription, thumbnail, [], [], []);
+
     await addToCatalog(
       Bob,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.address,
       nftTypeIdentifier,
+      Alice,
+      0,
       'exampleNFTCollection',
-      'exampleNFTCollection'
     )
-    const nftName = 'Test Name';
-    const nftDescription = 'Test Description';
-    const thumbnail = 'https://flow.com/';
-    await mintExampleNFT(Alice, nftName, nftDescription, thumbnail, [], [], []);
 
     const [result, error] = await shallResolve(getAllNFTsInAccount(Alice));
     expect(error).toBe(null);
@@ -87,19 +92,22 @@ describe('NFT Retrieval Test Suite', () => {
     await deployNFTRetrieval();
 
     const [nftTypeIdentifier, _] = await getExampleNFTType();
+
+    const nftName = 'Test Name';
+    const nftDescription = 'Test Description';
+    const thumbnail = 'https://flow.com/';
+    await mintExampleNFT(Alice, nftName, nftDescription, thumbnail, [], [], []);
+
     await addToCatalog(
       Bob,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.address,
       nftTypeIdentifier,
+      Alice,
+      0,
       'exampleNFTCollection',
-      'exampleNFTCollection'
     )
-    const nftName = 'Test Name';
-    const nftDescription = 'Test Description';
-    const thumbnail = 'https://flow.com/';
-    await mintExampleNFT(Alice, nftName, nftDescription, thumbnail, [], [], []);
 
     let [result, error] = await shallResolve(getNFTsInAccount(Alice, ['ExampleNFT']));
     expect(result['ExampleNFT'][0].display.name).toBe(nftName);
@@ -130,19 +138,22 @@ describe('NFT Retrieval Test Suite', () => {
     await deployNFTRetrieval();
 
     const [nftTypeIdentifier, _] = await getExampleNFTType();
+
+    const nftName = 'Test Name';
+    const nftDescription = 'Test Description';
+    const thumbnail = 'https://flow.com/';
+    await mintExampleNFT(Alice, nftName, nftDescription, thumbnail, [], [], []);
+
     await addToCatalog(
       Bob,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.contract,
       nftCreationEvent.data.address,
       nftTypeIdentifier,
+      Alice,
+      0,
       'exampleNFTCollection',
-      'exampleNFTCollection'
     )
-    const nftName = 'Test Name';
-    const nftDescription = 'Test Description';
-    const thumbnail = 'https://flow.com/';
-    await mintExampleNFT(Alice, nftName, nftDescription, thumbnail, [], [], []);
 
     await shallRevert(getNFTInAccount(Alice, 'ExampleNFT2', 0));
     await shallRevert(getNFTInAccount(Bob, 'ExampleNFT', 0));

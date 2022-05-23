@@ -4,25 +4,27 @@ import { getAdminAddress } from './common'
 export const deployNFTCatalog = async () => {
   const NFTCatalogAdmin = await getAdminAddress()
   await mintFlow(NFTCatalogAdmin, '10.0')
+  await deployContractByName({ to: NFTCatalogAdmin, name: 'NonFungibleToken' })
+  await deployContractByName({ to: NFTCatalogAdmin, name: 'MetadataViews' })
   await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalog' })
   return deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
 }
 
-export const addToCatalogAdmin = async (nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath) => {
+export const addToCatalogAdmin = async (collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier) => {
   const NFTCatalogAdmin = await getAdminAddress();
   const name = 'add_to_nft_catalog_admin';
 
   const signers = [NFTCatalogAdmin];
-  const args = [nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath];
+  const args = [collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier];
 
   return sendTransaction({ name, args, signers });
 }
 
-export const addToCatalog = async (proxyAccount, nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath) => {
+export const addToCatalog = async (proxyAccount, collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier) => {
   const name = 'add_to_nft_catalog';
 
   const signers = [proxyAccount];
-  const args = [nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath];
+  const args = [collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier];
 
   return sendTransaction({ name, args, signers });
 }
@@ -45,19 +47,19 @@ export const sendAdminProxyCapability = async (ownerAccount) => {
   return sendTransaction({ name, args, signers });
 }
 
-export const proposeNFTToCatalog = async (account, nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath, message) => {
+export const proposeNFTToCatalog = async (account, collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier, message) => {
   const name = 'propose_nft_to_catalog';
-  const args = [nftName, contractName, nftAddressLocation, nftTypeIdentifier, storagePath, publicPath, message];
+  const args = [collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier, message];
   const signers = [account];
 
   return sendTransaction({ name, args, signers });
 }
 
-export const withdrawNFTProposalFromCatalog = async(account, proposalID) => {
+export const withdrawNFTProposalFromCatalog = async (account, proposalID) => {
   const name = 'withdraw_nft_proposal_from_catalog';
   const args = [proposalID];
   const signers = [account];
-  
+
   return sendTransaction({ name, args, signers });
 }
 
@@ -85,9 +87,9 @@ export const removeNFTProposal = async (account, proposalID) => {
   return sendTransaction({ name, args, signers });
 }
 
-export const getNFTMetadataForName = async (nftName) => {
-  const name = 'get_nft_metadata_for_name';
-  const args = [nftName];
+export const getNFTMetadataForCollectionName = async (collectionName) => {
+  const name = 'get_nft_metadata_for_collection_name';
+  const args = [collectionName];
 
   return executeScript({ name, args });
 }
