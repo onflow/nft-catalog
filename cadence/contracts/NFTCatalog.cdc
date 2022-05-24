@@ -46,7 +46,7 @@ pub contract NFTCatalog {
 
   
   access(self) let catalog: {String : NFTCatalog.NFTCatalogMetadata}
-  access(self) let catalogTypeData: {Type : {String : Bool}}
+  access(self) let catalogTypeData: {String : {String : Bool}}
 
   access(self) let catalogProposals : {UInt64 : NFTCatalogProposal}
 
@@ -137,11 +137,11 @@ pub contract NFTCatalog {
     return self.catalog[collectionName]
   }
 
-  pub fun getCollectionsForType(nftType: Type) : {String : Bool}? {
-    return self.catalogTypeData[nftType]
+  pub fun getCollectionsForType(nftTypeIdentifier: String) : {String : Bool}? {
+    return self.catalogTypeData[nftTypeIdentifier]
   }
 
-  pub fun getCatalogTypeData() : {Type : {String : Bool}} {
+  pub fun getCatalogTypeData() : {String : {String : Bool}} {
     return self.catalogTypeData
   }
 
@@ -273,26 +273,26 @@ pub contract NFTCatalog {
   }
 
   access(contract) fun addCatalogTypeEntry(collectionName : String , metadata: NFTCatalogMetadata) {
-    if self.catalogTypeData[metadata.nftType] != nil {
-      let typeData : {String : Bool} = self.catalogTypeData[metadata.nftType]!
-      assert(self.catalogTypeData[metadata.nftType]![collectionName] == nil, message : "The nft name has already been added to the catalog")
+    if self.catalogTypeData[metadata.nftType.identifier] != nil {
+      let typeData : {String : Bool} = self.catalogTypeData[metadata.nftType.identifier]!
+      assert(self.catalogTypeData[metadata.nftType.identifier]![collectionName] == nil, message : "The nft name has already been added to the catalog")
       typeData[collectionName] = true
-      self.catalogTypeData[metadata.nftType]  = typeData
+      self.catalogTypeData[metadata.nftType.identifier]  = typeData
     } else {
       let typeData : {String : Bool} = {}
       typeData[collectionName] = true
-      self.catalogTypeData[metadata.nftType]  = typeData
+      self.catalogTypeData[metadata.nftType.identifier]  = typeData
     }
   }
 
   access(contract) fun removeCatalogTypeEntry(collectionName : String , metadata: NFTCatalogMetadata) {
     let prevMetadata = self.catalog[collectionName]!
-    let prevCollectionsForType = self.catalogTypeData[prevMetadata.nftType]!
+    let prevCollectionsForType = self.catalogTypeData[prevMetadata.nftType.identifier]!
     prevCollectionsForType.remove(key : collectionName)
     if prevCollectionsForType.length == 0 {
-      self.catalogTypeData.remove(key: prevMetadata.nftType)
+      self.catalogTypeData.remove(key: prevMetadata.nftType.identifier)
     } else {
-      self.catalogTypeData[prevMetadata.nftType] = prevCollectionsForType
+      self.catalogTypeData[prevMetadata.nftType.identifier] = prevCollectionsForType
     }
   }
 

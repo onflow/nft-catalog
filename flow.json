@@ -9,7 +9,6 @@
 		"NonFungibleToken": {
 			"source": "./cadence/contracts/NonFungibleToken.cdc",
 			"aliases": {
-				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20",
 				"mainnet": "0x1d7e57aa55817448"
 			}
@@ -17,7 +16,6 @@
 		"MetadataViews": {
 			"source": "./cadence/contracts/MetadataViews.cdc",
 			"aliases": {
-				"emulator": "0xf8d6e0586b0a20c7",
 				"testnet": "0x631e88ae7f1d7c20",
 				"mainnet": "0x1d7e57aa55817448"
 			}
@@ -38,7 +36,10 @@
 				"mainnet": "0x1654653399040a61"
 			}
 		},
-		"ExampleNFT": "./cadence/contracts/ExampleNFT.cdc"
+		"ExampleNFT": "./cadence/contracts/ExampleNFT.cdc",
+		"NFTCatalog": "./cadence/contracts/NFTCatalog.cdc",
+		"NFTCatalogAdmin": "./cadence/contracts/NFTCatalogAdmin.cdc",
+		"NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc"
 	},
 	"networks": {
 		"emulator": "127.0.0.1:3569",
@@ -49,6 +50,10 @@
 		"emulator-account": {
 			"address": "0xf8d6e0586b0a20c7",
 			"key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
+		},
+		"testnet-account": {
+			"address": "0x0cb698d1315f5fa0",
+			"key": "$CATALOG_TESTNET_PRIVATE_KEY"
 		}
 	},
 	"deployments": {
@@ -56,9 +61,18 @@
 			"emulator-account": [
 				"NonFungibleToken",
 				"MetadataViews",
-				"ExampleNFT"
+				"ExampleNFT",
+				"NFTCatalog",
+				"NFTCatalogAdmin",
+				"NFTRetrieval"
+			]
+		},
+		"testnet": {
+			"testnet-account": [
+				"NFTCatalog",
+				"NFTCatalogAdmin",
+				"NFTRetrieval"
 			]
 		}
 	}
 }
- 
