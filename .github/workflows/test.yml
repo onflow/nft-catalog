@@ -4,6 +4,8 @@ on: pull_request
 
 jobs:
   tests:
+    env:
+      CATALOG_TESTNET_PRIVATE_KEY: ${{ secrets.CATALOG_TESTNET_PRIVATE_KEY }}
     runs-on: ubuntu-latest
     steps:
       - name: Install Node
