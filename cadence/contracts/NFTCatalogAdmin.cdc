@@ -1,5 +1,11 @@
 import NFTCatalog from "./NFTCatalog.cdc"
 
+// NFTCatalogAdmin
+//
+// An admin contract that defines an  admin resource and
+// a proxy resource to receive a capability that lets you make changes to the NFT Catalog
+// and manage proposals
+
 pub contract NFTCatalogAdmin {
 
   pub let AdminPrivatePath: PrivatePath
