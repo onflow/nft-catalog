@@ -1,7 +1,19 @@
 import MetadataViews from "./MetadataViews.cdc"
 
+// NFTCatalog
+//
+// A general purpose NFT registry for Flow NonFungibleTokens.
+//
+// Each catalog entry stores data about the NFT including
+// its collection name, nft type, storage and public paths, etc.
+//
+// To make an addition to the catalog you can propose an NFT and provide its metadata.
+// An Admin can approve a proposal which would add the NFT to the catalog
+
 pub contract NFTCatalog {
 
+  // EntryAdded
+  // An NFT collection has been added to the catalog
   pub event EntryAdded(
     collectionName : String, 
     contractName : String, 
@@ -17,6 +29,8 @@ pub contract NFTCatalog {
     externalURL : String
   )
 
+  // EntryUpdated
+  // An NFT Collection has been updated in the catalog
   pub event EntryUpdated(
     collectionName : String, 
     contractName : String, 
@@ -32,12 +46,20 @@ pub contract NFTCatalog {
     externalURL : String
   )
 
+  // EntryRemoved
+  // An NFT Collection has been removed from the catalog
   pub event EntryRemoved(collectionName : String)
 
+  // ProposalEntryAdded
+  // A new proposal to make an addtion to the catalog has been made
   pub event ProposalEntryAdded(proposalID : UInt64, collectionName : String, message: String, status: String, proposer : Address)
   
+  // ProposalEntryUpdated
+  // A proposal has been updated
   pub event ProposalEntryUpdated(proposalID : UInt64, collectionName : String, message: String, status: String, proposer : Address)
   
+  // ProposalEntryRemoved
+  // A proposal has been removed from storage
   pub event ProposalEntryRemoved(proposalID : UInt64)
 
   pub let ProposalManagerStoragePath: StoragePath
@@ -45,10 +67,10 @@ pub contract NFTCatalog {
   pub let ProposalManagerPublicPath: PublicPath
 
   
-  access(self) let catalog: {String : NFTCatalog.NFTCatalogMetadata}
-  access(self) let catalogTypeData: {String : {String : Bool}}
+  access(self) let catalog: {String : NFTCatalog.NFTCatalogMetadata} // { CollectionName -> Metadata }
+  access(self) let catalogTypeData: {String : {String : Bool}} // Additional view to go from { NFT Type Identifier -> CollectionName }
 
-  access(self) let catalogProposals : {UInt64 : NFTCatalogProposal}
+  access(self) let catalogProposals : {UInt64 : NFTCatalogProposal} // { ProposalID : Metadata }
 
   access(self) var totalProposals : UInt64
 
@@ -145,6 +167,11 @@ pub contract NFTCatalog {
     return self.catalogTypeData
   }
 
+  // Propose an NFT collection to the catalog
+  // @param collectionName: The unique name assinged to this nft collection
+  // @param metadata: The Metadata for the NFT collection that will be stored in the catalog
+  // @param message: A message to the catalog owners
+  // @param proposer: Who is making the proposition(the address needs to be verified)
   pub fun proposeNFTMetadata(collectionName : String, metadata : NFTCatalogMetadata, message : String, proposer : Address) : UInt64 {
     pre {
       self.catalog[collectionName] == nil : "The nft name has already been added to the catalog"
@@ -165,6 +192,8 @@ pub contract NFTCatalog {
     return self.totalProposals
   }
 
+  // Withdraw a proposal from the catalog
+  // @param proposalID: The ID of proposal you want to withdraw
   pub fun withdrawNFTProposal(proposalID : UInt64) {
     pre {
       self.catalogProposals[proposalID] != nil : "Invalid Proposal ID"

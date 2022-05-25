@@ -1,6 +1,11 @@
 import MetadataViews from "./MetadataViews.cdc"
 import NFTCatalog from "./NFTCatalog.cdc"
 
+// NFTRetrieval
+//
+// A helper contract to get NFT's in a users account
+// leveraging the NFTCatalog Smart Contract
+
 pub contract NFTRetrieval {
 
   pub struct BaseNFTViewsV1 {
