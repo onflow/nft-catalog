@@ -73,9 +73,9 @@ describe('NFT Retrieval Test Suite', () => {
 
     const [result, error] = await shallResolve(getAllNFTsInAccount(Alice));
     expect(error).toBe(null);
-    expect(result['ExampleNFT'][0].display.name).toBe(nftName);
-    expect(result['ExampleNFT'][0].display.description).toBe(nftDescription);
-    expect(result['ExampleNFT'][0].display.thumbnail.url).toBe(thumbnail);
+    expect(result['ExampleNFT'][0].name).toBe(nftName);
+    expect(result['ExampleNFT'][0].description).toBe(nftDescription);
+    expect(result['ExampleNFT'][0].thumbnail).toBe(thumbnail);
   });
 
   it('should retrieve some NFTs', async () => {
@@ -110,9 +110,9 @@ describe('NFT Retrieval Test Suite', () => {
     )
 
     let [result, error] = await shallResolve(getNFTsInAccount(Alice, ['ExampleNFT']));
-    expect(result['ExampleNFT'][0].display.name).toBe(nftName);
-    expect(result['ExampleNFT'][0].display.description).toBe(nftDescription);
-    expect(result['ExampleNFT'][0].display.thumbnail.url).toBe(thumbnail);
+    expect(result['ExampleNFT'][0].name).toBe(nftName);
+    expect(result['ExampleNFT'][0].description).toBe(nftDescription);
+    expect(result['ExampleNFT'][0].thumbnail).toBe(thumbnail);
     expect(error).toBe(null);
 
     [result, error] = await shallResolve(getNFTsInAccount(Alice, []));
@@ -160,9 +160,9 @@ describe('NFT Retrieval Test Suite', () => {
     await shallRevert(getNFTInAccount(Alice, 'ExampleNFT', 1));
 
     const [result, error] = await shallResolve(getNFTInAccount(Alice, 'ExampleNFT', 0))
-    expect(result.display.name).toBe(nftName);
-    expect(result.display.description).toBe(nftDescription);
-    expect(result.display.thumbnail.url).toBe(thumbnail);
+    expect(result.name).toBe(nftName);
+    expect(result.description).toBe(nftDescription);
+    expect(result.thumbnail).toBe(thumbnail);
     expect(error).toBe(null);
   });
 });

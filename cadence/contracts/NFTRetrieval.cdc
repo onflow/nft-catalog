@@ -12,22 +12,33 @@ pub contract NFTRetrieval {
     pub let id: UInt64
     pub let display: MetadataViews.Display?
     pub let externalURL: MetadataViews.ExternalURL?
+    pub let collectionData: MetadataViews.NFTCollectionData?
+    pub let collectionDisplay: MetadataViews.NFTCollectionDisplay?
 
     init(
       id : UInt64,
       display : MetadataViews.Display?,
-      externalURL : MetadataViews.ExternalURL?
+      externalURL : MetadataViews.ExternalURL?,
+      collectionData : MetadataViews.NFTCollectionData?,
+      collectionDisplay : MetadataViews.NFTCollectionDisplay?
     ) {
       self.id = id
       self.display = display
       self.externalURL = externalURL
+      self.collectionData = collectionData
+      self.collectionDisplay = collectionDisplay
     }
   }
 
   pub fun getRecommendedViewsTypes(version: String) : [Type] {
     switch version {
       case "v1":
-        return [Type<MetadataViews.Display>(), Type<MetadataViews.ExternalURL>()]
+        return [
+            Type<MetadataViews.Display>(), 
+            Type<MetadataViews.ExternalURL>(), 
+            Type<MetadataViews.NFTCollectionData>(), 
+            Type<MetadataViews.NFTCollectionDisplay>()
+        ]
       default:
         panic("Version not supported")
     } 
@@ -64,7 +75,9 @@ pub contract NFTRetrieval {
     return BaseNFTViewsV1(
       id : id,
       display: nftResolver.resolveView(Type<MetadataViews.Display>()) as! MetadataViews.Display?,
-      externalURL : nftResolver.resolveView(Type<MetadataViews.ExternalURL>()) as! MetadataViews.ExternalURL?
+      externalURL : nftResolver.resolveView(Type<MetadataViews.ExternalURL>()) as! MetadataViews.ExternalURL?,
+      collectionData : nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?,
+      collectionDisplay : nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>()) as! MetadataViews.NFTCollectionDisplay?
     )
   }
 
