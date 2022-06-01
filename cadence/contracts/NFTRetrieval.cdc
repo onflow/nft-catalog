@@ -14,19 +14,22 @@ pub contract NFTRetrieval {
     pub let externalURL: MetadataViews.ExternalURL?
     pub let collectionData: MetadataViews.NFTCollectionData?
     pub let collectionDisplay: MetadataViews.NFTCollectionDisplay?
+    pub let royalties: MetadataViews.Royalties?
 
     init(
       id : UInt64,
       display : MetadataViews.Display?,
       externalURL : MetadataViews.ExternalURL?,
       collectionData : MetadataViews.NFTCollectionData?,
-      collectionDisplay : MetadataViews.NFTCollectionDisplay?
+      collectionDisplay : MetadataViews.NFTCollectionDisplay?,
+      royalties : MetadataViews.Royalties?
     ) {
       self.id = id
       self.display = display
       self.externalURL = externalURL
       self.collectionData = collectionData
       self.collectionDisplay = collectionDisplay
+      self.royalties = royalties
     }
   }
 
@@ -37,7 +40,8 @@ pub contract NFTRetrieval {
             Type<MetadataViews.Display>(), 
             Type<MetadataViews.ExternalURL>(), 
             Type<MetadataViews.NFTCollectionData>(), 
-            Type<MetadataViews.NFTCollectionDisplay>()
+            Type<MetadataViews.NFTCollectionDisplay>(),
+            Type<MetadataViews.Royalties>()
         ]
       default:
         panic("Version not supported")
@@ -77,7 +81,8 @@ pub contract NFTRetrieval {
       display: nftResolver.resolveView(Type<MetadataViews.Display>()) as! MetadataViews.Display?,
       externalURL : nftResolver.resolveView(Type<MetadataViews.ExternalURL>()) as! MetadataViews.ExternalURL?,
       collectionData : nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?,
-      collectionDisplay : nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>()) as! MetadataViews.NFTCollectionDisplay?
+      collectionDisplay : nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>()) as! MetadataViews.NFTCollectionDisplay?,
+      royalties : nftResolver.resolveView(Type<MetadataViews.Royalties>()) as! MetadataViews.Royalties?
     )
   }
 

@@ -1,3 +1,4 @@
+import MetadataViews from "../contracts/MetadataViews.cdc"
 import NFTRetrieval from "../contracts/NFTRetrieval.cdc"
 
 pub struct NFT {
@@ -15,6 +16,7 @@ pub struct NFT {
   pub let collectionDescription: String
   pub let collectionSquareImage : String
   pub let collectionBannerImage : String
+  pub let royalties: [MetadataViews.Royalty]
 
   init(
       id: UInt64,
@@ -30,7 +32,8 @@ pub struct NFT {
       collectionName : String,
       collectionDescription : String,
       collectionSquareImage : String,
-      collectionBannerImage : String
+      collectionBannerImage : String,
+      royalties : [MetadataViews.Royalty]
   ) {
     self.id = id
     self.name = name
@@ -46,6 +49,7 @@ pub struct NFT {
     self.collectionDescription = collectionDescription
     self.collectionSquareImage = collectionSquareImage
     self.collectionBannerImage = collectionBannerImage
+    self.royalties = royalties
   }
 }
 
@@ -64,7 +68,8 @@ pub fun main(ownerAddress: Address, collections: [String]) : { String : [NFT] } 
         let externalURLView = nft.externalURL
         let collectionDataView = nft.collectionData
         let collectionDisplayView = nft.collectionDisplay
-        if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil) {
+        let royaltyView = nft.royalties
+        if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
           // Bad NFT. Skipping....
           continue
         }
@@ -85,8 +90,9 @@ pub fun main(ownerAddress: Address, collections: [String]) : { String : [NFT] } 
             collectionDescription : collectionDisplayView!.description,
             collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
             collectionBannerImage : collectionDisplayView!.bannerImage.file.uri(),
-            )
+            royalties : royaltyView!.getRoyalties()
           )
+        )
       }
       
       data[collection] = items
