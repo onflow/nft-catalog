@@ -54,6 +54,10 @@
 		"testnet-account": {
 			"address": "0x0cb698d1315f5fa0",
 			"key": "$CATALOG_TESTNET_PRIVATE_KEY"
+		},
+		"testnet-examplenft-holder-account": {
+			"address": "0x145dd637829f7972",
+			"key": "$EXAMPLENFT_TESTNET_HOLDER_PRIVATE_KEY"
 		}
 	},
 	"deployments": {
