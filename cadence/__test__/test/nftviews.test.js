@@ -67,7 +67,6 @@ describe('NFT Retrieval Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection',
     )
 
@@ -105,7 +104,6 @@ describe('NFT Retrieval Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection',
     )
 
@@ -151,7 +149,6 @@ describe('NFT Retrieval Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection',
     )
 

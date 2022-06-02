@@ -8,7 +8,6 @@ transaction(
   contractAddress: Address,
   nftTypeIdentifer: String,
   addressWithNFT: Address,
-  nftID: UInt64,
   publicPathIdentifier: String
 ) {
   
@@ -21,9 +20,12 @@ transaction(
   execute {
     let nftAccount = getAccount(addressWithNFT)
     let pubPath = PublicPath(identifier: publicPathIdentifier)!
-    let collectionRef = nftAccount.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(pubPath).borrow() ?? panic("Invalid NFT data")
-    let nftResolver = collectionRef.borrowViewResolver(id: nftID)
-
+    let collectionCap = nftAccount.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(pubPath)
+    assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
+    let collectionRef = collectionCap.borrow()!
+    assert(collectionRef.getIDs().length > 0, message: "No NFTs exist in this collection, ensure the provided account has at least 1 NFTs.")
+    let testNftId = collectionRef.getIDs()[0]
+    let nftResolver = collectionRef.borrowViewResolver(id: testNftId)
     
     let metadataCollectionData = nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
     

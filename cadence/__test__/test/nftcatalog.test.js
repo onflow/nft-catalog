@@ -76,7 +76,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection',
     ));
 
@@ -105,7 +104,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection',
     ));
 
@@ -115,7 +113,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection',
     ));
 
@@ -125,7 +122,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection',
     ));
 
@@ -160,7 +156,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection'
     ));
 
@@ -182,7 +177,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection'
     ));
 
@@ -193,7 +187,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection'
     ));
 
@@ -247,7 +240,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection'
     ));
 
@@ -259,7 +251,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection'
     ));
 
@@ -279,7 +270,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       tempNewIdentifer,
       Alice,
-      0,
       'exampleNFTCollection'
     ));
 
@@ -329,7 +319,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
-      0,
       'exampleNFTCollection'
     ));
 
@@ -365,7 +354,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Bob,
-      0,
       'exampleNFTCollection',
       'Please add my NFT to the Catalog'
     ));
@@ -414,7 +402,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Bob,
-      0,
       'exampleNFTCollection',
       'Please add my NFT to the Catalog'
     ));
@@ -461,7 +448,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Bob,
-      0,
       'exampleNFTCollection',
       'Please add my NFT to the Catalog'
     ));
@@ -502,7 +488,6 @@ describe('NFT Catalog Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Bob,
-      0,
       'exampleNFTCollection',
       'Please add my NFT to the Catalog'
     ));
