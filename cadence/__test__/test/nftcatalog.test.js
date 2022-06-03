@@ -376,6 +376,78 @@ describe('NFT Catalog Test Suite', () => {
     expect(error).toBe(null);
   });
 
+  it('should be able to make proposals to update', async () => {
+    await deployNFTCatalog();
+
+    const Alice = await getAccountAddress('Alice');
+
+    await shallResolve(setupNFTCatalogAdminProxy(Alice));
+
+    await shallResolve(sendAdminProxyCapability(Alice));
+
+    let res = await deployExampleNFT();
+    const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
+
+    const Bob = await getAccountAddress('Bob');
+
+    const [nftTypeIdentifier, _] = await getExampleNFTType();
+
+    await setupExampleNFTCollection(Bob);
+    await shallPass(mintExampleNFT(Bob, TEST_NFT_NAME, TEST_NFT_DESCRIPTION, TEST_NFT_THUMBNAIL, [], [], []));
+
+    await shallPass(proposeNFTToCatalog(
+      Bob,
+      nftCreationEvent.data.contract,
+      nftCreationEvent.data.contract,
+      nftCreationEvent.data.address,
+      nftTypeIdentifier,
+      Bob,
+      'exampleNFTCollection',
+      'Please add my NFT to the Catalog'
+    ));
+
+    let [result, error] = await shallResolve(getNFTMetadataForCollectionName('ExampleNFT'));
+    expect(result).toBe(null);
+
+    [result, error] = await shallResolve(getNFTProposalForID(1));
+    expect(result.status).toBe("IN_REVIEW");
+    expect(result.collectionName).toBe(nftCreationEvent.data.contract);
+
+    await shallPass(approveNFTProposal(Alice, 1));
+
+    [result, error] = await shallResolve(getNFTProposalForID(1));
+    expect(result.status).toBe("APPROVED");
+
+    [result, error] = await shallResolve(getNFTMetadataForCollectionName('ExampleNFT'));
+    expect(result).not.toBe(null);
+    expect(result.contractName).toBe(nftCreationEvent.data.contract);
+    expect(error).toBe(null);
+
+    // test updating path
+    await shallPass(proposeNFTToCatalog(
+      Bob,
+      nftCreationEvent.data.contract,
+      nftCreationEvent.data.contract,
+      Bob,
+      nftTypeIdentifier,
+      Bob,
+      'exampleNFTCollection',
+      'Please add my NFT to the Catalog'
+    ));
+
+    [result, error] = await shallResolve(getNFTProposalForID(2));
+    expect(result.status).toBe("IN_REVIEW");
+    expect(result.collectionName).toBe(nftCreationEvent.data.contract);
+
+    await shallPass(approveNFTProposal(Alice, 2));
+
+    [result, error] = await shallResolve(getNFTMetadataForCollectionName('ExampleNFT'));
+    expect(result).not.toBe(null);
+    expect(result.contractName).toBe(nftCreationEvent.data.contract);
+    expect(result.contractAddress).toBe(Bob);
+    expect(error).toBe(null);
+  });
+
   it('should be able to reject proposals', async () => {
     await deployNFTCatalog();
 

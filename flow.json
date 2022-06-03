@@ -73,7 +73,6 @@
 		},
 		"testnet": {
 			"testnet-account": [
-				"ExampleNFT",
 				"NFTCatalog",
 				"NFTCatalogAdmin",
 				"NFTRetrieval"

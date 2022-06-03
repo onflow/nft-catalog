@@ -173,9 +173,6 @@ pub contract NFTCatalog {
   // @param message: A message to the catalog owners
   // @param proposer: Who is making the proposition(the address needs to be verified)
   pub fun proposeNFTMetadata(collectionName : String, metadata : NFTCatalogMetadata, message : String, proposer : Address) : UInt64 {
-    pre {
-      self.catalog[collectionName] == nil : "The nft name has already been added to the catalog"
-    }
     let proposerManagerCap = getAccount(proposer).getCapability<&NFTCatalogProposalManager{NFTCatalog.NFTCatalogProposalManagerPublic}>(NFTCatalog.ProposalManagerPublicPath)
 
     assert(proposerManagerCap.check(), message : "Proposer needs to set up a manager")
