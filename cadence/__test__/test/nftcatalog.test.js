@@ -22,7 +22,9 @@ import {
   withdrawNFTProposalFromCatalog,
   getNFTCollectionsForNFTType,
   removeFromNFTCatalog,
-  updateNFTCatalogEntry
+  updateNFTCatalogEntry,
+  hasAdminProxy,
+  isCatalogAdmin
 } from '../src/nftcatalog';
 import {
   deployExampleNFT,
@@ -290,9 +292,22 @@ describe('NFT Catalog Test Suite', () => {
 
     const Alice = await getAccountAddress('Alice');
 
+    let [result, error] = await shallResolve(isCatalogAdmin(Alice));
+    expect(result).toBe(false);
+    [result, error] = await shallResolve(hasAdminProxy(Alice));
+    expect(result).toBe(false);
+
     await shallResolve(setupNFTCatalogAdminProxy(Alice));
+    [result, error] = await shallResolve(isCatalogAdmin(Alice));
+    expect(result).toBe(false);
+    [result, error] = await shallResolve(hasAdminProxy(Alice));
+    expect(result).toBe(true);
 
     await shallResolve(sendAdminProxyCapability(Alice));
+    [result, error] = await shallResolve(isCatalogAdmin(Alice));
+    expect(result).toBe(true);
+    [result, error] = await shallResolve(hasAdminProxy(Alice));
+    expect(result).toBe(true);
   });
 
   it('non-admin accounts with proxies should be able to add NFT to catalog', async () => {

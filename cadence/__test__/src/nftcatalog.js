@@ -106,6 +106,20 @@ export const removeNFTProposal = async (account, proposalID) => {
   return sendTransaction({ name, args, signers });
 }
 
+export const hasAdminProxy = async (ownerAccount) => {
+  const name = 'has_admin_proxy';
+  const args = [ownerAccount];
+
+  return executeScript({ name, args });
+}
+
+export const isCatalogAdmin = async (ownerAccount) => {
+  const name = 'is_catalog_admin';
+  const args = [ownerAccount];
+
+  return executeScript({ name, args });
+}
+
 export const getNFTMetadataForCollectionName = async (collectionName) => {
   const name = 'get_nft_metadata_for_collection_name';
   const args = [collectionName];

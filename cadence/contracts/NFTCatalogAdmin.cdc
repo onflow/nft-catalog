@@ -66,9 +66,8 @@ pub contract NFTCatalogAdmin {
   }
 
   pub resource interface IAdminProxy {
-		
     pub fun addCapability(capability : Capability<&Admin>)
-
+    pub fun hasCapability() : Bool
 	}
 
   pub resource AdminProxy : IAdminProxy {
@@ -85,6 +84,10 @@ pub contract NFTCatalogAdmin {
 
     pub fun getCapability() : Capability<&Admin>? {
       return self.capability
+    }
+
+    pub fun hasCapability() : Bool {
+      return self.capability != nil
     }
 
     init() {
