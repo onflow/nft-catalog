@@ -2,7 +2,7 @@ import MetadataViews from "../contracts/MetadataViews.cdc"
 import NFTCatalog from "../contracts/NFTCatalog.cdc"
 
 transaction(
-  collectionName : String,
+  collectionIdentifier : String,
   contractName: String,
   contractAddress: Address,
   nftTypeIdentifer: String,
@@ -54,10 +54,10 @@ transaction(
       collectionDisplay : collectionDisplay
     )
 
-    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(name : collectionName)
+    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(identifier : collectionIdentifier)
 
-    NFTCatalog.proposeNFTMetadata(collectionName : collectionName, metadata : catalogData, message: message, proposer: self.nftCatalogProposalResourceRef.owner!.address)
+    NFTCatalog.proposeNFTMetadata(collectionIdentifier : collectionIdentifier, metadata : catalogData, message: message, proposer: self.nftCatalogProposalResourceRef.owner!.address)
 
-    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(name : nil)
+    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(identifier : nil)
   }
 }

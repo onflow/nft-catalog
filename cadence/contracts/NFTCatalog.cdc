@@ -5,7 +5,7 @@ import MetadataViews from "./MetadataViews.cdc"
 // A general purpose NFT registry for Flow NonFungibleTokens.
 //
 // Each catalog entry stores data about the NFT including
-// its collection name, nft type, storage and public paths, etc.
+// its collection identifier, nft type, storage and public paths, etc.
 //
 // To make an addition to the catalog you can propose an NFT and provide its metadata.
 // An Admin can approve a proposal which would add the NFT to the catalog
@@ -15,7 +15,7 @@ pub contract NFTCatalog {
   // EntryAdded
   // An NFT collection has been added to the catalog
   pub event EntryAdded(
-    collectionName : String, 
+    collectionIdentifier : String, 
     contractName : String, 
     contractAddress : Address, 
     nftType : Type, 
@@ -32,7 +32,7 @@ pub contract NFTCatalog {
   // EntryUpdated
   // An NFT Collection has been updated in the catalog
   pub event EntryUpdated(
-    collectionName : String, 
+    collectionIdentifier : String, 
     contractName : String, 
     contractAddress : Address, 
     nftType : Type, 
@@ -48,15 +48,15 @@ pub contract NFTCatalog {
 
   // EntryRemoved
   // An NFT Collection has been removed from the catalog
-  pub event EntryRemoved(collectionName : String)
+  pub event EntryRemoved(collectionIdentifier : String)
 
   // ProposalEntryAdded
   // A new proposal to make an addtion to the catalog has been made
-  pub event ProposalEntryAdded(proposalID : UInt64, collectionName : String, message: String, status: String, proposer : Address)
+  pub event ProposalEntryAdded(proposalID : UInt64, collectionIdentifier : String, message: String, status: String, proposer : Address)
   
   // ProposalEntryUpdated
   // A proposal has been updated
-  pub event ProposalEntryUpdated(proposalID : UInt64, collectionName : String, message: String, status: String, proposer : Address)
+  pub event ProposalEntryUpdated(proposalID : UInt64, collectionIdentifier : String, message: String, status: String, proposer : Address)
   
   // ProposalEntryRemoved
   // A proposal has been removed from storage
@@ -67,8 +67,8 @@ pub contract NFTCatalog {
   pub let ProposalManagerPublicPath: PublicPath
 
   
-  access(self) let catalog: {String : NFTCatalog.NFTCatalogMetadata} // { CollectionName -> Metadata }
-  access(self) let catalogTypeData: {String : {String : Bool}} // Additional view to go from { NFT Type Identifier -> CollectionName }
+  access(self) let catalog: {String : NFTCatalog.NFTCatalogMetadata} // { collectionIdentifier -> Metadata }
+  access(self) let catalogTypeData: {String : {String : Bool}} // Additional view to go from { NFT Type Identifier -> {Collection Identifier : Bool } }
 
   access(self) let catalogProposals : {UInt64 : NFTCatalogProposal} // { ProposalID : Metadata }
 
@@ -84,8 +84,8 @@ pub contract NFTCatalog {
         return self.currentProposalEntry
       }
 
-      pub fun setCurrentProposalEntry(name: String?) {
-        self.currentProposalEntry = name
+      pub fun setCurrentProposalEntry(identifier: String?) {
+        self.currentProposalEntry = identifier
       }
       
       init () {
@@ -134,15 +134,15 @@ pub contract NFTCatalog {
   }
 
   pub struct NFTCatalogProposal {
-    pub let collectionName : String
+    pub let collectionIdentifier : String
     pub let metadata : NFTCatalogMetadata
     pub let message : String
     pub let status : String
     pub let proposer : Address
     pub let createdTime : UFix64
 
-    init(collectionName : String, metadata : NFTCatalogMetadata, message : String, status : String, proposer : Address) {
-      self.collectionName = collectionName
+    init(collectionIdentifier : String, metadata : NFTCatalogMetadata, message : String, status : String, proposer : Address) {
+      self.collectionIdentifier = collectionIdentifier
       self.metadata = metadata
       self.message = message
       self.status = status
@@ -155,8 +155,8 @@ pub contract NFTCatalog {
     return self.catalog
   }
 
-  pub fun getCatalogEntry(collectionName : String) : NFTCatalogMetadata? {
-    return self.catalog[collectionName]
+  pub fun getCatalogEntry(collectionIdentifier : String) : NFTCatalogMetadata? {
+    return self.catalog[collectionIdentifier]
   }
 
   pub fun getCollectionsForType(nftTypeIdentifier: String) : {String : Bool}? {
@@ -168,24 +168,24 @@ pub contract NFTCatalog {
   }
 
   // Propose an NFT collection to the catalog
-  // @param collectionName: The unique name assinged to this nft collection
+  // @param collectionIdentifier: The unique name assinged to this nft collection
   // @param metadata: The Metadata for the NFT collection that will be stored in the catalog
   // @param message: A message to the catalog owners
   // @param proposer: Who is making the proposition(the address needs to be verified)
-  pub fun proposeNFTMetadata(collectionName : String, metadata : NFTCatalogMetadata, message : String, proposer : Address) : UInt64 {
+  pub fun proposeNFTMetadata(collectionIdentifier : String, metadata : NFTCatalogMetadata, message : String, proposer : Address) : UInt64 {
     let proposerManagerCap = getAccount(proposer).getCapability<&NFTCatalogProposalManager{NFTCatalog.NFTCatalogProposalManagerPublic}>(NFTCatalog.ProposalManagerPublicPath)
 
     assert(proposerManagerCap.check(), message : "Proposer needs to set up a manager")
 
     let proposerManagerRef = proposerManagerCap.borrow()!
 
-    assert(proposerManagerRef.getCurrentProposalEntry()! == collectionName, message: "Expected proposal entry does not match entry for the proposer")
+    assert(proposerManagerRef.getCurrentProposalEntry()! == collectionIdentifier, message: "Expected proposal entry does not match entry for the proposer")
     
-    let catalogProposal = NFTCatalogProposal(collectionName : collectionName, metadata : metadata, message : message, status: "IN_REVIEW", proposer: proposer)
+    let catalogProposal = NFTCatalogProposal(collectionIdentifier : collectionIdentifier, metadata : metadata, message : message, status: "IN_REVIEW", proposer: proposer)
     self.totalProposals = self.totalProposals + 1
     self.catalogProposals[self.totalProposals] = catalogProposal
 
-    emit ProposalEntryAdded(proposalID : self.totalProposals, collectionName : collectionName, message: catalogProposal.message, status: catalogProposal.status, proposer: catalogProposal.proposer)
+    emit ProposalEntryAdded(proposalID : self.totalProposals, collectionIdentifier : collectionIdentifier, message: catalogProposal.message, status: catalogProposal.status, proposer: catalogProposal.proposer)
     return self.totalProposals
   }
 
@@ -204,7 +204,7 @@ pub contract NFTCatalog {
 
     let proposerManagerRef = proposerManagerCap.borrow()!
 
-    assert(proposerManagerRef.getCurrentProposalEntry()! == proposal.collectionName, message: "Expected proposal entry does not match entry for the proposer")
+    assert(proposerManagerRef.getCurrentProposalEntry()! == proposal.collectionIdentifier, message: "Expected proposal entry does not match entry for the proposer")
 
     self.removeCatalogProposal(proposalID : proposalID)
   }
@@ -221,17 +221,17 @@ pub contract NFTCatalog {
     return <-create NFTCatalogProposalManager()
   }
 
-  access(account) fun addCatalogEntry(collectionName : String, metadata: NFTCatalogMetadata) {
+  access(account) fun addCatalogEntry(collectionIdentifier : String, metadata: NFTCatalogMetadata) {
     pre {
-      self.catalog[collectionName] == nil : "The nft name has already been added to the catalog"
+      self.catalog[collectionIdentifier] == nil : "The nft name has already been added to the catalog"
     }
 
-    self.addCatalogTypeEntry(collectionName : collectionName , metadata: metadata)
+    self.addCatalogTypeEntry(collectionIdentifier : collectionIdentifier , metadata: metadata)
 
-    self.catalog[collectionName] = metadata
+    self.catalog[collectionIdentifier] = metadata
 
     emit EntryAdded(
-      collectionName : collectionName, 
+      collectionIdentifier : collectionIdentifier, 
       contractName : metadata.contractName, 
       contractAddress : metadata.contractAddress, 
       nftType: metadata.nftType,
@@ -246,21 +246,21 @@ pub contract NFTCatalog {
     )
   }
 
-  access(account) fun updateCatalogEntry(collectionName : String , metadata: NFTCatalogMetadata) {
+  access(account) fun updateCatalogEntry(collectionIdentifier : String , metadata: NFTCatalogMetadata) {
     pre {
-      self.catalog[collectionName] != nil : "Invalid collection name"
+      self.catalog[collectionIdentifier] != nil : "Invalid collection identifier"
     }
     // remove previous nft type entry
-    self.removeCatalogTypeEntry(collectionName : collectionName , metadata: metadata)
+    self.removeCatalogTypeEntry(collectionIdentifier : collectionIdentifier , metadata: metadata)
     // add updated nft type entry
-    self.addCatalogTypeEntry(collectionName : collectionName , metadata: metadata)
+    self.addCatalogTypeEntry(collectionIdentifier : collectionIdentifier , metadata: metadata)
 
-    self.catalog[collectionName] = metadata
+    self.catalog[collectionIdentifier] = metadata
 
     let nftType = metadata.nftType
 
     emit EntryUpdated(
-      collectionName : collectionName, 
+      collectionIdentifier : collectionIdentifier, 
       contractName : metadata.contractName, 
       contractAddress : metadata.contractAddress, 
       nftType: metadata.nftType,
@@ -275,21 +275,21 @@ pub contract NFTCatalog {
     )
   }
 
-  access(account) fun removeCatalogEntry(collectionName : String) {
+  access(account) fun removeCatalogEntry(collectionIdentifier : String) {
     pre {
-      self.catalog[collectionName] != nil : "Invalid collection name"
+      self.catalog[collectionIdentifier] != nil : "Invalid collection identifier"
     }
 
-    self.removeCatalogTypeEntry(collectionName : collectionName , metadata: self.catalog[collectionName]!)
-    self.catalog.remove(key: collectionName)
+    self.removeCatalogTypeEntry(collectionIdentifier : collectionIdentifier , metadata: self.catalog[collectionIdentifier]!)
+    self.catalog.remove(key: collectionIdentifier)
 
-    emit EntryRemoved(collectionName : collectionName)
+    emit EntryRemoved(collectionIdentifier : collectionIdentifier)
   }
 
   access(account) fun updateCatalogProposal(proposalID: UInt64, proposalMetadata : NFTCatalogProposal) {
     self.catalogProposals[proposalID] = proposalMetadata
 
-    emit ProposalEntryUpdated(proposalID : proposalID, collectionName : proposalMetadata.collectionName, message: proposalMetadata.message, status: proposalMetadata.status, proposer: proposalMetadata.proposer)
+    emit ProposalEntryUpdated(proposalID : proposalID, collectionIdentifier : proposalMetadata.collectionIdentifier, message: proposalMetadata.message, status: proposalMetadata.status, proposer: proposalMetadata.proposer)
   }
 
   access(account) fun removeCatalogProposal(proposalID : UInt64) {
@@ -298,23 +298,23 @@ pub contract NFTCatalog {
     emit ProposalEntryRemoved(proposalID : proposalID)
   }
 
-  access(contract) fun addCatalogTypeEntry(collectionName : String , metadata: NFTCatalogMetadata) {
+  access(contract) fun addCatalogTypeEntry(collectionIdentifier : String , metadata: NFTCatalogMetadata) {
     if self.catalogTypeData[metadata.nftType.identifier] != nil {
       let typeData : {String : Bool} = self.catalogTypeData[metadata.nftType.identifier]!
-      assert(self.catalogTypeData[metadata.nftType.identifier]![collectionName] == nil, message : "The nft name has already been added to the catalog")
-      typeData[collectionName] = true
+      assert(self.catalogTypeData[metadata.nftType.identifier]![collectionIdentifier] == nil, message : "The nft name has already been added to the catalog")
+      typeData[collectionIdentifier] = true
       self.catalogTypeData[metadata.nftType.identifier]  = typeData
     } else {
       let typeData : {String : Bool} = {}
-      typeData[collectionName] = true
+      typeData[collectionIdentifier] = true
       self.catalogTypeData[metadata.nftType.identifier]  = typeData
     }
   }
 
-  access(contract) fun removeCatalogTypeEntry(collectionName : String , metadata: NFTCatalogMetadata) {
-    let prevMetadata = self.catalog[collectionName]!
+  access(contract) fun removeCatalogTypeEntry(collectionIdentifier : String , metadata: NFTCatalogMetadata) {
+    let prevMetadata = self.catalog[collectionIdentifier]!
     let prevCollectionsForType = self.catalogTypeData[prevMetadata.nftType.identifier]!
-    prevCollectionsForType.remove(key : collectionName)
+    prevCollectionsForType.remove(key : collectionIdentifier)
     if prevCollectionsForType.length == 0 {
       self.catalogTypeData.remove(key: prevMetadata.nftType.identifier)
     } else {

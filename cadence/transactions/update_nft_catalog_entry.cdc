@@ -3,7 +3,7 @@ import NFTCatalog from "../contracts/NFTCatalog.cdc"
 import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
 
 transaction(
-  collectionName : String,
+  collectionIdentifier : String,
   contractName: String,
   contractAddress: Address,
   nftTypeIdentifer: String,
@@ -46,6 +46,6 @@ transaction(
       collectionDisplay : collectionDisplay
     )
     
-    self.adminProxyResource.getCapability()!.borrow()!.updateCatalogEntry(collectionName : collectionName, metadata : catalogData)
+    self.adminProxyResource.getCapability()!.borrow()!.updateCatalogEntry(collectionIdentifier : collectionIdentifier, metadata : catalogData)
   }
 }

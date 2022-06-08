@@ -14,16 +14,16 @@ export const getAllNFTsInAccount = async (ownerAddress) => {
   return executeScript({ name, args });
 }
 
-export const getNFTsInAccount = async (ownerAddress, collections) => {
+export const getNFTsInAccount = async (ownerAddress, collectionIdentifiers) => {
   const name = 'get_nfts_in_account';
-  const args = [ownerAddress, collections];
+  const args = [ownerAddress, collectionIdentifiers];
 
   return executeScript({ name, args });
 }
 
-export const getNFTInAccount = async (ownerAddress, collection, tokenID) => {
+export const getNFTInAccount = async (ownerAddress, collectionIdentifier, tokenID) => {
   const name = 'get_nft_in_account';
-  const args = [ownerAddress, collection, tokenID];
+  const args = [ownerAddress, collectionIdentifier, tokenID];
 
   return executeScript({ name, args });
 }

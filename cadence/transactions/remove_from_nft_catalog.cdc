@@ -3,7 +3,7 @@ import NFTCatalog from "../contracts/NFTCatalog.cdc"
 import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
 
 transaction(
-  collectionName : String
+  collectionIdentifier : String
 ) {
   let adminProxyResource : &NFTCatalogAdmin.AdminProxy
 
@@ -12,6 +12,6 @@ transaction(
   }
 
   execute {   
-    self.adminProxyResource.getCapability()!.borrow()!.removeCatalogEntry(collectionName : collectionName)
+    self.adminProxyResource.getCapability()!.borrow()!.removeCatalogEntry(collectionIdentifier : collectionIdentifier)
   }
 }

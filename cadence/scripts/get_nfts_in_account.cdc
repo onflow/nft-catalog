@@ -53,14 +53,14 @@ pub struct NFT {
   }
 }
 
-pub fun main(ownerAddress: Address, collections: [String]) : { String : [NFT] }  {
+pub fun main(ownerAddress: Address, collectionIdentifiers: [String]) : { String : [NFT] }  {
   let nftCollections = NFTRetrieval.getNFTs(ownerAddress : ownerAddress)
   
   let data : {String : [NFT] } = {}
 
-  for collection in collections {
-    if nftCollections.containsKey(collection) {
-      let nfts = nftCollections[collection]!
+  for collectionIdentifier in collectionIdentifiers {
+    if nftCollections.containsKey(collectionIdentifier) {
+      let nfts = nftCollections[collectionIdentifier]!
       let items : [NFT] = []
       
       for nft in nfts {
@@ -95,7 +95,7 @@ pub fun main(ownerAddress: Address, collections: [String]) : { String : [NFT] } 
         )
       }
       
-      data[collection] = items
+      data[collectionIdentifier] = items
     }
   }
 

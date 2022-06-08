@@ -12,8 +12,8 @@ transaction(
   execute {
     let proposal = NFTCatalog.getCatalogProposalEntry(proposalID: proposalID)!
     
-    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(name : proposal.collectionName)
+    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(identifier : proposal.collectionIdentifier)
     NFTCatalog.withdrawNFTProposal(proposalID : proposalID)
-    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(name : nil)
+    self.nftCatalogProposalResourceRef.setCurrentProposalEntry(identifier : nil)
   }
 }

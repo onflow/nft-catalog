@@ -3,7 +3,7 @@ import NFTCatalog from "../contracts/NFTCatalog.cdc"
 import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
 
 transaction(
-  collectionName : String,
+  collectionIdentifier : String,
   contractName: String,
   contractAddress: Address,
   nftTypeIdentifer: String,
@@ -47,6 +47,6 @@ transaction(
       collectionDisplay : collectionDisplay
     )
 
-    self.adminResource.addCatalogEntry(collectionName : collectionName, metadata : catalogData)
+    self.adminResource.addCatalogEntry(collectionIdentifier : collectionIdentifier, metadata : catalogData)
   }
 }

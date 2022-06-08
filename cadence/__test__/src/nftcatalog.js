@@ -10,40 +10,40 @@ export const deployNFTCatalog = async () => {
   return deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
 }
 
-export const addToCatalogAdmin = async (collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier) => {
+export const addToCatalogAdmin = async (collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier) => {
   const NFTCatalogAdmin = await getAdminAddress();
   const name = 'add_to_nft_catalog_admin';
 
   const signers = [NFTCatalogAdmin];
-  const args = [collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier];
+  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier];
 
   return sendTransaction({ name, args, signers });
 }
 
-export const addToCatalog = async (proxyAccount, collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier) => {
+export const addToCatalog = async (proxyAccount, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier) => {
   const name = 'add_to_nft_catalog';
 
   const signers = [proxyAccount];
-  const args = [collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier];
+  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier];
 
   return sendTransaction({ name, args, signers });
 }
 
-export const removeFromNFTCatalog = async (proxyAccount, collectionName) => {
+export const removeFromNFTCatalog = async (proxyAccount, collectionIdentifier) => {
   const name = 'remove_from_nft_catalog';
 
   const signers = [proxyAccount];
 
-  const args = [collectionName];
+  const args = [collectionIdentifier];
 
   return sendTransaction({ name, args, signers });
 }
 
-export const updateNFTCatalogEntry = async (proxyAccount, collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier) => {
+export const updateNFTCatalogEntry = async (proxyAccount, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier) => {
   const name = 'update_nft_catalog_entry';
 
   const signers = [proxyAccount];
-  const args = [collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier];
+  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier];
 
   return sendTransaction({ name, args, signers });
 }
@@ -66,9 +66,9 @@ export const sendAdminProxyCapability = async (ownerAccount) => {
   return sendTransaction({ name, args, signers });
 }
 
-export const proposeNFTToCatalog = async (account, collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier, message) => {
+export const proposeNFTToCatalog = async (account, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier, message) => {
   const name = 'propose_nft_to_catalog';
-  const args = [collectionName, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier, message];
+  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier, message];
   const signers = [account];
 
   return sendTransaction({ name, args, signers });
@@ -120,9 +120,9 @@ export const isCatalogAdmin = async (ownerAccount) => {
   return executeScript({ name, args });
 }
 
-export const getNFTMetadataForCollectionName = async (collectionName) => {
-  const name = 'get_nft_metadata_for_collection_name';
-  const args = [collectionName];
+export const getNFTMetadataForCollectionIdentifier = async (collectionIdentifier) => {
+  const name = 'get_nft_metadata_for_collection_identifier';
+  const args = [collectionIdentifier];
 
   return executeScript({ name, args });
 }
