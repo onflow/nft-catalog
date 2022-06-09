@@ -51,13 +51,17 @@
 			"address": "0xf8d6e0586b0a20c7",
 			"key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
 		},
-		"testnet-account": {
-			"address": "0x0cb698d1315f5fa0",
-			"key": "$CATALOG_TESTNET_PRIVATE_KEY"
+		"catalog-testnet-account": {
+			"address": "0x324c34e1c517e4db",
+			"key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
 		},
-		"testnet-examplenft-holder-account": {
-			"address": "0x145dd637829f7972",
-			"key": "$EXAMPLENFT_TESTNET_HOLDER_PRIVATE_KEY"
+		"examplenft-testnet-account": {
+			"address": "0x37d92dad2356b641",
+			"key": "$EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY"
+		},
+		"examplenft-testnet-holder-account": {
+			"address": "0x2aa77a0776d7c209",
+			"key": "$EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY"
 		}
 	},
 	"deployments": {
@@ -72,7 +76,10 @@
 			]
 		},
 		"testnet": {
-			"testnet-account": [
+			"examplenft-testnet-account": [
+				"ExampleNFT"
+			],
+			"catalog-testnet-account": [
 				"NFTCatalog",
 				"NFTCatalogAdmin",
 				"NFTRetrieval"

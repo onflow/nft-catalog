@@ -12,10 +12,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      
-      # TODO: Move this to proper URL once secure cadence is actually released
+          
       - name: Install FLOW CLI
-        run:  sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)" -- v0.33.1-sc-m5
+        run:  sh -ci "$(curl -fsSL https://storage.googleapis.com/flow-cli/install.sh)"
 
       - name: Update PATH
         run: echo "/root/.local/bin" >> $GITHUB_PATH
