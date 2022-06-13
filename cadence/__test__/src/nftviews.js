@@ -28,8 +28,8 @@ export const getNFTInAccount = async (ownerAddress, collectionIdentifier, tokenI
   return executeScript({ name, args });
 }
 
-export const getNFTInAccountFromPath = async (ownerAddress, publicPathIdentifier) => {
-  const name = 'get_nft_in_account_from_path';
+export const getNFTsInAccountFromPath = async (ownerAddress, publicPathIdentifier) => {
+  const name = 'get_nfts_in_account_from_path';
   const args = [ownerAddress, publicPathIdentifier];
 
   return executeScript({ name, args });

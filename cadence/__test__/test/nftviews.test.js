@@ -18,7 +18,7 @@ import {
   mintExampleNFT,
   getExampleNFTType
 } from '../src/examplenft';
-import { getAllNFTsInAccount, getNFTsInAccount, deployNFTRetrieval, getNFTInAccount, getNFTInAccountFromPath } from '../src/nftviews';
+import { getAllNFTsInAccount, getNFTsInAccount, deployNFTRetrieval, getNFTInAccount, getNFTsInAccountFromPath } from '../src/nftviews';
 import { TIMEOUT } from '../src/common';
 
 jest.setTimeout(TIMEOUT);
@@ -67,6 +67,7 @@ describe('NFT Retrieval Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
+      0,
       'exampleNFTCollection',
     )
 
@@ -104,6 +105,7 @@ describe('NFT Retrieval Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
+      0,
       'exampleNFTCollection',
     )
 
@@ -149,6 +151,7 @@ describe('NFT Retrieval Test Suite', () => {
       nftCreationEvent.data.address,
       nftTypeIdentifier,
       Alice,
+      0,
       'exampleNFTCollection',
     )
 
@@ -177,10 +180,10 @@ describe('NFT Retrieval Test Suite', () => {
     const thumbnail = 'https://flow.com/';
     await mintExampleNFT(Alice, nftName, nftDescription, thumbnail, [], [], []);
 
-    const [result, error] = await shallResolve(getNFTInAccountFromPath(Alice, 'exampleNFTCollection'))
-    expect(result.Display.name).toBe(nftName);
-    expect(result.Display.description).toBe(nftDescription);
-    expect(result.Display.thumbnail).toBe(thumbnail);
+    const [result, error] = await shallResolve(getNFTsInAccountFromPath(Alice, 'exampleNFTCollection'))
+    expect(result[0].Display.name).toBe(nftName);
+    expect(result[0].Display.description).toBe(nftDescription);
+    expect(result[0].Display.thumbnail).toBe(thumbnail);
     expect(error).toBe(null);
   });
 });

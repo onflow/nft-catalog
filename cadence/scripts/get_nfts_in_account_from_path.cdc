@@ -114,16 +114,27 @@ pub fun getMapping() : {String : AnyStruct} {
 
 }
 
-pub fun main(ownerAddress: Address, publicPathIdentifier: String): {String : AnyStruct}  {
+pub fun main(ownerAddress: Address, publicPathIdentifier: String): [{String : AnyStruct}]  {
   let owner = getAccount(ownerAddress)
   let collectionCap = owner.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(PublicPath(identifier: publicPathIdentifier)!)
   assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
   let collection = collectionCap.borrow()!
   assert(collection.getIDs().length > 0, message: "No NFTs exist in this collection, ensure the provided account has at least 1 NFTs.")
-  let testNftId = collection.getIDs()[0]
-  let nftResolver = collection.borrowViewResolver(id: testNftId)
+
+  let data : [{String : AnyStruct}] = []
+
+  for nftID in collection.getIDs() {
+    data.append(getNFTData(nftID: nftID, collection: collection))
+  }
+
+  return data
+}
+
+
+pub fun getNFTData(nftID: UInt64, collection: &AnyResource{MetadataViews.ResolverCollection} ): {String : AnyStruct} {
+  let nftResolver = collection.borrowViewResolver(id: nftID)
   let nftViews = NFTRetrieval.BaseNFTViewsV1(
-    id : testNftId,
+    id : nftID,
     display: nftResolver.resolveView(Type<MetadataViews.Display>()) as! MetadataViews.Display?,
     externalURL : nftResolver.resolveView(Type<MetadataViews.ExternalURL>()) as! MetadataViews.ExternalURL?,
     collectionData : nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?,
@@ -182,12 +193,11 @@ pub fun main(ownerAddress: Address, publicPathIdentifier: String): {String : Any
   }
 
   return NFT(
-    id: testNftId,
+    id: nftID,
     display : display,
     externalURL : externalURL,
     nftCollectionData : nftCollectionData,
     nftCollectionDisplay : nftCollectionDisplay,
     royalties : royalties
   ).getMapping()
-
 }

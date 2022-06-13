@@ -10,21 +10,21 @@ export const deployNFTCatalog = async () => {
   return deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
 }
 
-export const addToCatalogAdmin = async (collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier) => {
+export const addToCatalogAdmin = async (collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier) => {
   const NFTCatalogAdmin = await getAdminAddress();
   const name = 'add_to_nft_catalog_admin';
 
   const signers = [NFTCatalogAdmin];
-  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier];
+  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier];
 
   return sendTransaction({ name, args, signers });
 }
 
-export const addToCatalog = async (proxyAccount, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier) => {
+export const addToCatalog = async (proxyAccount, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier) => {
   const name = 'add_to_nft_catalog';
 
   const signers = [proxyAccount];
-  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier];
+  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier];
 
   return sendTransaction({ name, args, signers });
 }
@@ -66,9 +66,9 @@ export const sendAdminProxyCapability = async (ownerAccount) => {
   return sendTransaction({ name, args, signers });
 }
 
-export const proposeNFTToCatalog = async (account, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier, message) => {
+export const proposeNFTToCatalog = async (account, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier, message) => {
   const name = 'propose_nft_to_catalog';
-  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, publicPathIdentifier, message];
+  const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier, message];
   const signers = [account];
 
   return sendTransaction({ name, args, signers });
