@@ -59,6 +59,10 @@ pub contract NFTRetrieval {
         for key in catalog.keys {
             let items : [BaseNFTViewsV1] = []
             let value = catalog[key]!
+
+            // Check if we have multiple collections for the NFT type...
+            let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
+            
             // Get users collection
             let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(value.collectionData.publicPath)
             if collectionCap.check() {
@@ -66,7 +70,12 @@ pub contract NFTRetrieval {
                 for id in collectionRef.getIDs() {
                     let nftResolver = collectionRef.borrowViewResolver(id: id)
                     let nftViews = self.getBasedNFTViewsV1(id: id, nftResolver: nftResolver)
-                    items.append(nftViews)
+                    if !hasMultipleCollections {
+                        items.append(nftViews)
+                    } else if nftViews.display!.name == value.collectionDisplay.name {
+                        items.append(nftViews)
+                    }
+                
                 }
             }
             ownedNFTs[key] = items
@@ -84,6 +93,21 @@ pub contract NFTRetrieval {
             collectionDisplay : nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>()) as! MetadataViews.NFTCollectionDisplay?,
             royalties : nftResolver.resolveView(Type<MetadataViews.Royalties>()) as! MetadataViews.Royalties?
         )
+    }
+
+    access(contract) fun hasMultipleCollections(nftTypeIdentifier : String): Bool {
+        let typeCollections = NFTCatalog.getCollectionsForType(nftTypeIdentifier: nftTypeIdentifier)!
+        var numberOfCollections = 0
+        for identifier in typeCollections.keys {
+            let existence = typeCollections[identifier]!
+            if existence {
+                numberOfCollections = numberOfCollections + 1
+            }
+            if numberOfCollections > 1 {
+                return true
+            }
+        }
+        return false
     }
 
     init() {}

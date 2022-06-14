@@ -312,11 +312,11 @@ pub contract NFTCatalog {
             let typeData : {String : Bool} = self.catalogTypeData[metadata.nftType.identifier]!
             assert(self.catalogTypeData[metadata.nftType.identifier]![collectionIdentifier] == nil, message : "The nft name has already been added to the catalog")
             typeData[collectionIdentifier] = true
-            self.catalogTypeData[metadata.nftType.identifier]    = typeData
+            self.catalogTypeData[metadata.nftType.identifier] = typeData
         } else {
             let typeData : {String : Bool} = {}
             typeData[collectionIdentifier] = true
-            self.catalogTypeData[metadata.nftType.identifier]    = typeData
+            self.catalogTypeData[metadata.nftType.identifier] = typeData
         }
     }
 
