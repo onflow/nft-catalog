@@ -9,7 +9,7 @@ transaction(proxyAddress: Address) {
 
     execute {
         let owner = getAccount(proxyAddress)
-        let proxy = owner.getCapability<&{NFTCatalogAdmin.IAdminProxy}>(NFTCatalogAdmin.AdminProxyPublicPath)
+        let proxy = owner.getCapability<&NFTCatalogAdmin.AdminProxy{NFTCatalogAdmin.IAdminProxy}>(NFTCatalogAdmin.AdminProxyPublicPath)
             .borrow() ?? panic("Could not borrow Admin Proxy")
         
         proxy.addCapability(capability : self.adminCap)
