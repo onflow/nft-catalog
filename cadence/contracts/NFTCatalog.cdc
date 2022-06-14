@@ -72,6 +72,9 @@ pub contract NFTCatalog {
 
     access(self) var totalProposals : UInt64
 
+    // NFTCatalogProposalManager
+    // Used to authenticate proposals made to the catalog
+
     pub resource interface NFTCatalogProposalManagerPublic {
         pub fun getCurrentProposalEntry(): String?
     }
@@ -91,6 +94,10 @@ pub contract NFTCatalog {
             }
     }
 
+    // NFTCollectionData
+    // Represents information about an NFT collection resource
+    // Note: Not suing the struct from Metadata standard due to
+    // inability to store functions
     pub struct NFTCollectionData {
 
         pub let storagePath : StoragePath
@@ -114,7 +121,8 @@ pub contract NFTCatalog {
         }
     }
 
-
+    // NFTCatalogMetadata
+    // Represents data about an NFT
     pub struct NFTCatalogMetadata {
         pub let contractName : String
         pub let contractAddress : Address
@@ -131,6 +139,9 @@ pub contract NFTCatalog {
         }
     }
 
+    // NFTCatalogProposal
+    // Represents a proposal to the catalog
+    // Includes data about an NFT
     pub struct NFTCatalogProposal {
         pub let collectionIdentifier : String
         pub let metadata : NFTCatalogMetadata

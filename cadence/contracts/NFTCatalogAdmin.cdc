@@ -14,6 +14,8 @@ pub contract NFTCatalogAdmin {
     pub let AdminProxyPublicPath: PublicPath
     pub let AdminProxyStoragePath: StoragePath
 
+    // Admin
+    // Admin resource to manage NFT Catalog
     pub resource Admin {
 
         pub fun addCatalogEntry(collectionIdentifier: String, metadata : NFTCatalog.NFTCatalogMetadata) {
@@ -65,6 +67,9 @@ pub contract NFTCatalogAdmin {
 
     }
 
+    // AdminProxy
+    // A proxy resource that can store
+    // a capability to admin controls
     pub resource interface IAdminProxy {
         pub fun addCapability(capability : Capability<&Admin>)
         pub fun hasCapability() : Bool
