@@ -1,22 +1,22 @@
 {
-  "name": "nft-catalog",
-  "version": "0.0.1",
-  "scripts": {
-    "test": "jest --runInBand",
-    "prepare": "mkdir -p lib & node build.js"
-  },
-  "author": "Bilal Shahid",
-  "license": "ISC",
-  "dependencies": {
-    "@onflow/fcl": "^0.0.78"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.17.10",
-    "@babel/preset-env": "^7.17.10",
-    "@onflow/types": "^0.0.6",
-    "babel-jest": "^28.0.3",
-    "flow-js-testing": "^0.2.3-alpha.5",
-    "jest": "^28.0.3",
-    "cadence-to-json": "^1.0.3"
-  }
+    "name": "nft-catalog",
+    "version": "0.0.1",
+    "scripts": {
+        "test": "jest --runInBand",
+        "prepare": "mkdir -p lib & node build.js"
+    },
+    "author": "Bilal Shahid",
+    "license": "ISC",
+    "dependencies": {
+        "@onflow/fcl": "^0.0.78"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.17.10",
+        "@babel/preset-env": "^7.17.10",
+        "@onflow/types": "^0.0.6",
+        "babel-jest": "^28.0.3",
+        "flow-js-testing": "^0.2.3-alpha.5",
+        "jest": "^28.0.3",
+        "cadence-to-json": "^1.0.3"
+    }
 }
