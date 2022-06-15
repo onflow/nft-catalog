@@ -104,6 +104,7 @@ pub struct NFT {
 
 pub fun getMapping() : {String : AnyStruct} {
     return {
+        "Id" : self.id,
         "Display" : self.display,
         "ExternalURL" : self.externalURL,
         "NFTCollectionData" : self.nftCollectionData,
