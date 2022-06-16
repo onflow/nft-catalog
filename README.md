@@ -19,3 +19,17 @@ git clone --depth=1 https://github.com/onflow/nft-catalog.git
 ### 5. Run Test Suite
 
 - Run `npm test` in the root of the project
+
+## License
+
+The works in these files:
+
+- [FungibleToken.cdc](cadence/contracts/FungibleToken.cdc)
+- [NonFungibleToken.cdc](cadence/contracts/NonFungibleToken.cdc)
+- [ExampleNFT.cdc](cadence/contracts/ExampleNFT.cdc)
+- [MetadataViews.cdc](cadence/contracts/MetadataViews.cdc)
+- [NFTCatalog.cdc](cadence/contracts/NFTCatalog.cdc)
+- [NFTCatalogAdmin.cdc](cadence/contracts/NFTCatalogAdmin.cdc)
+- [NFTRetrieval.cdc](cadence/contracts/NFTRetrieval.cdc)
+
+are under the [Unlicense](LICENSE).
