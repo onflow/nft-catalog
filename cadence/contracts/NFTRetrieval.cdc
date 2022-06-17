@@ -87,12 +87,57 @@ pub contract NFTRetrieval {
     access(contract) fun getBasedNFTViewsV1(id : UInt64, nftResolver : &AnyResource{MetadataViews.Resolver}) : BaseNFTViewsV1 {
         return BaseNFTViewsV1(
             id : id,
-            display: nftResolver.resolveView(Type<MetadataViews.Display>()) as! MetadataViews.Display?,
-            externalURL : nftResolver.resolveView(Type<MetadataViews.ExternalURL>()) as! MetadataViews.ExternalURL?,
-            collectionData : nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?,
-            collectionDisplay : nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>()) as! MetadataViews.NFTCollectionDisplay?,
-            royalties : nftResolver.resolveView(Type<MetadataViews.Royalties>()) as! MetadataViews.Royalties?
+            display: self.getDisplay(nftResolver),
+            externalURL : self.getExternalURL(nftResolver),
+            collectionData : self.getNFTCollectionData(nftResolver),
+            collectionDisplay : self.getNFTCollectionDisplay(nftResolver),
+            royalties : self.getRoyalties(nftResolver)
         )
+    }
+
+    access(contract) fun getDisplay(_ viewResolver: &{MetadataViews.Resolver}) : MetadataViews.Display? {
+        if let view = viewResolver.resolveView(Type<MetadataViews.Display>()) {
+            if let v = view as? MetadataViews.Display {
+                return v
+            }
+        }
+        return nil
+    }
+
+    access(contract) fun getExternalURL(_ viewResolver: &{MetadataViews.Resolver}) : MetadataViews.ExternalURL? {
+        if let view = viewResolver.resolveView(Type<MetadataViews.ExternalURL>()) {
+            if let v = view as? MetadataViews.ExternalURL {
+                return v
+            }
+        }
+        return nil
+    }
+
+    access(contract) fun getNFTCollectionData(_ viewResolver: &{MetadataViews.Resolver}) : MetadataViews.NFTCollectionData? {
+        if let view = viewResolver.resolveView(Type<MetadataViews.NFTCollectionData>()) {
+            if let v = view as? MetadataViews.NFTCollectionData {
+                return v
+            }
+        }
+        return nil
+    }
+
+    access(contract) fun getNFTCollectionDisplay(_ viewResolver: &{MetadataViews.Resolver}) : MetadataViews.NFTCollectionDisplay? {
+        if let view = viewResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>()) {
+            if let v = view as? MetadataViews.NFTCollectionDisplay {
+                return v
+            }
+        }
+        return nil
+    }
+
+    pub fun getRoyalties(_ viewResolver: &{MetadataViews.Resolver}) : MetadataViews.Royalties? {
+        if let view = viewResolver.resolveView(Type<MetadataViews.Royalties>()) {
+            if let v = view as? MetadataViews.Royalties {
+                return v
+            }
+        }
+        return nil
     }
 
     access(contract) fun hasMultipleCollections(nftTypeIdentifier : String): Bool {
