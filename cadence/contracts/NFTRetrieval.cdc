@@ -49,7 +49,25 @@ pub contract NFTRetrieval {
         return []
     }
 
-    pub fun getNFTs(ownerAddress : Address) : {String : [BaseNFTViewsV1] } {
+    pub fun getNFTs(ownerAddress : Address, collectionIdentifiers: [String] ) : {String : [BaseNFTViewsV1] } {
+        let catalog = NFTCatalog.getCatalog()
+        
+        let ownedNFTs : { String : [BaseNFTViewsV1] } = {}
+
+        let account = getAccount(ownerAddress)
+
+        for key in catalog.keys {
+            if collectionIdentifiers.contains(key) {
+                let items  = self.getNFTViewsFromCatalog(collectionIdentifier : key, account: account)
+
+                ownedNFTs[key] = items
+            }
+        }
+
+        return ownedNFTs
+    }
+
+    pub fun getAllNFTs(ownerAddress : Address) : {String : [BaseNFTViewsV1] } {
         let catalog = NFTCatalog.getCatalog()
 
         let ownedNFTs : { String : [BaseNFTViewsV1] } = {}
@@ -57,31 +75,39 @@ pub contract NFTRetrieval {
         let account = getAccount(ownerAddress)
         
         for key in catalog.keys {
-            let items : [BaseNFTViewsV1] = []
-            let value = catalog[key]!
+            let items  = self.getNFTViewsFromCatalog(collectionIdentifier : key, account: account)
 
-            // Check if we have multiple collections for the NFT type...
-            let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
-            
-            // Get users collection
-            let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(value.collectionData.publicPath)
-            if collectionCap.check() {
-                let collectionRef = collectionCap.borrow()!
-                for id in collectionRef.getIDs() {
-                    let nftResolver = collectionRef.borrowViewResolver(id: id)
-                    let nftViews = self.getBasedNFTViewsV1(id: id, nftResolver: nftResolver)
-                    if !hasMultipleCollections {
-                        items.append(nftViews)
-                    } else if nftViews.display!.name == value.collectionDisplay.name {
-                        items.append(nftViews)
-                    }
-                
-                }
-            }
             ownedNFTs[key] = items
         }
 
         return ownedNFTs
+    }
+
+    access(contract) fun getNFTViewsFromCatalog(collectionIdentifier : String, account: PublicAccount) : [BaseNFTViewsV1] {
+        let catalog = NFTCatalog.getCatalog()
+        let items : [BaseNFTViewsV1] = []
+        let value = catalog[collectionIdentifier]!
+
+        // Check if we have multiple collections for the NFT type...
+        let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
+        
+        // Get users collection
+        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(value.collectionData.publicPath)
+        if collectionCap.check() {
+            let collectionRef = collectionCap.borrow()!
+            for id in collectionRef.getIDs() {
+                let nftResolver = collectionRef.borrowViewResolver(id: id)
+                let nftViews = self.getBasedNFTViewsV1(id: id, nftResolver: nftResolver)
+                if !hasMultipleCollections {
+                    items.append(nftViews)
+                } else if nftViews.display!.name == value.collectionDisplay.name {
+                    items.append(nftViews)
+                }
+            
+            }
+        }
+
+        return items
     }
 
     pub fun getBasedNFTViewsV1(id : UInt64, nftResolver : &AnyResource{MetadataViews.Resolver}) : BaseNFTViewsV1 {

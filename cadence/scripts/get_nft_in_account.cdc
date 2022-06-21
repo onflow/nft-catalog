@@ -54,7 +54,7 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address, collectionIdentifier : String, tokenID: UInt64) : NFT? {
-        let nftCollections = NFTRetrieval.getNFTs(ownerAddress : ownerAddress)
+        let nftCollections = NFTRetrieval.getNFTs(ownerAddress : ownerAddress, collectionIdentifiers: [collectionIdentifier])
 
         assert(nftCollections.containsKey(collectionIdentifier), message: "Invalid Collection")
         
