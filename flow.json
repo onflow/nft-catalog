@@ -37,6 +37,7 @@
             }
         },
         "ExampleNFT": "./cadence/contracts/ExampleNFT.cdc",
+        "NonStandardNFT": "./cadence/contracts/NonStandardNFT.cdc",
         "NFTCatalog": "./cadence/contracts/NFTCatalog.cdc",
         "NFTCatalogAdmin": "./cadence/contracts/NFTCatalogAdmin.cdc",
         "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc"
@@ -70,6 +71,7 @@
                 "NonFungibleToken",
                 "MetadataViews",
                 "ExampleNFT",
+                "NonStandardNFT",
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
@@ -77,7 +79,8 @@
         },
         "testnet": {
             "examplenft-testnet-account": [
-                "ExampleNFT"
+                "ExampleNFT",
+                "NonStandardNFT"
             ],
             "catalog-testnet-account": [
                 "NFTCatalog",
