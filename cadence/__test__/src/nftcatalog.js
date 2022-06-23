@@ -66,9 +66,9 @@ export const sendAdminProxyCapability = async (ownerAccount) => {
     return sendTransaction({ name, args, signers });
 }
 
-export const proposeNFTToCatalog = async (account, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier, message) => {
+export const proposeNFTToCatalog = async (account, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, storagePathIdentifier, publicPathIdentifier, privatePathIdentifier, publicLinkedTypeIdentifier, publicLinkedTypeRestrictions, privateLinkedTypeIdentifier, privateLinkedTypeRestrictions, collectionName, collectionDescription, externalURL, squareURL, squareMediaType, bannerURL, bannerMediaType, socials, message) => {
     const name = 'propose_nft_to_catalog';
-    const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier, message];
+    const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, storagePathIdentifier, publicPathIdentifier, privatePathIdentifier, publicLinkedTypeIdentifier, publicLinkedTypeRestrictions, privateLinkedTypeIdentifier, privateLinkedTypeRestrictions, collectionName, collectionDescription, externalURL, squareURL, squareMediaType, bannerURL, bannerMediaType, socials, message];
     const signers = [account];
 
     return sendTransaction({ name, args, signers });

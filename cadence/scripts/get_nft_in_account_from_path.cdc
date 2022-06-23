@@ -118,7 +118,7 @@ pub fun getMapping() : {String : AnyStruct} {
 
 }
 
-pub fun main(ownerAddress: Address, storagePathIdentifier: String): [{String : AnyStruct}]    {
+pub fun main(ownerAddress: Address, storagePathIdentifier: String, nftID: UInt64): {String : AnyStruct}    {
     let owner = getAuthAccount(ownerAddress)
     
     let tempPathStr = "getNFTsInAccountFromPathNFTCatalog"
@@ -133,13 +133,7 @@ pub fun main(ownerAddress: Address, storagePathIdentifier: String): [{String : A
     let collection = collectionCap.borrow()!
     assert(collection.getIDs().length > 0, message: "No NFTs exist in this collection, ensure the provided account has at least 1 NFTs.")
 
-    let data : [{String : AnyStruct}] = []
-
-    for nftID in collection.getIDs() {
-        data.append(getNFTData(nftID: nftID, collection: collection))
-    }
-
-    return data
+    return getNFTData(nftID: nftID, collection: collection)
 }
 
 

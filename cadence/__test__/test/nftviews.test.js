@@ -4,7 +4,8 @@ import {
     init,
     shallResolve,
     getAccountAddress,
-    shallRevert
+    shallRevert,
+    shallPass
 } from 'flow-js-testing';
 import {
     deployNFTCatalog,
@@ -18,7 +19,7 @@ import {
     mintExampleNFT,
     getExampleNFTType
 } from '../src/examplenft';
-import { getAllNFTsInAccount, getNFTsInAccount, deployNFTRetrieval, getNFTInAccount, getNFTsInAccountFromPath } from '../src/nftviews';
+import { getAllNFTsInAccount, getNFTsInAccount, deployNFTRetrieval, getNFTInAccount, getNFTsInAccountFromPath, BilalTestScript } from '../src/nftviews';
 import { TIMEOUT } from '../src/common';
 
 jest.setTimeout(TIMEOUT);
@@ -50,7 +51,7 @@ describe('NFT Retrieval Test Suite', () => {
         const Alice = await getAccountAddress('Alice');
         await setupExampleNFTCollection(Alice)
 
-        await deployNFTRetrieval();
+        await shallPass(deployNFTRetrieval());
 
         const [nftTypeIdentifier, _] = await getExampleNFTType();
 
@@ -71,7 +72,7 @@ describe('NFT Retrieval Test Suite', () => {
             'exampleNFTCollection',
         )
 
-        const [result, error] = await shallResolve(getAllNFTsInAccount(Alice));
+        let [result, error] = await shallResolve(getAllNFTsInAccount(Alice));
         expect(error).toBe(null);
         expect(result['ExampleNFT'][0].name).toBe(nftName);
         expect(result['ExampleNFT'][0].description).toBe(nftDescription);
@@ -123,6 +124,7 @@ describe('NFT Retrieval Test Suite', () => {
         expect(Object.keys(result).length).toBe(0);
         expect(error).toBe(null);
     });
+
 
     it('should retrieve specific NFT', async () => {
         await deployNFTCatalog();

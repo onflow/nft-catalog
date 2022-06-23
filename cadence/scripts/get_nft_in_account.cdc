@@ -1,4 +1,5 @@
 import MetadataViews from "../contracts/MetadataViews.cdc"
+import NFTCatalog from "../contracts/NFTCatalog.cdc"
 import NFTRetrieval from "../contracts/NFTRetrieval.cdc"
 
 pub struct NFT {
@@ -54,25 +55,36 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address, collectionIdentifier : String, tokenID: UInt64) : NFT? {
-        let nftCollections = NFTRetrieval.getNFTs(ownerAddress : ownerAddress, collectionIdentifiers: [collectionIdentifier])
+        let catalog = NFTCatalog.getCatalog()
 
-        assert(nftCollections.containsKey(collectionIdentifier), message: "Invalid Collection")
+        assert(catalog.containsKey(collectionIdentifier), message: "Invalid Collection")
         
-        let nfts = nftCollections[collectionIdentifier]!
+        let account = getAuthAccount(ownerAddress)
         
-        for nft in nfts {
-            if nft.id == tokenID {
-                let displayView = nft.display
-                let externalURLView = nft.externalURL
-                let collectionDataView = nft.collectionData
-                let collectionDisplayView = nft.collectionDisplay
-                let royaltyView = nft.royalties
+        let value = catalog[collectionIdentifier]!
+        let tempPathStr = "catalog".concat(collectionIdentifier)
+        let tempPublicPath = PublicPath(identifier: tempPathStr)!
+        account.link<&{MetadataViews.ResolverCollection}>(
+            tempPublicPath,
+            target: value.collectionData.storagePath
+        )
+        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+        assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
+        let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier : collectionIdentifier, collectionCap : collectionCap)
+        
+        for view in views {
+            if view.id == tokenID {
+                let displayView = view.display
+                let externalURLView = view.externalURL
+                let collectionDataView = view.collectionData
+                let collectionDisplayView = view.collectionDisplay
+                let royaltyView = view.royalties
                 if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
                     // Bad NFT. Skipping....
                     return nil
                 }
                 return NFT(
-                    id: nft.id,
+                    id: view.id,
                     name : displayView!.name,
                     description : displayView!.description,
                     thumbnail : displayView!.thumbnail.uri(),

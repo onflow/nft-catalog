@@ -6,9 +6,21 @@ transaction(
     contractName: String,
     contractAddress: Address,
     nftTypeIdentifer: String,
-    addressWithNFT: Address,
-    nftID: UInt64,
+    storagePathIdentifier: String,
     publicPathIdentifier: String,
+    privatePathIdentifier: String,
+    publicLinkedTypeIdentifier : String,
+    publicLinkedTypeRestrictions : [String],
+    privateLinkedTypeIdentifier : String,
+    privateLinkedTypeRestrictions : [String],
+    collectionName : String,
+    collectionDescription: String,
+    externalURL : String,
+    squareImageMediaURL : String,
+    squareImageMediaType : String,
+    bannerImageMediaURL : String,
+    bannerImageMediaType : String,
+    socials: {String : String},
     message: String
 ) {
 
@@ -26,25 +38,42 @@ transaction(
     }
     
     execute {
-        let nftAccount = getAccount(addressWithNFT)
-        let pubPath = PublicPath(identifier: publicPathIdentifier)!
-        let collectionCap = nftAccount.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(pubPath)
-        assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
-        let collectionRef = collectionCap.borrow()!
-        assert(collectionRef.getIDs().length > 0, message: "No NFTs exist in this collection.")
-        let nftResolver = collectionRef.borrowViewResolver(id: nftID)
-        
-        let metadataCollectionData = nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
         
         let collectionData = NFTCatalog.NFTCollectionData(
-            storagePath: metadataCollectionData.storagePath,
-            publicPath: metadataCollectionData.publicPath,
-            privatePath: metadataCollectionData.providerPath,
-            publicLinkedType : metadataCollectionData.publicLinkedType,
-            privateLinkedType : metadataCollectionData.providerLinkedType
+            storagePath: StoragePath(identifier: storagePathIdentifier)!,
+            publicPath: PublicPath(identifier : publicPathIdentifier)!,
+            privatePath: PrivatePath(identifier: privatePathIdentifier)!,
+            publicLinkedType : RestrictedType(identifier : publicLinkedTypeIdentifier, restrictions: publicLinkedTypeRestrictions)!,
+            privateLinkedType : RestrictedType(identifier : privateLinkedTypeIdentifier, restrictions: privateLinkedTypeRestrictions)!
         )
 
-        let collectionDisplay = nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
+        let squareMedia = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                            url: squareImageMediaURL
+                        ),
+                        mediaType: squareImageMediaURL
+                    )
+        
+        let bannerMedia = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                            url: bannerImageMediaURL
+                        ),
+                        mediaType: bannerImageMediaURL
+                    )
+
+        let socialsStruct : {String : MetadataViews.ExternalURL} = {}
+        for key in socials.keys {
+            socialsStruct[key] =  MetadataViews.ExternalURL(socials[key]!)
+        }
+        
+        let collectionDisplay = MetadataViews.NFTCollectionDisplay(
+            name: collectionName,
+            description: collectionDescription,
+            externalURL: MetadataViews.ExternalURL(externalURL),
+            squareImage: squareMedia,
+            bannerImage: bannerMedia,
+            socials: socialsStruct
+        )
 
         let catalogData = NFTCatalog.NFTCatalogMetadata(
             contractName: contractName,

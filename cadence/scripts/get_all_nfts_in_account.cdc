@@ -1,4 +1,5 @@
 import MetadataViews from "../contracts/MetadataViews.cdc"
+import NFTCatalog from "../contracts/NFTCatalog.cdc"
 import NFTRetrieval from "../contracts/NFTRetrieval.cdc"
 
 pub struct NFT {
@@ -54,18 +55,31 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address) : { String : [NFT] } {
-    let nftCollections = NFTRetrieval.getAllNFTs(ownerAddress : ownerAddress)
+    let catalog = NFTCatalog.getCatalog()
+    let account = getAuthAccount(ownerAddress)
+    let items : [NFTRetrieval.BaseNFTViewsV1] = []
+    
     let data : {String : [NFT] } = {}
 
-    for key in nftCollections.keys {
-        let nfts = nftCollections[key]!
+    for key in catalog.keys {
+        let value = catalog[key]!
+        let tempPathStr = "catalog".concat(key)
+        let tempPublicPath = PublicPath(identifier: tempPathStr)!
+        account.link<&{MetadataViews.ResolverCollection}>(
+            tempPublicPath,
+            target: value.collectionData.storagePath
+        )
+        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+        assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
+        let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
+
         let items : [NFT] = []
-        for nft in nfts {
-            let displayView = nft.display
-            let externalURLView = nft.externalURL
-            let collectionDataView = nft.collectionData
-            let collectionDisplayView = nft.collectionDisplay
-            let royaltyView = nft.royalties
+        for view in views {
+            let displayView = view.display
+            let externalURLView = view.externalURL
+            let collectionDataView = view.collectionData
+            let collectionDisplayView = view.collectionDisplay
+            let royaltyView = view.royalties
             if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
                 // Bad NFT. Skipping....
                 continue
@@ -73,7 +87,7 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
 
             items.append(
                 NFT(
-                    id: nft.id,
+                    id: view.id,
                     name : displayView!.name,
                     description : displayView!.description,
                     thumbnail : displayView!.thumbnail.uri(),

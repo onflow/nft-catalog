@@ -32,6 +32,7 @@ import {
     mintExampleNFT,
     setupExampleNFTCollection
 } from '../src/examplenft';
+import { getNFTInAccountFromPath, deployNFTRetrieval } from '../src/nftviews'
 import { TIMEOUT } from '../src/common';
 
 const TEST_NFT_NAME = 'Test Name';
@@ -354,6 +355,7 @@ describe('NFT Catalog Test Suite', () => {
 
     it('should be able to approve proposals', async () => {
         await deployNFTCatalog();
+        await deployNFTRetrieval();
 
         const Alice = await getAccountAddress('Alice');
 
@@ -371,19 +373,11 @@ describe('NFT Catalog Test Suite', () => {
         await setupExampleNFTCollection(Bob);
         await shallPass(mintExampleNFT(Bob, TEST_NFT_NAME, TEST_NFT_DESCRIPTION, TEST_NFT_THUMBNAIL, [], [], []));
 
-        await shallPass(proposeNFTToCatalog(
-            Bob,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.address,
-            nftTypeIdentifier,
-            Bob,
-            0,
-            'exampleNFTCollection',
-            'Please add my NFT to the Catalog'
-        ));
+        let [result, error] = await shallResolve(getNFTInAccountFromPath(Bob, 'exampleNFTCollection', 0));
 
-        let [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
+        await proposeNFTToCatalogWithData(Bob, nftCreationEvent, nftTypeIdentifier, result);
+
+        [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
         expect(result).toBe(null);
 
         [result, error] = await shallResolve(getNFTProposalForID(1));
@@ -401,8 +395,10 @@ describe('NFT Catalog Test Suite', () => {
         expect(error).toBe(null);
     });
 
+
     it('should be able to make proposals to update', async () => {
         await deployNFTCatalog();
+        await deployNFTRetrieval();
 
         const Alice = await getAccountAddress('Alice');
 
@@ -420,19 +416,11 @@ describe('NFT Catalog Test Suite', () => {
         await setupExampleNFTCollection(Bob);
         await shallPass(mintExampleNFT(Bob, TEST_NFT_NAME, TEST_NFT_DESCRIPTION, TEST_NFT_THUMBNAIL, [], [], []));
 
-        await shallPass(proposeNFTToCatalog(
-            Bob,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.address,
-            nftTypeIdentifier,
-            Bob,
-            0,
-            'exampleNFTCollection',
-            'Please add my NFT to the Catalog'
-        ));
+        let [result, error] = await shallResolve(getNFTInAccountFromPath(Bob, 'exampleNFTCollection', 0));
 
-        let [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
+        await proposeNFTToCatalogWithData(Bob, nftCreationEvent, nftTypeIdentifier, result);
+
+        [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
         expect(result).toBe(null);
 
         [result, error] = await shallResolve(getNFTProposalForID(1));
@@ -450,17 +438,9 @@ describe('NFT Catalog Test Suite', () => {
         expect(error).toBe(null);
 
         // test updating path
-        await shallPass(proposeNFTToCatalog(
-            Bob,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.contract,
-            Bob,
-            nftTypeIdentifier,
-            Bob,
-            0,
-            'exampleNFTCollection',
-            'Please add my NFT to the Catalog'
-        ));
+        [result, error] = await shallResolve(getNFTInAccountFromPath(Bob, 'exampleNFTCollection', 0));
+
+        await proposeNFTToCatalogWithData(Bob, nftCreationEvent, nftTypeIdentifier, result);
 
         [result, error] = await shallResolve(getNFTProposalForID(2));
         expect(result.status).toBe("IN_REVIEW");
@@ -471,12 +451,12 @@ describe('NFT Catalog Test Suite', () => {
         [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
         expect(result).not.toBe(null);
         expect(result.contractName).toBe(nftCreationEvent.data.contract);
-        expect(result.contractAddress).toBe(Bob);
         expect(error).toBe(null);
     });
 
     it('should be able to reject proposals', async () => {
         await deployNFTCatalog();
+        await deployNFTRetrieval();
 
         const Alice = await getAccountAddress('Alice');
 
@@ -494,19 +474,11 @@ describe('NFT Catalog Test Suite', () => {
         await setupExampleNFTCollection(Bob);
         await shallPass(mintExampleNFT(Bob, TEST_NFT_NAME, TEST_NFT_DESCRIPTION, TEST_NFT_THUMBNAIL, [], [], []));
 
-        await shallPass(proposeNFTToCatalog(
-            Bob,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.address,
-            nftTypeIdentifier,
-            Bob,
-            0,
-            'exampleNFTCollection',
-            'Please add my NFT to the Catalog'
-        ));
+        let [result, error] = await shallResolve(getNFTInAccountFromPath(Bob, 'exampleNFTCollection', 0));
 
-        let [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
+        await proposeNFTToCatalogWithData(Bob, nftCreationEvent, nftTypeIdentifier, result);
+
+        [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
         expect(result).toBe(null);
 
         [result, error] = await shallResolve(getNFTProposalForID(1));
@@ -524,6 +496,7 @@ describe('NFT Catalog Test Suite', () => {
 
     it('should be able to remove proposals', async () => {
         await deployNFTCatalog();
+        await deployNFTRetrieval();
 
         const Alice = await getAccountAddress('Alice');
 
@@ -541,19 +514,11 @@ describe('NFT Catalog Test Suite', () => {
         await setupExampleNFTCollection(Bob);
         await shallPass(mintExampleNFT(Bob, TEST_NFT_NAME, TEST_NFT_DESCRIPTION, TEST_NFT_THUMBNAIL, [], [], []));
 
-        await shallPass(proposeNFTToCatalog(
-            Bob,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.address,
-            nftTypeIdentifier,
-            Bob,
-            0,
-            'exampleNFTCollection',
-            'Please add my NFT to the Catalog'
-        ));
+        let [result, error] = await shallResolve(getNFTInAccountFromPath(Bob, 'exampleNFTCollection', 0));
 
-        let [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
+        await proposeNFTToCatalogWithData(Bob, nftCreationEvent, nftTypeIdentifier, result);
+
+        [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
         expect(result).toBe(null);
 
         [result, error] = await shallResolve(getNFTProposalForID(1));
@@ -571,6 +536,7 @@ describe('NFT Catalog Test Suite', () => {
 
     it('should be able to withdraw proposals', async () => {
         await deployNFTCatalog();
+        await deployNFTRetrieval();
 
         let res = await deployExampleNFT();
         const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
@@ -582,19 +548,11 @@ describe('NFT Catalog Test Suite', () => {
         await setupExampleNFTCollection(Bob);
         await shallPass(mintExampleNFT(Bob, TEST_NFT_NAME, TEST_NFT_DESCRIPTION, TEST_NFT_THUMBNAIL, [], [], []));
 
-        await shallPass(proposeNFTToCatalog(
-            Bob,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.contract,
-            nftCreationEvent.data.address,
-            nftTypeIdentifier,
-            Bob,
-            0,
-            'exampleNFTCollection',
-            'Please add my NFT to the Catalog'
-        ));
+        let [result, error] = await shallResolve(getNFTInAccountFromPath(Bob, 'exampleNFTCollection', 0));
 
-        let [result, error] = await shallResolve(getNFTProposalForID(1));
+        await proposeNFTToCatalogWithData(Bob, nftCreationEvent, nftTypeIdentifier, result);
+
+        [result, error] = await shallResolve(getNFTProposalForID(1));
         expect(result.status).toBe("IN_REVIEW");
         expect(result.collectionIdentifier).toBe(nftCreationEvent.data.contract);
 
@@ -608,3 +566,42 @@ describe('NFT Catalog Test Suite', () => {
     });
 
 });
+
+const proposeNFTToCatalogWithData = async (account, nftCreationEvent, nftTypeIdentifier, struct) => {
+    let socialsObj = {}
+    for (const key in struct.NFTCollectionDisplay.socials) {
+        socialsObj[key] = struct.NFTCollectionDisplay.socials[key].url
+    }
+    return await shallPass(proposeNFTToCatalog(
+        account,
+        nftCreationEvent.data.contract,
+        nftCreationEvent.data.contract,
+        nftCreationEvent.data.address,
+        nftTypeIdentifier,
+        struct.NFTCollectionData.storagePath.identifier,
+        struct.NFTCollectionData.publicPath.identifier,
+        struct.NFTCollectionData.privatePath.identifier,
+        struct.NFTCollectionData.publicLinkedType.type.type.typeID,
+        buildRestrictions(struct.NFTCollectionData.publicLinkedType.type),
+        struct.NFTCollectionData.privateLinkedType.type.type.typeID,
+        buildRestrictions(struct.NFTCollectionData.privateLinkedType.type),
+        struct.NFTCollectionDisplay.collectionName,
+        struct.NFTCollectionDisplay.collectionDescription,
+        struct.ExternalURL.externalURL,
+        struct.NFTCollectionDisplay.collectionSquareImage.file.url,
+        struct.NFTCollectionDisplay.collectionSquareImage.mediaType,
+        struct.NFTCollectionDisplay.collectionBannerImage.file.url,
+        struct.NFTCollectionDisplay.collectionBannerImage.mediaType,
+        socialsObj,
+        'Please add my NFT to the Catalog',
+
+    ));
+}
+
+const buildRestrictions = (restrictedType) => {
+    let res = []
+    restrictedType.restrictions.forEach(value => {
+        res.push(value.typeID);
+    })
+    return res
+} 
