@@ -63,6 +63,28 @@
         "examplenft-testnet-holder-account": {
             "address": "0x2aa77a0776d7c209",
             "key": "$EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY"
+        },
+        "mainnet-nft-catalog-account": {
+            "address": "0x49a7cda3a1eecc29",
+            "key": {
+                "type": "google-kms",
+                "index": 0,
+                "signatureAlgorithm": "ECDSA_P256",
+                "hashAlgorithm": "SHA2_256",
+                "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog/cryptoKeyVersions/1"
+            },
+            "chain": "flow-mainnet"
+        },
+        "mainnet-nft-catalog-admin-account": {
+            "address": "0xf589fc579a72e43d",
+            "key": {
+                "type": "google-kms",
+                "index": 0,
+                "signatureAlgorithm": "ECDSA_P256",
+                "hashAlgorithm": "SHA2_256",
+                "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog-admin/cryptoKeyVersions/1"
+            },
+            "chain": "flow-mainnet"
         }
     },
     "deployments": {
