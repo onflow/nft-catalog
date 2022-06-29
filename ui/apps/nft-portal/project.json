@@ -6,7 +6,7 @@
     "tailwindcss": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "npx tailwindcss -c apps/nft-portal/tailwind.config.js -i apps/nft-portal/src/styles.css -o apps/nft-portal/src/app/styles/tailwind.css --watch"
+        "command": "npx tailwindcss -c apps/nft-portal/tailwind.config.js -i apps/nft-portal/src/app/styles/styles.css -o apps/nft-portal/src/app/styles/tailwind.css --watch"
       }
     },
     "build": {
