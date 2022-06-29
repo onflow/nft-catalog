@@ -9,10 +9,12 @@ import ContractInputs from './components/verifier';
 import Catalog from './components/catalog';
 import { HeaderLayout } from "./components/home/header-layout";
 import { CardLayout } from "./components/home/card-layout";
-console.log('app is')
+import { Navbar } from "./components/shared/navbar";
+
 export function App() {
   return (
     <>
+      <Navbar />
       <div className="min-h-screen">
         <div className="pb-16">
           <Routes>

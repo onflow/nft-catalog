@@ -5,7 +5,9 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx test"
+    "test": "nx test",
+    "tailwind2": "nx run nft-portal:tailwindcss",
+    "tailwind": "npx tailwindcss -i ./apps/nft-portal/src/styles.css -o ./apps/nft-portal/src/app/styles/tailwind.css --watch "
   },
   "private": true,
   "dependencies": {
@@ -27,6 +29,10 @@
     "@nrwl/react": "14.3.6",
     "@nrwl/web": "14.3.6",
     "@nrwl/workspace": "14.3.6",
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.5.2",
+    "@tailwindcss/line-clamp": "^0.4.0",
+    "@tailwindcss/typography": "^0.5.2",
     "@testing-library/react": "13.3.0",
     "@types/jest": "27.4.1",
     "@types/node": "16.11.7",

@@ -1,9 +1,7 @@
-console.log('main');
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './app/styles/tailwind.css';
-import './styles.css';
 
 import App from './app/app';
 
