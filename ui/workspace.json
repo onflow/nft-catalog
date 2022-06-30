@@ -1,0 +1,8 @@
+{
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
+  "version": 2,
+  "projects": {
+    "nft-portal": "apps/nft-portal",
+    "nft-portal-e2e": "apps/nft-portal-e2e"
+  }
+}

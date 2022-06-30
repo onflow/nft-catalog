@@ -1,0 +1,11 @@
+@tailwind components;
+@tailwind base;
+@tailwind utilities;
+
+.internal-landing-card-green-bg {
+  background: linear-gradient(85.22deg,
+      #00ef8b -26.3%,
+      rgba(0, 239, 139, 0.566845) 24.91%,
+      rgba(0, 239, 139, 0.566845) 24.92%,
+      rgba(193, 240, 220, 0) 91.91%);
+}

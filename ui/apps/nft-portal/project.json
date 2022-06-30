@@ -1,0 +1,89 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/nft-portal/src",
+  "projectType": "application",
+  "targets": {
+    "tailwindcss": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "npx tailwindcss -c apps/nft-portal/tailwind.config.js -i apps/nft-portal/src/app/styles/styles.css -o apps/nft-portal/src/app/styles/tailwind.css --watch"
+      }
+    },
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/nft-portal",
+        "index": "apps/nft-portal/src/index.html",
+        "baseHref": "/",
+        "main": "apps/nft-portal/src/main.tsx",
+        "polyfills": "apps/nft-portal/src/polyfills.ts",
+        "tsConfig": "apps/nft-portal/tsconfig.app.json",
+        "assets": [
+          "apps/nft-portal/src/favicon.ico",
+          "apps/nft-portal/src/assets"
+        ],
+        "styles": ["apps/nft-portal/src/styles.css"],
+        "scripts": [],
+        "webpackConfig": "@nrwl/react/plugins/webpack"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/nft-portal/src/environments/environment.ts",
+              "with": "apps/nft-portal/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "nft-portal:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "nft-portal:build:development"
+        },
+        "production": {
+          "buildTarget": "nft-portal:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/nft-portal/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/nft-portal"],
+      "options": {
+        "jestConfig": "apps/nft-portal/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
