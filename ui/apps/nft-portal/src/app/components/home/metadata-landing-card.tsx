@@ -2,7 +2,7 @@ import { LandingLinkCard } from "./landing-link-card"
 
 export function MetadataLandingCard({
 }: {}) {
-  const classes = "flex flex-col items-start px-4 py-6 rounded-lg bg-primary-gray-100/30 md:flex-row md:px-20 md:py-12 border-2"
+  const classes = "flex flex-col items-start px-4 py-6 rounded-lg bg-primary-gray-100/30 md:flex-row md:px-20 md:py-12 border-2 bg-gradient-home-br"
   return (
     <div className="container">
       <div className={classes}>

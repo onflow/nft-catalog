@@ -10,6 +10,9 @@ import Catalog from './components/catalog';
 import { HeaderLayout } from "./components/home/header-layout";
 import { CardLayout } from "./components/home/card-layout";
 import { Navbar } from "./components/shared/navbar";
+import { Footer } from "./components/shared/footer";
+import { Terms } from "./components/terms/terms";
+import { Privacy } from "./components/privacy/privacy";
 
 export function App() {
   return (
@@ -43,9 +46,12 @@ export function App() {
               <Route path=":network/" element={<Catalog type="Catalog"></Catalog>} />
               <Route path=":network/:identifier" element={<Catalog type="Catalog"></Catalog>} />
             </Route>
+            <Route path="terms" element={<Terms />} />
+            <Route path="privacy" element={<Privacy />} />
           </Routes>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
