@@ -10,6 +10,7 @@ import Catalog from './components/catalog';
 import { HeaderLayout } from "./components/home/header-layout";
 import { CardLayout } from "./components/home/card-layout";
 import { Navbar } from "./components/shared/navbar";
+import { Footer } from "./components/shared/footer";
 
 export function App() {
   return (
@@ -46,6 +47,7 @@ export function App() {
           </Routes>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

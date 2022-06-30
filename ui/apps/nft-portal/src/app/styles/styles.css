@@ -14,6 +14,11 @@
   background-image: url(../../assets/home.svg);
 }
 
+.bg-gradient-home-br {
+  background-image: url(../../assets/home.svg);
+  background-position: right bottom;
+}
+
 @font-face {
   font-family: 'Acumin Pro';
   src: local('Acumin Pro'),
