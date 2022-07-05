@@ -109,6 +109,13 @@
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
             ]
+        },
+        "mainnet": {
+            "mainnet-nft-catalog-account": [
+                "NFTCatalog",
+                "NFTCatalogAdmin",
+                "NFTRetrieval"
+            ]
         }
     }
 }
