@@ -26,11 +26,16 @@ export default function Layout({
 
   return (
     <div className="mx-auto px-0 md:px-4 lg:px-32 pt-4">
-      <div className="text-h1 p-2 max-w-full overflow-hidden text-ellipsis !text-2xl md:!text-4xl sm:border-0 md:border-b-2">
+      <div className="text-h1 p-2 max-w-full overflow-hidden text-ellipsis !text-2xl md:!text-4xl sm:border-0">
         {type === 'Proposals' ? 'NFT Catalog Proposals' : 'NFT Catalog'}
       </div>
+      <div className="text-xs px-2">
+        Looking to add your collection to the catalog?
+        <br />
+        Complete the steps <a className="cursor-pointer text-blue-600 hover:underline" href="/v">here</a>
+      </div>
       <div
-        className="flex w-full h-full items-center text-center bg-white rounded-2xl dark:bg-primary-dark-gray sm:flex-col md:flex-row"
+        className="flex w-full h-full items-center text-center bg-white rounded-2xl sm:flex-col md:flex-row"
       >
         <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen">
           <div className="flex-col">
