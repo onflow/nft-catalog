@@ -157,7 +157,7 @@ export function SampleNFTView({
       {
         !error && uniqueCollections &&
         <>
-          We found NFTs from with different collection names within the selected account. Which collection would you like to continue with?
+          We found NFTs with varying collection names within the selected account. Which collection would you like to continue with?
           <div>
             <br />
             {

@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "test": "jest --runInBand",
-        "prepare": "mkdir -p lib & node build.js"
+        "prepare": "mkdir -p lib & node build.js && cp lib/CadenceToJson.json ui/apps/nft-portal/src/flow/catalog_c2j.json"
     },
     "author": "Bilal Shahid",
     "license": "ISC",

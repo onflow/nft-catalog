@@ -7,6 +7,27 @@ const footerSections = [
     header: "",
     links: [
       {
+        link: "/",
+        text: "Home",
+      },
+      {
+        link: "/catalog",
+        text: "Catalog",
+      },
+      {
+        link: "/v",
+        text: "Metadata Verifier",
+      },
+      {
+        link: "/proposals",
+        text: "Catalog Proposals",
+      },
+    ],
+  },
+  {
+    header: "",
+    links: [
+      {
         link: "/terms",
         text: "Terms of Use",
       },
