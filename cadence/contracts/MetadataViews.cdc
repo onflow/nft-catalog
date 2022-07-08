@@ -33,6 +33,39 @@ pub contract MetadataViews {
         pub fun getIDs(): [UInt64]
     }
 
+    /// NFTView is a group of views used to give a complete picture of an NFT
+    ///
+    pub struct NFTView {
+        pub let id: UInt64
+        pub let uuid: UInt64
+        pub let display: Display?
+        pub let externalURL: ExternalURL?
+        pub let collectionData: NFTCollectionData?
+        pub let collectionDisplay: NFTCollectionDisplay?
+        pub let royalties: Royalties?
+        pub let traits: Traits?
+
+        init(
+            id : UInt64,
+            uuid : UInt64,
+            display : Display?,
+            externalURL : ExternalURL?,
+            collectionData : NFTCollectionData?,
+            collectionDisplay : NFTCollectionDisplay?,
+            royalties : Royalties?,
+            traits: Traits?
+        ) {
+            self.id = id
+            self.uuid = uuid
+            self.display = display
+            self.externalURL = externalURL
+            self.collectionData = collectionData
+            self.collectionDisplay = collectionDisplay
+            self.royalties = royalties
+            self.traits = traits
+        }
+    }
+
     /// Display is a basic view that includes the name, description and
     /// thumbnail for an object. Most objects should implement this view.
     ///
@@ -68,6 +101,16 @@ pub contract MetadataViews {
             self.description = description
             self.thumbnail = thumbnail
         }
+    }
+
+    /// A helper to get Display in a typesafe way
+    pub fun getDisplay(_ viewResolver: &{Resolver}) : Display? {
+        if let view = viewResolver.resolveView(Type<Display>()) {
+            if let v = view as? Display {
+                return v
+            }
+        }
+        return nil
     }
 
     /// File is a generic interface that represents a file stored on or off chain.
@@ -151,6 +194,16 @@ pub contract MetadataViews {
         }
     }
 
+    /// A helper to get Editions in a typesafe way
+    pub fun getEditions(_ viewResolver: &{Resolver}) : Editions? {
+        if let view = viewResolver.resolveView(Type<Editions>()) {
+            if let v = view as? Editions {
+                return v
+            }
+        }
+        return nil
+    }
+
     /// Edition information for a single edition
     pub struct Edition {
 
@@ -183,6 +236,7 @@ pub contract MetadataViews {
         }
     }
 
+
     /// A view representing a project-defined serial number for a specific NFT
     /// Projects have different definitions for what a serial number should be
     /// Some may use the NFTs regular ID and some may use a different classification system
@@ -194,6 +248,16 @@ pub contract MetadataViews {
         init(_ number: UInt64) {
             self.number = number
         }
+    }
+
+    /// A helper to get Serial in a typesafe way
+    pub fun getSerial(_ viewResolver: &{Resolver}) : Serial? {
+        if let view = viewResolver.resolveView(Type<Serial>()) {
+            if let v = view as? Serial {
+                return v
+            }
+        }
+        return nil
     }
 
     /*
@@ -225,6 +289,16 @@ pub contract MetadataViews {
         pub fun getRoyalties(): [Royalty] {
             return self.cutInfos
         }
+    }
+
+    /// A helper to get Royalties in a typesafe way
+    pub fun getRoyalties(_ viewResolver: &{Resolver}) : Royalties? {
+        if let view = viewResolver.resolveView(Type<Royalties>()) {
+            if let v = view as? Royalties {
+                return v
+            }
+        }
+        return nil
     }
 
     /// Struct to store details of a single royalty cut for a given NFT
@@ -280,9 +354,19 @@ pub contract MetadataViews {
         }
     }
 
+    /// A helper to get Medias in a typesafe way
+    pub fun getMedias(_ viewResolver: &{Resolver}) : Medias? {
+        if let view = viewResolver.resolveView(Type<Medias>()) {
+            if let v = view as? Medias {
+                return v
+            }
+        }
+        return nil
+    }
+
     /// A view to represent Media, a file with an correspoiding mediaType.
     pub struct Media {
-        
+
         /// File for the media
         pub let file: AnyStruct{File}
 
@@ -306,6 +390,17 @@ pub contract MetadataViews {
         }
     }
 
+    /// A helper to get License in a typesafe way
+    pub fun getLicense(_ viewResolver: &{Resolver}) : License? {
+        if let view = viewResolver.resolveView(Type<License>()) {
+            if let v = view as? License {
+                return v
+            }
+        }
+        return nil
+    }
+
+
     /// A view to expose a URL to this item on an external site.
     ///
     /// This can be used by applications like .find and Blocto to direct users to the original link for an NFT.
@@ -315,6 +410,16 @@ pub contract MetadataViews {
         init(_ url: String) {
             self.url=url
         }
+    }
+
+    /// A helper to get ExternalURL in a typesafe way
+    pub fun getExternalURL(_ viewResolver: &{Resolver}) : ExternalURL? {
+        if let view = viewResolver.resolveView(Type<ExternalURL>()) {
+            if let v = view as? ExternalURL {
+                return v
+            }
+        }
+        return nil
     }
 
     // A view to expose the information needed store and retrieve an NFT
@@ -375,6 +480,16 @@ pub contract MetadataViews {
         }
     }
 
+    /// A helper to get NFTCollectionData in a way that will return an typed Optional
+    pub fun getNFTCollectionData(_ viewResolver: &{Resolver}) : NFTCollectionData? {
+        if let view = viewResolver.resolveView(Type<NFTCollectionData>()) {
+            if let v = view as? NFTCollectionData {
+                return v
+            }
+        }
+        return nil
+    }
+
     // A view to expose the information needed to showcase this NFT's collection
     //
     // This can be used by applications to give an overview and graphics of the NFT collection
@@ -415,4 +530,139 @@ pub contract MetadataViews {
             self.socials = socials
         }
     }
+
+    /// A helper to get NFTCollectionDisplay in a way that will return an typed Optional
+    pub fun getNFTCollectionDisplay(_ viewResolver: &{Resolver}) : NFTCollectionDisplay? {
+        if let view = viewResolver.resolveView(Type<NFTCollectionDisplay>()) {
+            if let v = view as? NFTCollectionDisplay {
+                return v
+            }
+        }
+        return nil
+    }
+
+    // A view to represent a single field of metadata on an NFT.
+    //
+    // This is used to get traits of individual key/value pairs along with some contextualized data about the trait
+    pub struct Trait {
+        // The name of the trait. Like Background, Eyes, Hair, etc.
+        pub let name: String
+
+        // The underlying value of the trait, the rest of the fields of a trait provide context to the value.
+        pub let value: AnyStruct
+
+        // displayType is used to show some context about what this name and value represent
+        // for instance, you could set value to a unix timestamp, and specify displayType as "Date" to tell
+        // platforms to consume this trait as a date and not a number
+        pub let displayType: String?
+
+        // Rarity can also be used directly on an attribute.
+        //
+        // This is optional because not all attributes need to contribute to the NFT's rarity.
+        pub let rarity: Rarity?
+
+        init(name: String, value: AnyStruct, displayType: String?, rarity: Rarity?) {
+            self.name = name
+            self.value = value
+            self.displayType = displayType
+            self.rarity = rarity
+        }
+    }
+
+    // A view to return all the traits on an NFT.
+    //
+    // This is used to return traits as individual key/value pairs along with some contextualized data about each trait.
+    pub struct Traits {
+        pub let traits: [Trait]
+
+        init(_ traits: [Trait]) {
+            self.traits = traits
+        }
+
+        pub fun addTrait(_ t: Trait) {
+            self.traits.append(t)
+        }
+    }
+
+    /// A helper to get Traits view in a typesafe way
+    pub fun getTraits(_ viewResolver: &{Resolver}) : Traits? {
+        if let view = viewResolver.resolveView(Type<Traits>()) {
+            if let v = view as? Traits {
+                return v
+            }
+        }
+        return nil
+    }
+
+    // A helper function to easily convert a dictionary to traits. For NFT collections that do not need either of the
+    // optional values of a Trait, this method should suffice to give them an array of valid traits.
+    pub fun dictToTraits(dict: {String: AnyStruct}, excludedNames: [String]?): Traits {
+        // Collection owners might not want all the fields in their metadata included.
+        // They might want to handle some specially, or they might just not want them included at all.
+        if excludedNames != nil {
+            for k in excludedNames! {
+                dict.remove(key: k)
+            }
+        }
+
+        let traits: [Trait] = []
+        for k in dict.keys {
+            let trait = Trait(name: k, value: dict[k]!, displayType: nil, rarity: nil)
+            traits.append(trait)
+        }
+
+        return Traits(traits)
+    }
+
+    /// Rarity information for a single rarity
+    //
+    /// Note that a rarity needs to have either score or description but it can have both
+    pub struct Rarity {
+        /// The score of the rarity as a number
+        ///
+        pub let score: UFix64?
+
+        /// The maximum value of score
+        ///
+        pub let max: UFix64?
+
+        /// The description of the rarity as a string.
+        ///
+        /// This could be Legendary, Epic, Rare, Uncommon, Common or any other string value
+        pub let description: String?
+
+        init(score: UFix64?, max: UFix64?, description: String?) {
+            if score == nil && description == nil {
+                panic("A Rarity needs to set score, description or both")
+            }
+
+            self.score = score
+            self.max = max
+            self.description = description
+        }
+    }
+
+    /// A helper to get Rarity view in a typesafe way
+    pub fun getRarity(_ viewResolver: &{Resolver}) : Rarity? {
+        if let view = viewResolver.resolveView(Type<Rarity>()) {
+            if let v = view as? Rarity {
+                return v
+            }
+        }
+        return nil
+    }
+
+    pub fun getNFTView(id: UInt64, viewResolver: &{Resolver}) : NFTView {
+        return NFTView(
+            id : id,
+            uuid: viewResolver.uuid,
+            display: self.getDisplay(viewResolver),
+            externalURL : self.getExternalURL(viewResolver),
+            collectionData : self.getNFTCollectionData(viewResolver),
+            collectionDisplay : self.getNFTCollectionDisplay(viewResolver),
+            royalties : self.getRoyalties(viewResolver),
+            traits : self.getTraits(viewResolver)
+        )
+    }
+
 }
