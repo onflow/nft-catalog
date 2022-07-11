@@ -1,6 +1,322 @@
 # NFT Catalog
 
-The NFT catalog is a general-purpose Cadence Flow NFT registry.
+The NFT Catalog is an on chain registry listing NFT collections that exists on Flow which adhere to the NFT metadata standard. This empowers dApp developers to easily support and discover interoperable NFT collections on Flow.
+
+## Live Site
+
+Checkout the catalog [site](https://nft-catalog.vercel.app/) to submit your NFT collection both on testnet and mainnet.
+
+## Contract Addresses
+
+`NFTCatalog.cdc`: This contract contains the NFT Catalog
+
+| Network | Address |
+| --- | --- |
+| Mainnet | 0x49a7cda3a1eecc29 |
+| Testnet | 0x324c34e1c517e4db |
+
+`NFTRetrieval.cdc`: This contract contains helper functions to make it easier to discover NFTs within accounts and from the catalog
+
+| Network | Address |
+| --- | --- |
+| Mainnet | 0x49a7cda3a1eecc29 |
+| Testnet | 0x324c34e1c517e4db |
+
+## Submitting a Collection to the NFT Catalog
+
+1. Visit [here](https://nft-catalog.vercel.app/v)
+2. Enter the address containing the NFT contract which contains the collection and select the contract
+    
+    ![Verifier Step 1](https://user-images.githubusercontent.com/1332984/178290984-570dc87b-c2b7-4036-b0ba-0588ed2bfc96.png)
+    
+3. Enter the storage path where the NFTs are stored and enter an address that holds a sample NFT or log in if you have access to an account that owns the NFT
+    
+    ![Verifier Step 2](https://user-images.githubusercontent.com/1332984/178290983-9509cad1-ae53-4ecf-bbb6-e9cb5adb5945.png)
+    
+4. The application will verify that your NFT collection implements the required Metadata views.
+    1. The required metadata views include…
+        1. NFT Display
+            1. How to display an individual NFT part of the collection
+        2. External URL
+            1. A website for the NFT collection
+        3. Collection Data
+            1. Information needed to store and retrieve an NFT
+        4. Collection Display
+            1. How to display information about the NFT collection the NFT belongs to
+        5. Royalties
+            1. Any royalties that should be accounted for during marketplace transactions
+    2. You can find sample implementations of all these views in this example NFT [contract](https://github.com/onflow/flow-nft/blob/master/contracts/ExampleNFT.cdc).
+    3. If you are not implementing a view, the app will communicate this and you can update your NFT contract and try resubmitting.
+        
+        ![Verifier Step 3](https://user-images.githubusercontent.com/1332984/178290981-90442443-5038-4feb-8721-7858cbfeef84.png)
+        
+5. Submit proposal transaction to the NFT catalog by entering a unique url safe identifier for the collection and a message including any additional context (like contact information).
+    
+    ![Verifier Step 4](https://user-images.githubusercontent.com/1332984/178290980-8168b66a-d575-4c90-b6a5-7d19f36ff567.png)
+    
+6. Once submitted you can view all proposals [here](https://nft-catalog.vercel.app/proposals/mainnet) to track the review of your NFT.
+
+If you would like to make a proposal manually, you may submit the following transaction with all parameters filled in: [https://github.com/dapperlabs/nft-catalog/blob/main/cadence/transactions/propose_nft_to_catalog.cdc](https://github.com/dapperlabs/nft-catalog/blob/main/cadence/transactions/propose_nft_to_catalog.cdc)
+
+Proposals should be reviewed and approved within a few days.  Reasons for a proposal being rejected may include:
+
+- Providing duplicate path or name information of an existing collection on the catalog
+- Providing a not url safe or inaccurate name as the identifier
+
+
+
+## Using the Catalog (For marketplaces and other NFT applications)
+
+All of the below examples use the catalog in mainnet, you may replace the imports to the testnet address when using the testnet network.
+
+**Example 1 - Retrieve all NFT collections on the catalog**
+
+```swift
+import NFTCatalog from 0x49a7cda3a1eecc29
+
+/*
+	The catalog is returned as a `String: NFTCatalogMetadata`
+	The key string is intended to be a unique identifier for a specific collection.
+	The NFTCatalogMetadata contains collection-level views corresponding to each
+	collection identifier.
+*/
+pub fun main(): {String : NFTCatalog.NFTCatalogMetadata} {
+    return NFTCatalog.getCatalog()
+
+}
+```
+
+**Example 2 - Retrieve all collection names in the catalog**
+
+```swift
+import NFTCatalog from 0x49a7cda3a1eecc29
+
+pub fun main(): [String] {
+		let catalog: {String : NFTCatalog.NFTCatalogMetadata} = NFTCatalog.getCatalog()
+		let catalogNames: [String] = []
+		for collectionIdentifier in catalog.keys {
+			catalogNames.append(catalog[collectionIdentifier]!.collectionDisplay.name)
+    }
+    return catalogNames
+}
+```
+
+**Example 3 - Retrieve all NFTs including metadata owned by an account**
+
+```swift
+import MetadataViews from 0x1d7e57aa55817448
+import NFTCatalog from 0x49a7cda3a1eecc29
+import NFTRetrieval from 0x49a7cda3a1eecc29
+
+pub struct NFT {
+    pub let id : UInt64
+    pub let name : String
+    pub let description : String
+    pub let thumbnail : String
+    pub let externalURL : String
+    pub let storagePath : StoragePath
+    pub let publicPath : PublicPath
+    pub let privatePath: PrivatePath
+    pub let publicLinkedType: Type
+    pub let privateLinkedType: Type
+    pub let collectionName : String
+    pub let collectionDescription: String
+    pub let collectionSquareImage : String
+    pub let collectionBannerImage : String
+    pub let royalties: [MetadataViews.Royalty]
+
+    init(
+            id: UInt64,
+            name : String,
+            description : String,
+            thumbnail : String,
+            externalURL : String,
+            storagePath : StoragePath,
+            publicPath : PublicPath,
+            privatePath : PrivatePath,
+            publicLinkedType : Type,
+            privateLinkedType : Type,
+						collectionIdentifier: String,
+            collectionName : String,
+            collectionDescription : String,
+            collectionSquareImage : String,
+            collectionBannerImage : String,
+            royalties : [MetadataViews.Royalty]
+    ) {
+        self.id = id
+        self.name = name
+        self.description = description
+        self.thumbnail = thumbnail
+        self.externalURL = externalURL
+        self.storagePath = storagePath
+        self.publicPath = publicPath
+        self.privatePath = privatePath
+        self.publicLinkedType = publicLinkedType
+        self.privateLinkedType = privateLinkedType
+				self.collectionIdentifier = collectionIdentifier
+        self.collectionName = collectionName
+        self.collectionDescription = collectionDescription
+        self.collectionSquareImage = collectionSquareImage
+        self.collectionBannerImage = collectionBannerImage
+        self.royalties = royalties
+    }
+}
+
+pub fun main(ownerAddress: Address) : { String : [NFT] } {
+    let catalog = NFTCatalog.getCatalog()
+    let account = getAuthAccount(ownerAddress)
+    let items : [NFTRetrieval.BaseNFTViewsV1] = []
+    
+    let data : {String : [NFT] } = {}
+
+    for key in catalog.keys {
+        let value = catalog[key]!
+        let tempPathStr = "catalog".concat(key)
+        let tempPublicPath = PublicPath(identifier: tempPathStr)!
+        account.link<&{MetadataViews.ResolverCollection}>(
+            tempPublicPath,
+            target: value.collectionData.storagePath
+        )
+        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+        assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
+        let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
+
+        let items : [NFT] = []
+        for view in views {
+            let displayView = view.display
+            let externalURLView = view.externalURL
+            let collectionDataView = view.collectionData
+            let collectionDisplayView = view.collectionDisplay
+            let royaltyView = view.royalties
+            if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
+                // This NFT does not have the proper views implemented. Skipping....
+                continue
+            }
+
+            items.append(
+                NFT(
+                    id: view.id,
+                    name : displayView!.name,
+                    description : displayView!.description,
+                    thumbnail : displayView!.thumbnail.uri(),
+                    externalURL : externalURLView!.url,
+                    storagePath : collectionDataView!.storagePath,
+                    publicPath : collectionDataView!.publicPath,
+                    privatePath : collectionDataView!.providerPath,
+                    publicLinkedType : collectionDataView!.publicLinkedType,
+                    privateLinkedType : collectionDataView!.providerLinkedType,
+										collectionIdentifier: key,
+                    collectionName : collectionDisplayView!.name,
+                    collectionDescription : collectionDisplayView!.description,
+                    collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
+                    collectionBannerImage : collectionDisplayView!.bannerImage.file.uri(),
+                    royalties : royaltyView!.getRoyalties()
+                )
+            )
+        }
+        data[key] = items
+    }
+    return data
+}
+```
+
+**Example - Setup a user’s account to receive a specific collection**
+
+1. Run the following script to retrieve some collection-level information for an NFT collection identifier from the catalog
+
+```swift
+import MetadataViews from 0x1d7e57aa55817448
+import NFTCatalog from 0x49a7cda3a1eecc29
+import NFTRetrieval from 0x49a7cda3a1eecc29
+
+pub struct NFTCollection {
+    pub let storagePath : StoragePath
+    pub let publicPath : PublicPath
+    pub let privatePath: PrivatePath
+    pub let publicLinkedType: Type
+    pub let privateLinkedType: Type
+    pub let collectionName : String
+    pub let collectionDescription: String
+    pub let collectionSquareImage : String
+    pub let collectionBannerImage : String
+
+    init(
+            storagePath : StoragePath,
+            publicPath : PublicPath,
+            privatePath : PrivatePath,
+            publicLinkedType : Type,
+            privateLinkedType : Type,
+            collectionName : String,
+            collectionDescription : String,
+            collectionSquareImage : String,
+            collectionBannerImage : String
+    ) {
+        self.storagePath = storagePath
+        self.publicPath = publicPath
+        self.privatePath = privatePath
+        self.publicLinkedType = publicLinkedType
+        self.privateLinkedType = privateLinkedType
+        self.collectionName = collectionName
+        self.collectionDescription = collectionDescription
+        self.collectionSquareImage = collectionSquareImage
+        self.collectionBannerImage = collectionBannerImage
+    }
+}
+
+pub fun main(collectionIdentifier : String) : NFT? {
+        let catalog = NFTCatalog.getCatalog()
+
+        assert(catalog.containsKey(collectionIdentifier), message: "Invalid Collection")
+        
+              return NFTCollection(
+                  storagePath : collectionDataView!.storagePath,
+                  publicPath : collectionDataView!.publicPath,
+                  privatePath : collectionDataView!.providerPath,
+                  publicLinkedType : collectionDataView!.publicLinkedType,
+                  privateLinkedType : collectionDataView!.providerLinkedType,
+                  collectionName : collectionDisplayView!.name,
+                  collectionDescription : collectionDisplayView!.description,
+                  collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
+                  collectionBannerImage : collectionDisplayView!.bannerImage.file.uri()
+              )
+          }
+        
+        panic("Invalid Token ID")
+}
+```
+
+2. This script result can then be used to form a transaction by inserting the relevant variables from above into a transaction template like the following: 
+
+```swift
+import NonFungibleToken from 0x1d7e57aa55817448
+import MetadataViews from 0x1d7e57aa55817448
+{ADDITIONAL_IMPORTS}
+
+transaction {
+
+    prepare(signer: AuthAccount) {
+        // Create a new empty collection
+        let collection <- {CONTRACT_NAME}.createEmptyCollection()
+
+        // save it to the account
+        signer.save(<-collection, to: {STORAGE_PATH})
+
+        // create a public capability for the collection
+        signer.link<&{PUBLIC_LINKED_TYPE}>(
+            {PUBLIC_PATH},
+            target: {STORAGE_PATH}
+        )
+
+				// create a private capability for the collection
+        signer.link<&{PRIVATE_LINKED_TYPE}>(
+            {PRIVATE_PATH},
+            target: {STORAGE_PATH}
+        )
+    }
+}
+```
+
+
 
 ## Developer Usage
 
