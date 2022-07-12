@@ -34,7 +34,7 @@ export function SampleNFTView({
       if (!sampleAddress || !storagePath) { return }
       setLoading(true)
       setError(null)
-      const metadataConformities = await retrieveMetadataInformation(sampleAddress, storagePath, nftID ?? "0");
+      const metadataConformities = await retrieveMetadataInformation(sampleAddress, storagePath);
       if (!metadataConformities) {
         setError("Failed to retrieve metadata")
       } else {
