@@ -73,14 +73,13 @@ export async function retrieveContractInformation(address: string, name: string,
   }
 }
 
-export async function retrieveMetadataInformation(sampleAddress: string, storagePath: string, nftID: string): Promise<any> {
+export async function retrieveMetadataInformation(sampleAddress: string, storagePath: string): Promise<any> {
   try {
     const scriptResult = await fcl.send([
       fcl.script(catalogJson.scripts.check_for_recommended_v1_views),
       fcl.args([
         fcl.arg(sampleAddress, t.Address),
-        fcl.arg({ domain: "storage", identifier: storagePath.replace('/storage/', '') }, t.Path),
-        fcl.arg(nftID, t.UInt64)
+        fcl.arg({ domain: "storage", identifier: storagePath.replace('/storage/', '') }, t.Path)
       ])
     ])
       .then(fcl.decode)
