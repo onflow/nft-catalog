@@ -35,13 +35,19 @@ function setupMainnet() {
   );
   Object.keys(catalogJson.vars["mainnet"]).forEach(
     (contractAddressKey) => {
+      // @ts-ignore
+      if (contractAddressKey.indexOf("0xNFTCatalog") === -1) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        config.put("0xNFTCatalogAdmin", catalogJson.vars["mainnet"][contractAddressKey])
+      }
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       config.put(
         contractAddressKey,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        json.vars["mainnet"][contractAddressKey]
+        catalogJson.vars["mainnet"][contractAddressKey]
       );
     }
   );
