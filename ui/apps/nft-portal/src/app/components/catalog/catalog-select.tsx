@@ -20,11 +20,6 @@ export function CatalogSelect({
 
   useEffect(() => {
     const setup = async () => {
-      if (network === 'mainnet') {
-        // TODO: Remove this once deployed to mainnet
-        setItems([]);
-        return;
-      }
       changeFCLEnvironment(network);
       // retrieve list of proposals or 
       if (type === 'Proposals') {

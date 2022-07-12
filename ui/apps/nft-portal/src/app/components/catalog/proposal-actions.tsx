@@ -69,6 +69,7 @@ export function ProposalActions({ proposal, proposalID }: { proposal: any, propo
         setLoading(true)
         await createAdminProxy()
         setForceState(forceState + 1)
+        window.location.reload()
         setLoading(false)
       }}>
         Create Admin Proxy
@@ -83,6 +84,7 @@ export function ProposalActions({ proposal, proposalID }: { proposal: any, propo
           setLoading(true)
           await acceptProposal(proposalID)
           setForceState(forceState + 1)
+          window.location.reload()
           setLoading(false)
         }}
       >
@@ -96,6 +98,7 @@ export function ProposalActions({ proposal, proposalID }: { proposal: any, propo
           setLoading(true)
           await rejectProposal(proposalID)
           setForceState(forceState + 1)
+          window.location.reload()
           setLoading(false)
         }}
       >
@@ -112,6 +115,7 @@ export function ProposalActions({ proposal, proposalID }: { proposal: any, propo
           setLoading(true)
           await deleteProposal(proposalID)
           setForceState(forceState + 1)
+          window.location.reload()
           setLoading(false)
         }}
       >

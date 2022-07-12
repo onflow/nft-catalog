@@ -15,6 +15,10 @@ export default function ({
   const navigate = useNavigate()
   const { selectedNetwork, selectedAddress, selectedContract } = useParams<any>()
 
+  if (selectedNetwork) {
+    changeFCLEnvironment(selectedNetwork as Network)
+  }
+
   const storagePath = query.get("path")
   const sampleAddress = query.get("sampleAddress")
   const nftID = query.get("nftID")
