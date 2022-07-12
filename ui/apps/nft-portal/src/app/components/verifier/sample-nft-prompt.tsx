@@ -28,7 +28,7 @@ export function SampleNFTPrompt({
       e.preventDefault();
       const address = showLogIn ? user.addr : sampleAddress
       if (storagePath.indexOf("/storage/") !== 0) {
-        setError("The public path must include the /public/ prefix")
+        setError("The storage path must include the /storage/ prefix")
         return false
       }
       if (withPrefix(address).length !== 18) {

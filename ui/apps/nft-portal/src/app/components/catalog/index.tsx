@@ -37,7 +37,7 @@ export default function Layout({
       <div
         className="flex w-full h-full items-center text-center bg-white rounded-2xl sm:flex-col md:flex-row"
       >
-        <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen">
+        <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen md:max-w-xs lg:max-w-sm">
           <div className="flex-col">
             <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
             <CatalogSelect type={type} selected={identifier} network={network} />

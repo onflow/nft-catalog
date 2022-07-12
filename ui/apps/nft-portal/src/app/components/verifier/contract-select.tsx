@@ -82,18 +82,6 @@ export function ContractSelect({
         )
       }
 
-      {/*
-      <br />
-      <a onClick={() => { setContractAddress(`0xe223d8a629e49c68`) }}>Sample without nft: 0xe223d8a629e49c68</a>
-      <br />
-      <a onClick={() => { setContractAddress(`0x3277199d6c1eeaa4`) }}>Sample with nft and no metadata: 0x3277199d6c1eeaa4</a>
-      <br />
-      <a onClick={() => { setContractAddress(`0x877931736ee77cff`) }}>Sample with nft and metadataviews and improper public link: 0x877931736ee77cff</a>
-      <br />
-      <a onClick={() => { setContractAddress(`0x386817f360a5c8df`) }}>Sample with nft and metadataviews and proper public link: 0x386817f360a5c8df</a>
-      <br />
-      */}
-
     </>
   )
 }

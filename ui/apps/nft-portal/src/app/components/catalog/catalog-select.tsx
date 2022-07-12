@@ -67,7 +67,7 @@ export function CatalogSelect({
                   <Badge color={item.status === 'IN_REVIEW' ? 'blue' : item.status === 'APPROVED' ? 'green' : 'yellow'} text={item.status} />
                 )
               }
-              <div className="">{item.subtext}</div>
+              <div className="whitespace-pre text-xs">{item.subtext}</div>
             </div>
           )
         })
