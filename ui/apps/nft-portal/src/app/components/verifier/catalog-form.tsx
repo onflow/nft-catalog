@@ -35,7 +35,9 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
         const selectedNft = allNFTs.find((nft: { Id: string }) => {
           return nft.Id === nftID
         })
-        setCollectionIdentifier(selectedNft.NFTCollectionDisplay.collectionName)
+        if (selectedNft && selectedNft.NFTCollectionDisplay) {
+          setCollectionIdentifier(selectedNft.NFTCollectionDisplay.collectionName)
+        }
       }
     }
     getNfts()
