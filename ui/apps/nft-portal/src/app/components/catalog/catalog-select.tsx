@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { getCollections, getProposals } from "../../../flow/utils"
+import { getAllNFTsInAccountFromCatalog, getCollections, getProposals } from "../../../flow/utils"
 import { Network } from "./network-dropdown";
 import { changeFCLEnvironment } from "../../../flow/setup";
 import { Badge } from "../shared/badge";
@@ -8,11 +8,13 @@ import { Badge } from "../shared/badge";
 export function CatalogSelect({
   type,
   network,
-  selected
+  selected,
+  userAddress = null
 }: {
-  type: "Catalog" | "Proposals",
+  type: "Catalog" | "Proposals" | "NFTs",
   network: Network
-  selected: string | undefined
+  selected: string | undefined,
+  userAddress?: string | null
 }) {
   const navigate = useNavigate()
   const [items, setItems] = useState<null | Array<any>>(null)
@@ -45,10 +47,28 @@ export function CatalogSelect({
           }
         })
         setItems(items)
+      } else if (type == 'NFTs') {
+        if (userAddress != null) {
+          const nftTypes = await getAllNFTsInAccountFromCatalog(userAddress)
+          const items = Object.keys(nftTypes).map((nftKey) => {
+            const nfts = nftTypes[nftKey]
+            return nfts.map((nft: any) => {
+              return {
+                name: `${nft.name}`,
+                subtext: `${nft.collectionName}`,
+                collectionIdentifier: nftKey,
+                id: nft.id,
+              }
+            })
+          }).flat()
+          setItems(items)
+        } else {
+          setItems([])
+        }
       }
     }
     setup()
-  }, [type, network])
+  }, [type, network, userAddress])
 
   return (
     <a className="border-t-1 my-4">
@@ -58,7 +78,13 @@ export function CatalogSelect({
           return (
             <div key={i} className={`flex-col p-8 hover:bg-gray-300 cursor-pointer border-t-2 text-left ${selectedStyle}`} onClick={
               () => {
-                navigate(type === 'Proposals' ? `/proposals/${network}/${item.id}` : `/catalog/${network}/${item.id}`)
+                if (type === 'NFTs') {
+                  navigate(`/nfts/${network}/${item.collectionIdentifier}/${item.id}`)
+                } else if (type === 'Proposals') {
+                  navigate(`/proposals/${network}/${item.id}`)
+                } else {
+                  navigate(`/catalog/${network}/${item.id}`)
+                }
               }
             }>
               <div className="font-semibold">{item.name}</div>
