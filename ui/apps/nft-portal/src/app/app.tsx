@@ -13,6 +13,7 @@ import { Navbar } from "./components/shared/navbar";
 import { Footer } from "./components/shared/footer";
 import { Terms } from "./components/terms/terms";
 import { Privacy } from "./components/privacy/privacy";
+import NFTs from './components/nft'
 
 export function App() {
   return (
@@ -45,6 +46,11 @@ export function App() {
               <Route index={true} element={<Navigate to="/catalog/mainnet" />} />
               <Route path=":network/" element={<Catalog type="Catalog"></Catalog>} />
               <Route path=":network/:identifier" element={<Catalog type="Catalog"></Catalog>} />
+            </Route>
+            <Route path="nfts">
+              <Route index={true} element={<Navigate to="/nfts/mainnet" />} />
+              <Route path=":network" element={<NFTs />} />
+              <Route path=":network/:identifier/:nftID" element={<NFTs />} />
             </Route>
             <Route path="terms" element={<Terms />} />
             <Route path="privacy" element={<Privacy />} />

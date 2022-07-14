@@ -71,7 +71,9 @@ pub fun main(ownerAddress: Address, collectionIdentifiers: [String]) : { String 
             )
             
             let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
-            assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
+            if !collectionCap.check() {
+                continue
+            }
             let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier : collectionIdentifier, collectionCap : collectionCap)
             
             let items : [NFT] = []

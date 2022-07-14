@@ -146,6 +146,38 @@ export async function getNFTsInAccount(sampleAddress: string, storagePath: strin
   }
 }
 
+export async function getAllNFTsInAccountFromCatalog(ownerAddress: string): Promise<any> {
+  try {
+    const scriptResult = await fcl.send([
+      fcl.script(catalogJson.scripts.get_all_nfts_in_account),
+      fcl.args([
+        fcl.arg(ownerAddress, t.Address),
+      ])
+    ]).then(fcl.decode)
+    return scriptResult
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
+export async function getNFTInAccountFromCatalog(ownerAddress: string, collectionIdentifier: string, tokenID: string) {
+  try {
+    const scriptResult = await fcl.send([
+      fcl.script(catalogJson.scripts.get_nft_in_account),
+      fcl.args([
+        fcl.arg(ownerAddress, t.Address),
+        fcl.arg(collectionIdentifier, t.String),
+        fcl.arg(tokenID, t.UInt64)
+      ])
+    ]).then(fcl.decode)
+    return scriptResult
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
 export async function getNFTInAccountFromPath(ownerAddress: string, storagePath: string, nftID: string) {
   try {
     const scriptResult = await fcl.send([
