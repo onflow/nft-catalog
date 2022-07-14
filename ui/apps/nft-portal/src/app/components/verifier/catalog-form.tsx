@@ -5,6 +5,7 @@ import { Alert } from "../shared/alert"
 import { Spinner } from "../shared/spinner"
 import { proposeNFTToCatalog, getNFTMetadataForCollectionIdentifier } from "../../../flow/utils"
 import { useDebounce } from '../../../app/hooks/use-debounce';
+import { getNFTsInAccount } from "../../../flow/utils"
 import * as fcl from "@onflow/fcl";
 
 type CatalogProps = {
@@ -25,6 +26,22 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
   const [user, setUser] = useState({ loggedIn: null })
 
   useEffect(() => fcl.currentUser().subscribe(setUser), [])
+
+  useEffect(() => {
+    if (!sampleAddress || !storagePath || !nftID) { return }
+    const getNfts = async () => {
+      const allNFTs = await getNFTsInAccount(sampleAddress, storagePath);
+      if (!collectionIdentifier || collectionIdentifier === '') {
+        const selectedNft = allNFTs.find((nft: { Id: string }) => {
+          return nft.Id === nftID
+        })
+        if (selectedNft && selectedNft.NFTCollectionDisplay) {
+          setCollectionIdentifier(selectedNft.NFTCollectionDisplay.collectionName)
+        }
+      }
+    }
+    getNfts()
+  }, [])
 
   useEffect(() => {
     const metadataInformation = async () => {
