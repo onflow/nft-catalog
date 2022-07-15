@@ -19,7 +19,7 @@ import {
     mintExampleNFT,
     getExampleNFTType
 } from '../src/examplenft';
-import { getAllNFTsInAccount, getNFTsInAccount, deployNFTRetrieval, getNFTInAccount, getNFTsInAccountFromPath, BilalTestScript } from '../src/nftviews';
+import { getAllNFTsInAccount, getNFTsInAccount, deployNFTRetrieval, getNFTInAccount, getNFTsInAccountFromPath, getNFTsCountInAccount } from '../src/nftviews';
 import { TIMEOUT } from '../src/common';
 
 jest.setTimeout(TIMEOUT);
@@ -77,6 +77,10 @@ describe('NFT Retrieval Test Suite', () => {
         expect(result['ExampleNFT'][0].name).toBe(nftName);
         expect(result['ExampleNFT'][0].description).toBe(nftDescription);
         expect(result['ExampleNFT'][0].thumbnail).toBe(thumbnail);
+
+        [result, error] = await shallResolve(getNFTsCountInAccount(Alice));
+        expect(result['ExampleNFT']).toBe(1)
+        expect(error).toBe(null);
     });
 
     it('should retrieve some NFTs', async () => {
@@ -122,6 +126,11 @@ describe('NFT Retrieval Test Suite', () => {
 
         [result, error] = await shallResolve(getNFTsInAccount(Alice, ["NotARealNFT"]));
         expect(Object.keys(result).length).toBe(0);
+        expect(error).toBe(null);
+
+        [result, error] = await shallResolve(getNFTsCountInAccount(Alice));
+        expect(result['ExampleNFT']).toBe(1)
+        expect(result['NotARealNFT'] ?? null).toBe(null)
         expect(error).toBe(null);
     });
 
