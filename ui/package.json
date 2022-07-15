@@ -17,6 +17,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "^6.3.0",
+    "react-social-icons": "^5.14.0",
     "regenerator-runtime": "0.13.7",
     "tslib": "^2.3.0"
   },

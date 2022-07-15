@@ -1,4 +1,5 @@
 import { GenericViewToggle } from "./generic-view-toggle"
+import { SocialIcon } from 'react-social-icons';
 
 type GenericViewProps = {
   view: any,
@@ -20,16 +21,18 @@ export function CollectionDisplayView({ view, withRawView }: GenericViewProps) {
         {view.collectionDescription || view.description}
       </div>
       <img src={collectionSquareImage} width="80" height="80" className="my-2"></img>
+      <div className="w-full overflow-x-auto text-md">
       {
         view && view.socials && Object.keys(view.socials).map((social) => {
           const socialLink = view.socials[social] && view.socials[social].url ? view.socials[social].url : view.socials[social]
           return (
             <div key={social}>
-              {social} : {socialLink}
+              <SocialIcon url={socialLink} style={{ height: 25, width: 25 }} /> {socialLink}
             </div>
           )
         })
       }
+      </div>
       {
         withRawView && (
           <>
