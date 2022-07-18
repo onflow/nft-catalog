@@ -32,6 +32,7 @@ pub contract NFTRetrieval {
             self.royalties = royalties
         }
     }
+    
 
     pub fun getRecommendedViewsTypes(version: String) : [Type] {
         switch version {
@@ -47,6 +48,33 @@ pub contract NFTRetrieval {
                 panic("Version not supported")
         } 
         return []
+    }
+
+    pub fun getNFTCountFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : UInt64 {
+        pre {
+            NFTCatalog.getCatalog()[collectionIdentifier] != nil : "Invalid collection identifier"
+        }
+        let catalog = NFTCatalog.getCatalog()
+        let value = catalog[collectionIdentifier]!
+        // Check if we have multiple collections for the NFT type...
+        let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
+
+        if collectionCap.check() {
+            let collectionRef = collectionCap.borrow()!
+            if !hasMultipleCollections {
+                return UInt64(collectionRef.getIDs().length)
+            }
+            var count : UInt64 = 0
+            for id in collectionRef.getIDs() {
+                let nftResolver = collectionRef.borrowViewResolver(id: id)
+                let nftViews = self.getBasedNFTViewsV1(id: id, nftResolver: nftResolver)
+                if nftViews.display!.name == value.collectionDisplay.name {
+                    count = count + 1
+                }   
+            }
+            return count
+        }
+        return 0 
     }
 
     pub fun getNFTViewsFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : [BaseNFTViewsV1] {
