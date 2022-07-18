@@ -148,24 +148,6 @@ pub contract NFTRetrieval {
         return false
     }
 
-    pub fun getInventory(address:Address) : {String: [UInt64]} {
-        let inventory : {String:[UInt64]}={}
-        let account=getAccount(address)
-        let collections : {String:PublicPath} ={}
-        let types = NFTCatalog.getCatalogTypeData()
-        for nftType in types.keys {
-            let typeData=types[nftType]!
-            let collectionKey=typeData.keys[0]
-            let catalogEntry = NFTCatalog.getCatalogEntry(collectionIdentifier:collectionKey)!
-            let path =catalogEntry.collectionData.publicPath
-            let cap= account.getCapability<&{MetadataViews.ResolverCollection}>(path)
-            if cap.check(){
-                inventory[nftType] = cap.borrow()!.getIDs()
-            }
-        }
-        return inventory
-    }
-
     init() {}
 
 }
