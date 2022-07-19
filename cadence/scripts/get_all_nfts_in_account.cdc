@@ -57,7 +57,7 @@ pub struct NFT {
 pub fun main(ownerAddress: Address) : { String : [NFT] } {
     let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
-    let items : [NFTRetrieval.BaseNFTViewsV1] = []
+    let items : [MetadataViews.NFTView] = []
     
     let data : {String : [NFT] } = {}
 
