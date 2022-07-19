@@ -57,11 +57,11 @@
             "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
         },
         "examplenft-testnet-account": {
-            "address": "0x37d92dad2356b641",
+            "address": "0xa60cf32e8369f919",
             "key": "$EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY"
         },
         "examplenft-testnet-holder-account": {
-            "address": "0x2aa77a0776d7c209",
+            "address": "0x5f151d59c7128d8e",
             "key": "$EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY"
         },
         "mainnet-nft-catalog-account": {

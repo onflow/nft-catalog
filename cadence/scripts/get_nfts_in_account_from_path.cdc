@@ -145,9 +145,9 @@ pub fun main(ownerAddress: Address, storagePathIdentifier: String): [{String : A
 
 pub fun getNFTData(nftID: UInt64, collection: &AnyResource{MetadataViews.ResolverCollection} ): {String : AnyStruct} {
     let nftResolver = collection.borrowViewResolver(id: nftID)
-    let nftViews = NFTRetrieval.getBasedNFTViewsV1(
+    let nftViews = MetadataViews.getNFTView(
         id : nftID,
-        nftResolver: nftResolver
+        viewResolver: nftResolver
     )
 
     let displayView = nftViews.display

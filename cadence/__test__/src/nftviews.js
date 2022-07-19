@@ -14,6 +14,13 @@ export const getAllNFTsInAccount = async (ownerAddress) => {
     return executeScript({ name, args });
 }
 
+export const getNFTsCountInAccount = async (ownerAddress) => {
+    const name = 'get_nfts_count_in_account';
+    const args = [ownerAddress];
+
+    return executeScript({ name, args });
+}
+
 export const getNFTsInAccount = async (ownerAddress, collectionIdentifiers) => {
     const name = 'get_nfts_in_account';
     const args = [ownerAddress, collectionIdentifiers];
