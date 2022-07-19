@@ -134,6 +134,12 @@ pub fun main(ownerAddress: Address) : {String : Number} {
     return items
 }
 ```
+`Sample Response...`
+```text
+{
+    "schmoes_prelaunch_token": 1
+}
+```
 
 **Example 4 - Retrieve all NFTs including metadata owned by an account**
 
@@ -253,6 +259,32 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
         data[key] = items
     }
     return data
+}
+```
+`Sample Response...`
+```text
+{
+    "FlovatarComponent": [], 
+    "schmoes_prelaunch_token": [
+        s.aa16be98aac20e8073f923261531cbbdfae1464f570f5be796b57cdc97656248.NFT(
+            id: 1006, 
+            name: "Schmoes Pre Launch Token #1006", 
+            description: "", 
+            thumbnail: "https://gateway.pinata.cloud/ipfs/QmXQ1iBke5wjcjYG22ACVXsCvtMJKEkwFiMf96UChP8uJq",
+            externalURL: "https://schmoes.io", 
+            storagePath: /storage/SchmoesPreLaunchTokenCollection, 
+            publicPath: /public/SchmoesPreLaunchTokenCollection, 
+            privatePath: /private/SchmoesPreLaunchTokenCollection, 
+            publicLinkedType: Type<&A.6c4fe48768523577.SchmoesPreLaunchToken.Collection{A.1d7e57aa55817448.NonFungibleToken.CollectionPublic,A.  1d7e57aa55817448.NonFungibleToken.Receiver,A.1d7e57aa55817448.MetadataViews.ResolverCollection}>(),          
+            privateLinkedType: Type<&A.6c4fe48768523577.SchmoesPreLaunchToken.Collection{A.1d7e57aa55817448.NonFungibleToken.CollectionPublic,A.1d7e57aa55817448.NonFungibleToken.Provider,A.1d7e57aa55817448.MetadataViews.ResolverCollection}>(), 
+            collectionName: "Schmoes Pre Launch Token", 
+            collectionDescription: "", 
+            collectionSquareImage: "https://gateway.pinata.cloud/ipfs/QmXQ1iBke5wjcjYG22ACVXsCvtMJKEkwFiMf96UChP8uJq", 
+            collectionBannerImage: "https://gateway.pinata.cloud/ipfs/QmXQ1iBke5wjcjYG22ACVXsCvtMJKEkwFiMf96UChP8uJq", 
+            royalties: []
+        )
+    ], 
+    "Flovatar": []
 }
 ```
 
