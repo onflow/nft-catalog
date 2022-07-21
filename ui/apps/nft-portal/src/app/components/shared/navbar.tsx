@@ -25,6 +25,7 @@ export function Navbar({ } : { }) {
           <NavButton title="Catalog" href="/catalog" withBorder={false} />
           <NavButton title="Proposals" href="/proposals" withBorder={true} />
           <NavButton title="Verify NFT Metadata" href="/v" withBorder={true} />
+          <NavButton title="View NFTs" href="/nfts" withBorder={true} />
         </ul>
       </div>
     </nav>

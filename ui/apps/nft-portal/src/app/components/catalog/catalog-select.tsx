@@ -50,6 +50,10 @@ export function CatalogSelect({
       } else if (type == 'NFTs') {
         if (userAddress != null) {
           const nftTypes = await getAllNFTsInAccountFromCatalog(userAddress)
+          if (nftTypes == null) {
+            setItems([])
+            return
+          }
           const items = Object.keys(nftTypes).map((nftKey) => {
             const nfts = nftTypes[nftKey]
             return nfts.map((nft: any) => {
@@ -79,7 +83,7 @@ export function CatalogSelect({
             <div key={i} className={`flex-col p-8 hover:bg-gray-300 cursor-pointer border-t-2 text-left ${selectedStyle}`} onClick={
               () => {
                 if (type === 'NFTs') {
-                  navigate(`/nfts/${network}/${item.collectionIdentifier}/${item.id}`)
+                  navigate(`/nfts/${network}/${userAddress}/${item.collectionIdentifier}/${item.id}`)
                 } else if (type === 'Proposals') {
                   navigate(`/proposals/${network}/${item.id}`)
                 } else {
@@ -108,6 +112,16 @@ export function CatalogSelect({
             </div>
           )
         })
+      }
+      {
+        items != null && items.length === 0 &&
+        (
+          <div className={`flex-col p-8 cursor-pointer border-t-2`}>
+            <div className="font-semibold">No Items</div>
+            <div className="">{" "}</div>
+          </div>
+        )
+
       }
     </a>
   )
