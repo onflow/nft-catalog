@@ -5,7 +5,9 @@ on: pull_request
 jobs:
   tests:
     env:
-      CATALOG_TESTNET_PRIVATE_KEY: ${{ secrets.CATALOG_TESTNET_PRIVATE_KEY }}
+      CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY: ${{ secrets.CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY }}
+      EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY }}
+      EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY }}
     runs-on: ubuntu-latest
     steps:
       - name: Install Node
@@ -25,5 +27,5 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Run JS Tests
-        run: npm test
+      - name: Run Cadence Tests
+        run: npm run test cadence/__test__
