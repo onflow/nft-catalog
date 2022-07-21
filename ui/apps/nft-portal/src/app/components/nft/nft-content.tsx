@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import * as fcl from "@onflow/fcl"
-import { Button } from "../shared/button"
+import { useNavigate } from "react-router-dom";
+import { TextInput } from "../shared/text-input"
 import { Spinner } from "../shared/spinner"
 import { getNFTInAccountFromCatalog } from "apps/nft-portal/src/flow/utils"
 import { Alert } from "../shared/alert"
@@ -8,11 +8,15 @@ import { Box } from "../shared/box"
 import { DisplayView } from "../shared/views/display-view"
 import { CollectionDisplayView } from "../shared/views/collection-display-view"
 import { EmptyContent } from "../catalog/empty-content"
+import { Button } from "../shared/button"
+import { Network } from "../catalog/network-dropdown";
 
-export function NFTContent({ nftID, identifier, address, onChangeAddress }: { nftID: string | undefined, identifier: string | undefined, address: string | null, onChangeAddress: (value: string | null) => void }) {
+export function NFTContent({ nftID, identifier, walletAddress, network }: { nftID: string | undefined, identifier: string | undefined, walletAddress: string | undefined, network: Network }) {
     const [loading, setLoading] = useState<boolean>(false)
+    const [address, setAddress] = useState<string | undefined>(walletAddress)
     const [nftData, setNFTData] = useState<any>(null)
     const [error, setError] = useState<string | null>(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
         setError(null)
@@ -25,31 +29,42 @@ export function NFTContent({ nftID, identifier, address, onChangeAddress }: { nf
                 } else {
                     setError(`Unable to find nft with ID ${nftID} and collection ${identifier}`)
                 }
+            } else {
+                setNFTData(null);
             }
             setLoading(false)
         }
         setup()
     }, [address, nftID])
 
-    const loggedIn = address !== null
+    const hasAddress = walletAddress != null
 
-    if (!loggedIn) {
+    if (!hasAddress) {
         return (
-            <>
-                <Button
-                    key="login"
-                    onClick={
-                        async () => {
-                            setLoading(true)
-                            let res = await fcl.logIn()
-                            setLoading(false)
-                            onChangeAddress(res.addr);
+            <div>
+                <div className="mb-4">
+                    <TextInput
+                        value={address ?? ""}
+                        placeholder="Enter Address..."
+                        updateValue={setAddress}
+                    />
+                </div>
+                <div className="text-center">
+                    <Button
+                        key="view"
+                        onClick={
+                            async () => {
+                                if (address != null || address !== '') {
+                                    navigate(`/nfts/${network}/${address}`);
+                                }
+
+                            }
                         }
-                    }
-                >
-                    Log In
-                </Button>
-            </>
+                    >
+                        View
+                    </Button>
+                </div>
+            </div>
         )
     }
 

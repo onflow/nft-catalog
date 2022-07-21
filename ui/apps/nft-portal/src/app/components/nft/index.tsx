@@ -1,37 +1,26 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback } from "react"
 import { NetworkDropDown, Network } from "../catalog/network-dropdown";
 import { useParams, useNavigate } from "react-router-dom";
 import { CatalogSelect } from "../catalog/catalog-select";
 import { NFTContent } from "./nft-content";
-import * as fcl from "@onflow/fcl"
 import { changeFCLEnvironment } from "apps/nft-portal/src/flow/setup";
 
 type NFTParams = {
     network: Network;
+    address: string;
     identifier: string;
     nftID: string;
 }
 
 export default function Layout() {
 
-    const [address, setAddress] = useState<string | null>(null)
-    const { network = 'testnet', identifier, nftID } = useParams<NFTParams>()
+    const { network = 'testnet', address, identifier, nftID } = useParams<NFTParams>()
 
     const navigate = useNavigate()
 
     const onNetworkChange = useCallback((network: Network) => {
         changeFCLEnvironment(network)
-        setAddress(null);
         navigate(`/nfts/${network}`)
-    }, [])
-
-    useEffect(() => {
-        const setupUser = async () => {
-            const user = await fcl.currentUser().snapshot()
-            const userAddress = user && user.addr ? user.addr : null
-            setAddress(userAddress)
-        }
-        setupUser()
     }, [])
 
     return (
@@ -49,7 +38,7 @@ export default function Layout() {
                     </div>
                 </div>
                 <div className="px-10 w-3/4 self-start py-10 justify-self-start text-left">
-                    <NFTContent address={address} onChangeAddress={setAddress} nftID={nftID} identifier={identifier} />
+                    <NFTContent network={network} walletAddress={address} nftID={nftID} identifier={identifier} />
                 </div>
             </div>
         </div>
