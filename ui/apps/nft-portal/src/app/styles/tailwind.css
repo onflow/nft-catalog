@@ -830,6 +830,10 @@ select {
   margin-right: 0.5rem;
 }
 
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
 .mb-0 {
   margin-bottom: 0px;
 }
@@ -868,10 +872,6 @@ select {
 
 .mt-8 {
   margin-top: 2rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
 }
 
 .block {
@@ -947,6 +947,10 @@ select {
   max-width: 100%;
 }
 
+.max-w-md {
+  max-width: 28rem;
+}
+
 .max-w-7xl {
   max-width: 80rem;
 }
@@ -955,12 +959,8 @@ select {
   max-width: 36rem;
 }
 
-.max-w-sm {
-  max-width: 24rem;
-}
-
-.max-w-xs {
-  max-width: 20rem;
+.max-w-4xl {
+  max-width: 56rem;
 }
 
 .flex-1 {
@@ -1430,14 +1430,14 @@ select {
   font-family: Termina;
 }
 
-.\!text-2xl {
-  font-size: 1.5rem !important;
-  line-height: 2rem !important;
-}
-
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.\!text-2xl {
+  font-size: 1.5rem !important;
+  line-height: 2rem !important;
 }
 
 .text-xl {
@@ -1897,12 +1897,12 @@ select {
     width: 66.666667%;
   }
 
-  .md\:max-w-sm {
-    max-width: 24rem;
-  }
-
   .md\:max-w-xs {
     max-width: 20rem;
+  }
+
+  .md\:max-w-sm {
+    max-width: 24rem;
   }
 
   .md\:flex-row {
@@ -2019,5 +2019,32 @@ select {
   .lg\:text-base {
     font-size: 1rem;
     line-height: 1.5rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .xl\:max-w-full {
+    max-width: 100%;
+  }
+
+  .xl\:max-w-sm {
+    max-width: 24rem;
+  }
+
+  .xl\:max-w-md {
+    max-width: 28rem;
+  }
+
+  .xl\:max-w-lg {
+    max-width: 32rem;
+  }
+
+  .xl\:max-w-xl {
+    max-width: 36rem;
+  }
+
+  .xl\:px-96 {
+    padding-left: 24rem;
+    padding-right: 24rem;
   }
 }
