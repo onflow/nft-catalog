@@ -64,7 +64,7 @@ export default function ({
       <StepsProgressBar
         steps={steps}
       />
-      <div className="px-4 sm:px-8 md:px-16 lg:px-48 mt-8">
+      <div className="mx-auto px-4 sm:px-8 md:px-16 lg:px-48 mt-8 max-w-7xl">
         {
           steps[0].isActive && !steps[0].isComplete && (
             <ContractSelect

@@ -42,14 +42,18 @@ export function NFTContent({ nftID, identifier, walletAddress, network }: { nftI
     if (!hasAddress) {
         return (
             <div>
-                <div className="mb-4">
+                <div className="text-md">
+                    Enter a flow account address to view catalog supported NFTs owned by the account.
+                </div>
+                <br />
+                <div className="mb-4 max-w-md">
                     <TextInput
                         value={address ?? ""}
-                        placeholder="Enter Address..."
+                        placeholder="0xabcdefghijklmnop"
                         updateValue={setAddress}
                     />
                 </div>
-                <div className="text-center">
+                <div className="text-left">
                     <Button
                         key="view"
                         onClick={
@@ -61,7 +65,7 @@ export function NFTContent({ nftID, identifier, walletAddress, network }: { nftI
                             }
                         }
                     >
-                        View
+                        Submit
                     </Button>
                 </div>
             </div>
