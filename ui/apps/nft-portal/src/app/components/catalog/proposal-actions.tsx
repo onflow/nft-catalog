@@ -1,7 +1,5 @@
 import * as fcl from "@onflow/fcl"
-import { SocketAddress } from "net"
 import { useEffect, useState } from "react"
-import { useCurrentUser } from "../../../app/hooks/use-current-user"
 import { acceptProposal, createAdminProxy, deleteProposal, getAccountHasAdminProxy, getIsAdmin, rejectProposal } from "../../../flow/utils"
 import { Button } from "../shared/button"
 import { Spinner } from "../shared/spinner"
@@ -63,19 +61,6 @@ export function ProposalActions({ proposal, proposalID }: { proposal: any, propo
   }
 
   const buttons: Array<any> = []
-  if (!hasAdminProxy) {
-    buttons.push(
-      <Button key="setup" onClick={async () => {
-        setLoading(true)
-        await createAdminProxy()
-        setForceState(forceState + 1)
-        window.location.reload()
-        setLoading(false)
-      }}>
-        Create Admin Proxy
-      </Button>
-    )
-  }
   if (isAdmin && proposal.status === 'IN_REVIEW') {
     buttons.push(
       <Button
@@ -134,7 +119,7 @@ export function ProposalActions({ proposal, proposalID }: { proposal: any, propo
       {
         buttons.length === 0 && (
           <>
-            Logged in as {address}
+            Logged in as <b>{address}</b>
             <br />
             You must be the creator of this proposal or an admin to take any actions.
           </>

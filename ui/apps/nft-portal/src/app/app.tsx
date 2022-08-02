@@ -13,6 +13,7 @@ import { Navbar } from "./components/shared/navbar";
 import { Footer } from "./components/shared/footer";
 import { Terms } from "./components/terms/terms";
 import { Privacy } from "./components/privacy/privacy";
+import { AdminSetup } from "./components/admin/setup";
 import NFTs from './components/nft'
 
 export function App() {
@@ -50,8 +51,10 @@ export function App() {
             <Route path="nfts">
               <Route index={true} element={<Navigate to="/nfts/mainnet" />} />
               <Route path=":network" element={<NFTs />} />
-              <Route path=":network/:identifier/:nftID" element={<NFTs />} />
+              <Route path=":network/:address" element={<NFTs />} />
+              <Route path=":network/:address/:identifier/:nftID" element={<NFTs />} />
             </Route>
+            <Route path="admin" element={<AdminSetup />} />
             <Route path="terms" element={<Terms />} />
             <Route path="privacy" element={<Privacy />} />
           </Routes>
