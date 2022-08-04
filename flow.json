@@ -110,10 +110,6 @@
             ]
         },
         "testnet": {
-            "examplenft-testnet-account": [
-                "ExampleNFT",
-                "NonStandardNFT"
-            ],
             "catalog-testnet-account": [
                 "NFTCatalog",
                 "NFTCatalogAdmin",

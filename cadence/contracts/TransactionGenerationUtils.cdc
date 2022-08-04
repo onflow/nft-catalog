@@ -77,6 +77,9 @@ pub contract TransactionGenerationUtils {
         for replaceable in replaceableType {
             identifier = StringUtils.replaceAll(identifier, replaceable, "")
         }
+        if identifier[0] != "&" {
+            identifier = "&".concat(identifier)
+        }
         return identifier
     }
 
@@ -101,7 +104,7 @@ pub contract TransactionGenerationUtils {
             ["}"],
             ["if (", authAccountName, ".getCapability<", publicLink, ">(", publicPath, ").borrow() == nil) {"],
             ["    ", authAccountName, ".unlink(", publicPath, ")"],
-            ["    ", authAccountName, ".link<", publicLink, ">(", publicPath, "}, target: ", storagePath, ")"],
+            ["    ", authAccountName, ".link<", publicLink, ">(", publicPath, ", target: ", storagePath, ")"],
             ["}"]
         ]
         var combinedLines: [String] = []
