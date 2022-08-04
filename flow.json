@@ -40,7 +40,10 @@
         "NonStandardNFT": "./cadence/contracts/NonStandardNFT.cdc",
         "NFTCatalog": "./cadence/contracts/NFTCatalog.cdc",
         "NFTCatalogAdmin": "./cadence/contracts/NFTCatalogAdmin.cdc",
-        "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc"
+        "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc",
+        "TransactionGenerationUtils": "./cadence/contracts/TransactionGenerationUtils.cdc",
+        "StringUtils": "./cadence/contracts/StringUtils.cdc",
+        "ArrayUtils": "./cadence/contracts/ArrayUtils.cdc"
     },
     "networks": {
         "emulator": "127.0.0.1:3569",
@@ -54,6 +57,10 @@
         },
         "catalog-testnet-account": {
             "address": "0x324c34e1c517e4db",
+            "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
+        },
+        "transaction-generation-testnet-account": {
+            "address": "0x830c495357676f8b",
             "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
         },
         "examplenft-testnet-account": {
@@ -96,7 +103,10 @@
                 "NonStandardNFT",
                 "NFTCatalog",
                 "NFTCatalogAdmin",
-                "NFTRetrieval"
+                "NFTRetrieval",
+                "ArrayUtils",
+                "StringUtils",
+                "TransactionGenerationUtils"
             ]
         },
         "testnet": {
@@ -108,6 +118,11 @@
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
+            ],
+            "transaction-generation-testnet-account": [
+                "ArrayUtils",
+                "StringUtils",
+                "TransactionGenerationUtils"
             ]
         },
         "mainnet": {

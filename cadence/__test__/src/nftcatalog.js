@@ -7,7 +7,11 @@ export const deployNFTCatalog = async () => {
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NonFungibleToken' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'MetadataViews' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalog' })
-    return deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'ArrayUtils' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'StringUtils' })
+    const [result, error] = await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGenerationUtils' })
+    expect(error).toBe(null)
 }
 
 export const addToCatalogAdmin = async (collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier) => {
@@ -139,4 +143,11 @@ export const getNFTProposalForID = async (proposalID) => {
     const args = [proposalID];
 
     return executeScript({ name, args });
+}
+
+export const getInitFunction = async (collectionIdentifier) => {
+    const name = "get_init_script";
+    const args = [collectionIdentifier]
+
+    return executeScript({ name, args })
 }
