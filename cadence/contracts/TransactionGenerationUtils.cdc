@@ -97,11 +97,11 @@ pub contract TransactionGenerationUtils {
         let lines: [[String]] = [
             ["if ", authAccountName, ".borrow<&", contractName, ".Collection>(from: ", storagePath, ") == nil {"],
             ["   let collection", uniqueVariableKey, " <- ", contractName, ".createEmptyCollection()"],
-            ["    acct.save(<-collection", uniqueVariableKey, ", to: ", storagePath, ")"],
+            ["    ", authAccountName, ".save(<-collection", uniqueVariableKey, ", to: ", storagePath, ")"],
             ["}"],
-            ["if (acct.getCapability<", publicLink, ">(", publicPath, ").borrow() == nil) {"],
-            ["    acct.unlink(", publicPath, ")"],
-            ["    acct.link<", publicLink, ">(", publicPath, "}, target: ", storagePath, ")"],
+            ["if (", authAccountName, ".getCapability<", publicLink, ">(", publicPath, ").borrow() == nil) {"],
+            ["    ", authAccountName, ".unlink(", publicPath, ")"],
+            ["    ", authAccountName, ".link<", publicLink, ">(", publicPath, "}, target: ", storagePath, ")"],
             ["}"]
         ]
         var combinedLines: [String] = []
