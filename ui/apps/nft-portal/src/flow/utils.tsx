@@ -359,7 +359,7 @@ export async function proposeNFTToCatalog(
       args: (arg: any, t: any) => [
         fcl.arg(collectionIdentifier, t.String),
         fcl.arg(contractName, t.String),
-        fcl.arg(contractAddress, t.Address),
+        fcl.arg(fcl.withPrefix(contractAddress), t.Address),
         fcl.arg(`A.${fcl.sansPrefix(contractAddress)}.${contractName}.NFT`, t.String),
         fcl.arg(sampleNFTView.NFTCollectionData.storagePath.identifier, t.String),
         fcl.arg(sampleNFTView.NFTCollectionData.publicPath.identifier, t.String),
