@@ -10,6 +10,7 @@ export const deployNFTCatalog = async () => {
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'ArrayUtils' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'StringUtils' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTStorefrontV2' })    
     const [result, error] = await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGenerationUtils' })
     expect(error).toBe(null)
 }

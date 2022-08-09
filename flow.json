@@ -36,6 +36,14 @@
                 "mainnet": "0x1654653399040a61"
             }
         },
+        "NFTStorefrontV2": {
+            "source": "./cadence/contracts/NFTStorefrontV2.cdc",
+            "aliases": {
+                "emulator": "0x0ae53cb6e3f42a79",
+                "testnet": "0x2d55b98eb200daef",
+                "mainnet": "0x4eb8a10cb9f87357"
+            }
+        },
         "ExampleNFT": "./cadence/contracts/ExampleNFT.cdc",
         "NonStandardNFT": "./cadence/contracts/NonStandardNFT.cdc",
         "NFTCatalog": "./cadence/contracts/NFTCatalog.cdc",
