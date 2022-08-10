@@ -57,14 +57,14 @@ transaction(
                         file: MetadataViews.HTTPFile(
                             url: squareImageMediaURL
                         ),
-                        mediaType: squareImageMediaURL
+                        mediaType: squareImageMediaType
                     )
         
         let bannerMedia = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(
                             url: bannerImageMediaURL
                         ),
-                        mediaType: bannerImageMediaURL
+                        mediaType: bannerImageMediaType
                     )
 
         let socialsStruct : {String : MetadataViews.ExternalURL} = {}
