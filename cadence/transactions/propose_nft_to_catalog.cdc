@@ -38,13 +38,19 @@ transaction(
     }
     
     execute {
+        var privateLinkedType: Type? = nil
+        if (privateLinkedTypeRestrictions.length == 0) {
+            privateLinkedType = CompositeType(publicLinkedTypeIdentifier)
+        } else {
+            privateLinkedType = RestrictedType(identifier : privateLinkedTypeIdentifier, restrictions: privateLinkedTypeRestrictions)
+        }
         
         let collectionData = NFTCatalog.NFTCollectionData(
             storagePath: StoragePath(identifier: storagePathIdentifier)!,
             publicPath: PublicPath(identifier : publicPathIdentifier)!,
             privatePath: PrivatePath(identifier: privatePathIdentifier)!,
             publicLinkedType : RestrictedType(identifier : publicLinkedTypeIdentifier, restrictions: publicLinkedTypeRestrictions)!,
-            privateLinkedType : RestrictedType(identifier : privateLinkedTypeIdentifier, restrictions: privateLinkedTypeRestrictions)!
+            privateLinkedType : privateLinkedType!
         )
 
         let squareMedia = MetadataViews.Media(
