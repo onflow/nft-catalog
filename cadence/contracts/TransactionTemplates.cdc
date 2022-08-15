@@ -6,11 +6,19 @@ import NFTCatalog from "./NFTCatalog.cdc"
 import StringUtils from "./StringUtils.cdc"
 import ArrayUtils from "./ArrayUtils.cdc"
 import NFTStorefrontV2 from "./NFTStorefrontV2.cdc"
+import TransactionGenerationUtils from "./TransactionGenerationUtils.cdc"
 
+pub contract TransactionTemplates {
 
-  pub contract {
+/*
+  The following functions are available:
+  StorefrontListItemTemplate
+*/
+pub fun StorefrontListItemTemplate(nftTemplate: TransactionGenerationUtils.NFTTemplate, ftTemplate: TransactionGenerationUtils.FTTemplate) {
 
-pub fun StorefrontListItemTemplate() {
+    let nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate.publicLinkedType)
+    let nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate.privateLinkedType)
+  
 let lines: [[String]] = [
 ["transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {"],
 ["    let ftReceiver: Capability<&AnyResource{FungibleToken.Receiver}>"],
@@ -74,9 +82,9 @@ let lines: [[String]] = [
 ["        // Create listing"],
 ["        self.storefront.createListing("],
 ["            nftProviderCapability: self.nftProvider,"],
-["            nftType: Type<@", self.createStaticTypeFromType(nftTemplate.type), ">(),"],
+["            nftType: Type<@", TransactionGenerationUtils.createStaticTypeFromType(nftTemplate.type), ">(),"],
 ["            nftID: saleItemID,"],
-["            salePaymentVaultType: Type<@", self.createStaticTypeFromType(ftTemplate.type), ">(),"],
+["            salePaymentVaultType: Type<@", TransactionGenerationUtils.createStaticTypeFromType(ftTemplate.type), ">(),"],
 ["            saleCuts: self.saleCuts,"],
 ["            marketplacesCapability: self.marketplacesCapability.length == 0 ? nil : self.marketplacesCapability,"],
 ["            customID: customID,"],
@@ -86,4 +94,5 @@ let lines: [[String]] = [
 ["    }"],
 ["}"],
 [""]]
+}
 }

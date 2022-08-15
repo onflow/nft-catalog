@@ -39,7 +39,6 @@
         "NFTStorefrontV2": {
             "source": "./cadence/contracts/NFTStorefrontV2.cdc",
             "aliases": {
-                "emulator": "0x0ae53cb6e3f42a79",
                 "testnet": "0x2d55b98eb200daef",
                 "mainnet": "0x4eb8a10cb9f87357"
             }
@@ -50,8 +49,8 @@
         "NFTCatalogAdmin": "./cadence/contracts/NFTCatalogAdmin.cdc",
         "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc",
         "TransactionGenerationUtils": "./cadence/contracts/TransactionGenerationUtils.cdc",
-        "TransactionGeneration": "./cadence/contracts/TransactionGenerationUtils.cdc",
-        "TransactionTemplates": "./cadence/contracts/TransactionGenerationUtils.cdc",
+        "TransactionGeneration": "./cadence/contracts/TransactionGeneration.cdc",
+        "TransactionTemplates": "./cadence/contracts/TransactionTemplates.cdc",
         "StringUtils": "./cadence/contracts/StringUtils.cdc",
         "ArrayUtils": "./cadence/contracts/ArrayUtils.cdc"
     },
@@ -116,6 +115,7 @@
                 "NFTRetrieval",
                 "ArrayUtils",
                 "StringUtils",
+                "NFTStorefrontV2",
                 "TransactionGenerationUtils",
                 "TransactionTemplates",
                 "TransactionGeneration"

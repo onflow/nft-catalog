@@ -16,7 +16,7 @@ import TransactionTemplates from "./TransactionTemplates.cdc"
 // WIP made by amit
 //
 
-pub contract TransactionGenerationUtils {
+pub contract TransactionGeneration {
     pub struct interface TokenTemplate {
         pub let contractName: String
         pub let storagePath: String
