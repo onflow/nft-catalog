@@ -50,6 +50,8 @@
         "NFTCatalogAdmin": "./cadence/contracts/NFTCatalogAdmin.cdc",
         "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc",
         "TransactionGenerationUtils": "./cadence/contracts/TransactionGenerationUtils.cdc",
+        "TransactionGeneration": "./cadence/contracts/TransactionGenerationUtils.cdc",
+        "TransactionTemplates": "./cadence/contracts/TransactionGenerationUtils.cdc",
         "StringUtils": "./cadence/contracts/StringUtils.cdc",
         "ArrayUtils": "./cadence/contracts/ArrayUtils.cdc"
     },
@@ -114,7 +116,9 @@
                 "NFTRetrieval",
                 "ArrayUtils",
                 "StringUtils",
-                "TransactionGenerationUtils"
+                "TransactionGenerationUtils",
+                "TransactionTemplates",
+                "TransactionGeneration"
             ]
         },
         "testnet": {
@@ -126,7 +130,9 @@
             "transaction-generation-testnet-account": [
                 "ArrayUtils",
                 "StringUtils",
-                "TransactionGenerationUtils"
+                "TransactionGenerationUtils",
+                "TransactionTemplates",
+                "TransactionGeneration"
             ]
         },
         "mainnet": {
