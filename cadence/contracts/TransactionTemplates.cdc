@@ -12,12 +12,39 @@ pub contract TransactionTemplates {
 
 /*
   The following functions are available:
-  StorefrontListItemTemplate
+  NFTInitTemplate, StorefrontListItemTemplate
 */
-pub fun StorefrontListItemTemplate(nftTemplate: TransactionGenerationUtils.NFTTemplate, ftTemplate: TransactionGenerationUtils.FTTemplate) {
+pub fun NFTInitTemplate(nftTemplate: TransactionGenerationUtils.NFTTemplate?, ftTemplate: TransactionGenerationUtils.FTTemplate?): String {
 
-    let nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate.publicLinkedType)
-    let nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate.privateLinkedType)
+    let nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate!.publicLinkedType)
+    let nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate!.privateLinkedType)
+  
+let lines: [[String]] = [
+["transaction {"],
+[""],
+["  prepare(signer: AuthAccount) {"],
+["    if signer.borrow<", nftPublicLink, ">(from: ", nftTemplate!.storagePath, ") == nil {"],
+["      let collection <- ", nftTemplate!.contractName, ".createEmptyCollection()"],
+["      signer.save(<-collection, to: ", nftTemplate!.storagePath, ")"],
+["    }"],
+["    if (signer.getCapability<", nftPublicLink, ">(", nftTemplate!.publicPath, ").borrow() == nil) {"],
+["      signer.unlink(", nftTemplate!.publicPath, ")"],
+["      signer.link<", nftPublicLink, ">(", nftTemplate!.publicPath, ", target: ", nftTemplate!.storagePath, ")"],
+["    }"],
+["  }"],
+[""],
+["}"],
+[""]]
+var combinedLines: [String] = []
+for line in lines {
+combinedLines.append(StringUtils.join(line, ""))
+}
+return StringUtils.join(combinedLines, "\n")
+}
+pub fun StorefrontListItemTemplate(nftTemplate: TransactionGenerationUtils.NFTTemplate?, ftTemplate: TransactionGenerationUtils.FTTemplate?): String {
+
+    let nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate!.publicLinkedType)
+    let nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate!.privateLinkedType)
   
 let lines: [[String]] = [
 ["transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {"],
@@ -32,7 +59,7 @@ let lines: [[String]] = [
 ["        self.marketplacesCapability = []"],
 [""],
 ["        // Receiver for the sale cut."],
-["        self.ftReceiver = acct.getCapability<&{FungibleToken.Receiver}>(", ftTemplate.publicPath, ")!"],
+["        self.ftReceiver = acct.getCapability<&{FungibleToken.Receiver}>(", ftTemplate!.publicPath, ")!"],
 ["        assert(self.ftReceiver.borrow() != nil, message: \"Missing or mis-typed token receiver\")"],
 [""],
 ["        // Set up NFT just to make sure the proper links are setup."],
@@ -41,16 +68,16 @@ let lines: [[String]] = [
 ["        // Set up FT to make sure this account can receive the proper currency"],
 ["        "],
 [""],
-["        self.nftProvider = acct.getCapability<", nftPrivateLink, ">(", nftTemplate.privatePath, ")!"],
+["        self.nftProvider = acct.getCapability<", nftPrivateLink, ">(", nftTemplate!.privatePath, ")!"],
 ["        let collectionPub = acct"],
-["            .getCapability(", nftTemplate.publicPath, ")"],
+["            .getCapability(", nftTemplate!.publicPath, ")"],
 ["            .borrow<", nftPublicLink, ">()"],
 ["            ?? panic(\"Could not borrow a reference to the collection\")"],
 ["        var totalRoyaltyCut = 0.0"],
 ["        let effectiveSaleItemPrice = saleItemPrice - commissionAmount"],
 [""],
 ["        let metadataPub = acct"],
-["            .getCapability(", nftTemplate.publicPath, ")"],
+["            .getCapability(", nftTemplate!.publicPath, ")"],
 ["            .borrow<MetadataViews.Resolver>()"],
 ["        if (metadataPub != nil && metadataPub!.getViews().contains(Type<MetadataViews.Royalties>())) {"],
 ["            let royaltiesRef = metadataPub!.resolveView(Type<MetadataViews.Royalties>())?? panic(\"Unable to retrieve the royalties\")"],
@@ -82,9 +109,9 @@ let lines: [[String]] = [
 ["        // Create listing"],
 ["        self.storefront.createListing("],
 ["            nftProviderCapability: self.nftProvider,"],
-["            nftType: Type<@", TransactionGenerationUtils.createStaticTypeFromType(nftTemplate.type), ">(),"],
+["            nftType: Type<@", TransactionGenerationUtils.createStaticTypeFromType(nftTemplate!.type), ">(),"],
 ["            nftID: saleItemID,"],
-["            salePaymentVaultType: Type<@", TransactionGenerationUtils.createStaticTypeFromType(ftTemplate.type), ">(),"],
+["            salePaymentVaultType: Type<@", TransactionGenerationUtils.createStaticTypeFromType(ftTemplate!.type), ">(),"],
 ["            saleCuts: self.saleCuts,"],
 ["            marketplacesCapability: self.marketplacesCapability.length == 0 ? nil : self.marketplacesCapability,"],
 ["            customID: customID,"],
@@ -94,5 +121,10 @@ let lines: [[String]] = [
 ["    }"],
 ["}"],
 [""]]
+var combinedLines: [String] = []
+for line in lines {
+combinedLines.append(StringUtils.join(line, ""))
+}
+return StringUtils.join(combinedLines, "\n")
 }
 }
