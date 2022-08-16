@@ -22,13 +22,13 @@
 transaction {
 
   prepare(signer: AuthAccount) {
-    if signer.borrow<${cI.publicLinkedType}>(from: ${cI.storagePath}) == nil {
+    if signer.borrow<&${cI.publicLinkedType}>(from: ${cI.storagePath}) == nil {
       let collection <- ${cI.contractName}.createEmptyCollection()
       signer.save(<-collection, to: ${cI.storagePath})
     }
-    if (signer.getCapability<${cI.publicLinkedType}>(${cI.publicPath}).borrow() == nil) {
+    if (signer.getCapability<&${cI.publicLinkedType}>(${cI.publicPath}).borrow() == nil) {
       signer.unlink(${cI.publicPath})
-      signer.link<${cI.publicLinkedType}>(${cI.publicPath}, target: ${cI.storagePath})
+      signer.link<&${cI.publicLinkedType}>(${cI.publicPath}, target: ${cI.storagePath})
     }
   }
 
