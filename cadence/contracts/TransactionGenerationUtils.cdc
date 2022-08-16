@@ -189,7 +189,12 @@ pub contract TransactionGenerationUtils {
         for replaceable in replaceableType {
             identifier = StringUtils.replaceAll(identifier, replaceable, "")
         }
-        return identifier
+
+        if (identifier[0] == "&") {
+            return identifier.slice(from: 1, upTo: identifier.length)
+        } else {
+            return identifier
+        }
     }
 
     init() {}

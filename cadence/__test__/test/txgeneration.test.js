@@ -69,6 +69,7 @@ describe('NFT Catalog Test Suite', () => {
         let [result, error] = await shallResolve(getNFTMetadataForCollectionIdentifier('ExampleNFT'));
 
         [result, error] = await createInitTx(collectionIdentifier);
+        expect(error).toBe(null)
 
         const Bob = await getAccountAddress('Bob');
         [result, error] = await runTransaction(result, [], [Bob]);
@@ -79,10 +80,8 @@ describe('NFT Catalog Test Suite', () => {
 
         [result, error] = await createTx('StorefrontListItem', collectionIdentifier);
 
-        console.log("Reaching listing!")
-
-        [result, error] = await runTransaction(result, [0, 10.0, null, 1.0, 3869152398.0, []], [Bob])
-
+        //console.log("Reaching listing!")
+        //[result, error] = await runTransaction(result, [0, 10.0, null, 1.0, 3869152398.0, []], [Bob])
         //[result, error] = await createTx('StorefrontBuyItem', collectionIdentifier);
     });
 })
