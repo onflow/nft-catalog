@@ -5,7 +5,7 @@ import CharlieNFT from 0x0c7f58ca4b64219d
 transaction {
 
   prepare(signer: AuthAccount) {
-    if signer.borrow<&CharlieNFT.Collection{CharlieNFT.CharlieNFTCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(from: /storage/CharlieNFTCollection) == nil {
+    if signer.borrow<&CharlieNFT.Collection>(from: /storage/CharlieNFTCollection) == nil {
       let collection <- CharlieNFT.createEmptyCollection()
       signer.save(<-collection, to: /storage/CharlieNFTCollection)
     }

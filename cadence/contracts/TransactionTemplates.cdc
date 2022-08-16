@@ -23,7 +23,7 @@ let lines: [[String]] = [
 ["transaction {"],
 [""],
 ["  prepare(signer: AuthAccount) {"],
-["    if signer.borrow<&", nftPublicLink, ">(from: ", nftSchema!.storagePath, ") == nil {"],
+["    if signer.borrow<&", nftSchema!.contractName, ".Collection>(from: ", nftSchema!.storagePath, ") == nil {"],
 ["      let collection <- ", nftSchema!.contractName, ".createEmptyCollection()"],
 ["      signer.save(<-collection, to: ", nftSchema!.storagePath, ")"],
 ["    }"],

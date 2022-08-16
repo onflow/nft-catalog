@@ -22,7 +22,7 @@
 transaction {
 
   prepare(signer: AuthAccount) {
-    if signer.borrow<&${cI.publicLinkedType}>(from: ${cI.storagePath}) == nil {
+    if signer.borrow<&${cI.contractName}.Collection>(from: ${cI.storagePath}) == nil {
       let collection <- ${cI.contractName}.createEmptyCollection()
       signer.save(<-collection, to: ${cI.storagePath})
     }
