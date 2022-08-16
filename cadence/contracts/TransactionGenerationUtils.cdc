@@ -15,7 +15,7 @@ import NFTStorefrontV2 from "./NFTStorefrontV2.cdc"
 //
 
 pub contract TransactionGenerationUtils {
-    pub struct interface TokenTemplate {
+    pub struct interface TokenSchema {
         pub let contractName: String
         pub let storagePath: String
         pub let publicPath: String
@@ -25,7 +25,7 @@ pub contract TransactionGenerationUtils {
         pub let privateLinkedType: Type
     }
 
-    pub struct FTTemplate: TokenTemplate {
+    pub struct FTSchema: TokenSchema {
         pub let contractName: String
         pub let storagePath: String
         pub let publicPath: String
@@ -52,7 +52,7 @@ pub contract TransactionGenerationUtils {
         }
     }
 
-    pub struct NFTTemplate: TokenTemplate {
+    pub struct NFTSchema: TokenSchema {
         pub let contractName: String
         pub let storagePath: String
         pub let publicPath: String
@@ -82,10 +82,10 @@ pub contract TransactionGenerationUtils {
     /*
         We do not yet have a FT catalog, so FTs must be hardcoded for now.
     */
-    pub fun getFtTemplate(vaultIdentifier: String): FTTemplate? {
+    pub fun getFtSchema(vaultIdentifier: String): FTSchema? {
         switch vaultIdentifier {
             case "flow":
-                return FTTemplate(
+                return FTSchema(
                     contractName: "FlowToken",
                     storagePath: "/storage/flow",
                     publicPath: "/public/flow",
@@ -99,7 +99,7 @@ pub contract TransactionGenerationUtils {
         }
     }
 
-    pub fun getNftTemplate(collectionIdentifier: String): NFTTemplate? {
+    pub fun getNftSchema(collectionIdentifier: String): NFTSchema? {
         let catalog = NFTCatalog.getCatalog()
         if catalog[collectionIdentifier] == nil {
             return nil
@@ -114,7 +114,7 @@ pub contract TransactionGenerationUtils {
         let privatePath = catalogData.collectionData.privatePath
 
         let contractName = StringUtils.split(catalogData.nftType.identifier, ".")[2]
-        return NFTTemplate(
+        return NFTSchema(
             contractName: contractName,
             storagePath: storagePath.toString(),
             publicPath: publicPath.toString(),

@@ -17,59 +17,30 @@ import TransactionTemplates from "./TransactionTemplates.cdc"
 //
 
 pub contract TransactionGeneration {
-    
-
-    pub fun createNftSetupTxCode(
-        authAccountName: String,
-        nftTemplate: TransactionGenerationUtils.NFTTemplate,
-        uniqueVariableKey: String
-    ): String {
-        let nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate.publicLinkedType)
-        let nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftTemplate.privateLinkedType)
-        let lines: [[String]] = [
-            ["if ", authAccountName, ".borrow<&", nftTemplate.contractName, ".Collection>(from: ", nftTemplate.storagePath, ") == nil {"],
-            ["   let collection", uniqueVariableKey, " <- ", nftTemplate.contractName, ".createEmptyCollection()"],
-            ["    ", authAccountName, ".save(<-collection", uniqueVariableKey, ", to: ", nftTemplate.storagePath, ")"],
-            ["}"],
-            ["if (", authAccountName, ".getCapability<", nftPublicLink, ">(", nftTemplate.publicPath, ").borrow() == nil) {"],
-            ["    ", authAccountName, ".unlink(", nftTemplate.publicPath, ")"],
-            ["    ", authAccountName, ".link<", nftPublicLink, ">(", nftTemplate.publicPath, ", target: ", nftTemplate.storagePath, ")"],
-            ["}"],
-            ["if (", authAccountName, ".getCapability<", nftPrivateLink, ">(", nftTemplate.privatePath, ").borrow() == nil) {"],
-            ["    ", authAccountName, ".unlink(", nftTemplate.privatePath, ")"],
-            ["    ", authAccountName, ".link<", nftPrivateLink, ">(", nftTemplate.privatePath, ", target: ", nftTemplate.storagePath, ")"],
-            ["}"]
-        ]
-        var combinedLines: [String] = []
-        for line in lines {
-            combinedLines.append(StringUtils.join(line, ""))
-        }
-        return StringUtils.join(combinedLines, "\n")
-    }
 
     pub fun createCollectionInitializationTx(collectionIdentifier: String): String? {
-        let nftTemplate = TransactionGenerationUtils.getNftTemplate(collectionIdentifier: collectionIdentifier)
-        if nftTemplate == nil {
+        let nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier)
+        if nftSchema == nil {
             return nil
         }
         let types: [Type] = [
             Type<NonFungibleToken>(),
             Type<MetadataViews>(),
-            nftTemplate!.type,
-            nftTemplate!.publicLinkedType,
-            nftTemplate!.privateLinkedType
+            nftSchema!.type,
+            nftSchema!.publicLinkedType,
+            nftSchema!.privateLinkedType
         ]
         let imports = TransactionGenerationUtils.createImports(imports: types)
 
-        let tx = TransactionTemplates.NFTInitTemplate(nftTemplate: nftTemplate, ftTemplate: nil)    
+        let tx = TransactionTemplates.NFTInitTemplate(nftSchema: nftSchema, ftSchema: nil)    
 
         return StringUtils.join([imports, tx], "\n")
     }
 
     pub fun createStorefrontListingTx(collectionIdentifier: String, vaultIdentifier: String): String? {
-        let nftTemplate = TransactionGenerationUtils.getNftTemplate(collectionIdentifier: collectionIdentifier)
-        let ftTemplate = TransactionGenerationUtils.getFtTemplate(vaultIdentifier: vaultIdentifier)
-        if (nftTemplate == nil || ftTemplate == nil) {
+        let nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier)
+        let ftSchema = TransactionGenerationUtils.getFtSchema(vaultIdentifier: vaultIdentifier)
+        if (nftSchema == nil || ftSchema == nil) {
             return nil
         }
 
@@ -78,24 +49,24 @@ pub contract TransactionGeneration {
             Type<NonFungibleToken>(),
             Type<MetadataViews>(),
             Type<NFTStorefrontV2>(),
-            nftTemplate!.type,
-            nftTemplate!.publicLinkedType,
-            nftTemplate!.privateLinkedType,
-            ftTemplate!.type,
-            ftTemplate!.publicLinkedType,
-            ftTemplate!.privateLinkedType
+            nftSchema!.type,
+            nftSchema!.publicLinkedType,
+            nftSchema!.privateLinkedType,
+            ftSchema!.type,
+            ftSchema!.publicLinkedType,
+            ftSchema!.privateLinkedType
         ]
 
         let imports = TransactionGenerationUtils.createImports(imports: types)
-        let tx = TransactionTemplates.StorefrontListItemTemplate(nftTemplate: nftTemplate, ftTemplate: ftTemplate)
+        let tx = TransactionTemplates.StorefrontListItemTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
         
         return StringUtils.join([imports, tx], "\n")
     }
 
     pub fun createStorefrontBuyTx(collectionIdentifier: String, vaultIdentifier: String): String? {
-        let nftTemplate = TransactionGenerationUtils.getNftTemplate(collectionIdentifier: collectionIdentifier)
-        let ftTemplate = TransactionGenerationUtils.getFtTemplate(vaultIdentifier: vaultIdentifier)
-        if (nftTemplate == nil || ftTemplate == nil) {
+        let nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier)
+        let ftSchema = TransactionGenerationUtils.getFtSchema(vaultIdentifier: vaultIdentifier)
+        if (nftSchema == nil || ftSchema == nil) {
             return nil
         }
 
@@ -104,12 +75,12 @@ pub contract TransactionGeneration {
             Type<NonFungibleToken>(),
             Type<MetadataViews>(),
             Type<NFTStorefrontV2>(),
-            nftTemplate!.type,
-            nftTemplate!.publicLinkedType,
-            nftTemplate!.privateLinkedType,
-            ftTemplate!.type,
-            ftTemplate!.publicLinkedType,
-            ftTemplate!.privateLinkedType
+            nftSchema!.type,
+            nftSchema!.publicLinkedType,
+            nftSchema!.privateLinkedType,
+            ftSchema!.type,
+            ftSchema!.publicLinkedType,
+            ftSchema!.privateLinkedType
         ]
 
         let imports = TransactionGenerationUtils.createImports(imports: types)
