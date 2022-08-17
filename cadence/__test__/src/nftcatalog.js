@@ -11,9 +11,9 @@ export const deployNFTCatalog = async () => {
     await deployContractByName({ to: NFTCatalogAdmin, name: 'ArrayUtils' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'StringUtils' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTStorefrontV2' })
-    let [result, error] = await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGenerationUtils' });
-    [result, error] = await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionTemplates' });
-    [result, error] = await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGeneration' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGenerationUtils' });
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionTemplates' });
+    return await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGeneration' })
 }
 
 export const addToCatalogAdmin = async (collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier) => {

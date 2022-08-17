@@ -16,8 +16,18 @@ pub contract TransactionTemplates {
 */
 pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
 
-    let nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.publicLinkedType)
-    let nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.privateLinkedType)
+    var nftPublicLink = ""
+    var nftPrivateLink = ""
+    var ftPublicLink = ""
+    var ftPrivateLink = ""
+    if nftSchema != nil {
+      nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.publicLinkedType)
+      nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.privateLinkedType)
+    }
+    if ftSchema != nil {
+      ftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.publicLinkedType)
+      ftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.privateLinkedType)
+    }
   
 let lines: [[String]] = [
 ["transaction {"],
@@ -43,8 +53,18 @@ return StringUtils.join(combinedLines, "\n")
 }
 pub fun StorefrontListItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
 
-    let nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.publicLinkedType)
-    let nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.privateLinkedType)
+    var nftPublicLink = ""
+    var nftPrivateLink = ""
+    var ftPublicLink = ""
+    var ftPrivateLink = ""
+    if nftSchema != nil {
+      nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.publicLinkedType)
+      nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.privateLinkedType)
+    }
+    if ftSchema != nil {
+      ftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.publicLinkedType)
+      ftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.privateLinkedType)
+    }
   
 let lines: [[String]] = [
 ["transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {"],
@@ -58,31 +78,53 @@ let lines: [[String]] = [
 ["        self.saleCuts = []"],
 ["        self.marketplacesCapability = []"],
 [""],
+["        // Set up FT to make sure this account can receive the proper currency"],
+["        if signer.borrow<&", ftSchema!.contractName, ".Vault>(from: ", ftSchema!.storagePath, ") == nil {"],
+["            let vault <- ", ftSchema!.contractName, ".createEmptyVault()"],
+["            signer.save(<-vault, to: ", ftSchema!.storagePath, ")"],
+["        }"],
+[""],
+["        if signer.getCapability<&", ftPublicLink, ">(from: ", ftSchema!.publicPath, ") == nil {"],
+["            signer.unlink(", ftSchema!.publicPath, ")"],
+["            signer.link<&", ftPublicLink, ">(", ftSchema!.publicPath, ",target: ", ftSchema!.storagePath, ")"],
+[""],
+["        "],
+["        // Set up NFT to make sure this account has NFT setup correctly"],
+["        if signer.borrow<&", nftSchema!.contractName, ".Collection>(from: ", nftSchema!.storagePath, ") == nil {"],
+["            let collection <- ", nftSchema!.contractName, ".createEmptyCollection()"],
+["            signer.save(<-collection, to: ", nftSchema!.storagePath, ")"],
+["            }"],
+["        if (signer.getCapability<&", nftPublicLink, ">(", nftSchema!.publicPath, ").borrow() == nil) {"],
+["            signer.unlink(", nftSchema!.publicPath, ")"],
+["            signer.link<&", nftPublicLink, ">(", nftSchema!.publicPath, ", target: ", nftSchema!.storagePath, ")"],
+["        }"],
+[""],
+["        if (signer.getCapability<&", nftPrivateLink, ">(", nftSchema!.privatePath, ").borrow() == nil) {"],
+["            signer.unlink(", nftSchema!.privatePath, ")"],
+["            signer.link<&", nftPrivateLink, ">(", nftSchema!.privatePath, ", target: ", nftSchema!.storagePath, ")"],
+["        }"],
+[""],
+["        // We need a provider capability, but one is not provided by default so we create one if needed."],
+["        let nftCollectionProviderPrivatePath = ${ci.privateLinkedType}"],
+[""],
 ["        // Receiver for the sale cut."],
 ["        self.ftReceiver = acct.getCapability<&{FungibleToken.Receiver}>(", ftSchema!.publicPath, ")!"],
-["        assert(self.ftReceiver.borrow() != nil, message: \"Missing or mis-typed token receiver\")"],
-[""],
-["        // Set up NFT just to make sure the proper links are setup."],
-["        "],
-[""],
-["        // Set up FT to make sure this account can receive the proper currency"],
-["        "],
+["        assert(self.ftReceiver.borrow() != nil, message: \"Missing or mis-typed Fungible Token receiver\")"],
 [""],
 ["        self.nftProvider = acct.getCapability<", nftPrivateLink, ">(", nftSchema!.privatePath, ")!"],
-["        let collectionPub = acct"],
+["        let collection = acct"],
 ["            .getCapability(", nftSchema!.publicPath, ")"],
 ["            .borrow<", nftPublicLink, ">()"],
 ["            ?? panic(\"Could not borrow a reference to the collection\")"],
 ["        var totalRoyaltyCut = 0.0"],
 ["        let effectiveSaleItemPrice = saleItemPrice - commissionAmount"],
 [""],
-["        let metadataPub = acct"],
-["            .getCapability(", nftSchema!.publicPath, ")"],
-["            .borrow<MetadataViews.Resolver>()"],
-["        if (metadataPub != nil && metadataPub!.getViews().contains(Type<MetadataViews.Royalties>())) {"],
-["            let royaltiesRef = metadataPub!.resolveView(Type<MetadataViews.Royalties>())?? panic(\"Unable to retrieve the royalties\")"],
+["        let nft = collectionRef.borrowViewResolver(id: saleItemID)!       "],
+["        if (nft.getViews().contains(Type<MetadataViews.Royalties>())) {"],
+["            let royaltiesRef = nft.resolveView(Type<MetadataViews.Royalties>()) ?? panic(\"Unable to retrieve the royalties\")"],
 ["            let royalties = (royaltiesRef as! MetadataViews.Royalties).getRoyalties()"],
 ["            for royalty in royalties {"],
+["                // TODO - Verify the type of the vault and it should exists"],
 ["                self.saleCuts.append(NFTStorefrontV2.SaleCut(receiver: royalty.receiver, amount: royalty.cut * effectiveSaleItemPrice))"],
 ["                totalRoyaltyCut = totalRoyaltyCut + royalty.cut * effectiveSaleItemPrice"],
 ["            }"],
@@ -99,9 +141,7 @@ let lines: [[String]] = [
 ["            ?? panic(\"Missing or mis-typed NFTStorefront Storefront\")"],
 [""],
 ["        for marketplace in marketplacesAddress {"],
-["            // Here we are making a fair assumption that all given addresses would have"],
-["            // the capability to receive the `FlowToken`"],
-["            self.marketplacesCapability.append(getAccount(marketplace).getCapability<&{FungibleToken.Receiver}>(/public/flowTokenReceiver))"],
+["            self.marketplacesCapability.append(getAccount(marketplace).getCapability<&{FungibleToken.Receiver}>(", ftSchema!.publicPath, "))"],
 ["        }"],
 ["    }"],
 [""],

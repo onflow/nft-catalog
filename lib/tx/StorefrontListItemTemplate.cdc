@@ -30,31 +30,53 @@ transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commis
         self.saleCuts = []
         self.marketplacesCapability = []
 
+        // Set up FT to make sure this account can receive the proper currency
+        if signer.borrow<&${vI.contractName}.Vault>(from: ${vI.storagePath}) == nil {
+            let vault <- ${vI.contractName}.createEmptyVault()
+            signer.save(<-vault, to: ${vI.storagePath})
+        }
+
+        if signer.getCapability<&${vI.publicLinkedType}>(from: ${vI.publicPath}) == nil {
+            signer.unlink(${vI.publicPath})
+            signer.link<&${vI.publicLinkedType}>(${vI.publicPath},target: ${vI.storagePath})
+
+        
+        // Set up NFT to make sure this account has NFT setup correctly
+        if signer.borrow<&${cI.contractName}.Collection>(from: ${cI.storagePath}) == nil {
+            let collection <- ${cI.contractName}.createEmptyCollection()
+            signer.save(<-collection, to: ${cI.storagePath})
+            }
+        if (signer.getCapability<&${cI.publicLinkedType}>(${cI.publicPath}).borrow() == nil) {
+            signer.unlink(${cI.publicPath})
+            signer.link<&${cI.publicLinkedType}>(${cI.publicPath}, target: ${cI.storagePath})
+        }
+
+        if (signer.getCapability<&${cI.privateLinkedType}>(${cI.privatePath}).borrow() == nil) {
+            signer.unlink(${cI.privatePath})
+            signer.link<&${cI.privateLinkedType}>(${cI.privatePath}, target: ${cI.storagePath})
+        }
+
+        // We need a provider capability, but one is not provided by default so we create one if needed.
+        let nftCollectionProviderPrivatePath = ${ci.privateLinkedType}
+
         // Receiver for the sale cut.
         self.ftReceiver = acct.getCapability<&{FungibleToken.Receiver}>(${vI.publicPath})!
-        assert(self.ftReceiver.borrow() != nil, message: "Missing or mis-typed token receiver")
-
-        // Set up NFT just to make sure the proper links are setup.
-        ${createNftSetupTx}
-
-        // Set up FT to make sure this account can receive the proper currency
-        ${createFtSetupTx}
+        assert(self.ftReceiver.borrow() != nil, message: "Missing or mis-typed Fungible Token receiver")
 
         self.nftProvider = acct.getCapability<${cI.privateLinkedType}>(${cI.privatePath})!
-        let collectionPub = acct
+        let collection = acct
             .getCapability(${cI.publicPath})
             .borrow<${cI.publicLinkedType}>()
             ?? panic("Could not borrow a reference to the collection")
         var totalRoyaltyCut = 0.0
         let effectiveSaleItemPrice = saleItemPrice - commissionAmount
 
-        let metadataPub = acct
-            .getCapability(${cI.publicPath})
-            .borrow<MetadataViews.Resolver>()
-        if (metadataPub != nil && metadataPub!.getViews().contains(Type<MetadataViews.Royalties>())) {
-            let royaltiesRef = metadataPub!.resolveView(Type<MetadataViews.Royalties>())?? panic("Unable to retrieve the royalties")
+        let nft = collectionRef.borrowViewResolver(id: saleItemID)!       
+        if (nft.getViews().contains(Type<MetadataViews.Royalties>())) {
+            let royaltiesRef = nft.resolveView(Type<MetadataViews.Royalties>()) ?? panic("Unable to retrieve the royalties")
             let royalties = (royaltiesRef as! MetadataViews.Royalties).getRoyalties()
             for royalty in royalties {
+                // TODO - Verify the type of the vault and it should exists
                 self.saleCuts.append(NFTStorefrontV2.SaleCut(receiver: royalty.receiver, amount: royalty.cut * effectiveSaleItemPrice))
                 totalRoyaltyCut = totalRoyaltyCut + royalty.cut * effectiveSaleItemPrice
             }
@@ -71,9 +93,7 @@ transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commis
             ?? panic("Missing or mis-typed NFTStorefront Storefront")
 
         for marketplace in marketplacesAddress {
-            // Here we are making a fair assumption that all given addresses would have
-            // the capability to receive the `FlowToken`
-            self.marketplacesCapability.append(getAccount(marketplace).getCapability<&{FungibleToken.Receiver}>(/public/flowTokenReceiver))
+            self.marketplacesCapability.append(getAccount(marketplace).getCapability<&{FungibleToken.Receiver}>(${vI.publicPath}))
         }
     }
 

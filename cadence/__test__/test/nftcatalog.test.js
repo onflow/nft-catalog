@@ -89,11 +89,6 @@ describe('NFT Catalog Test Suite', () => {
         expect(result).not.toBe(null);
         expect(result.contractName).toBe(nftCreationEvent.data.contract);
         expect(error).toBe(null);
-
-        /*[result, error] = await getInitFunction(collectionIdentifier)
-        console.log("result:", result)
-        console.error("Error:", error)
-        expect(result).toBe("Y")*/
     });
 
     it('should add to catalog with two collections in a single type', async () => {
