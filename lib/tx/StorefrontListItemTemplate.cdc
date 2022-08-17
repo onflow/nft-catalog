@@ -21,7 +21,7 @@
 
 transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {
     let ftReceiver: Capability<&AnyResource{FungibleToken.Receiver}>
-    let exampleNFTProvider: Capability<&AnyResource{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
+    let nftProvider: Capability<&AnyResource{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
     let storefront: &NFTStorefrontV2.Storefront
     var saleCuts: [NFTStorefrontV2.SaleCut]
     var marketplacesCapability: [Capability<&AnyResource{FungibleToken.Receiver}>]
@@ -31,42 +31,39 @@ transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commis
         self.marketplacesCapability = []
 
         // Set up FT to make sure this account can receive the proper currency
-        if signer.borrow<&${vI.contractName}.Vault>(from: ${vI.storagePath}) == nil {
+        if acct.borrow<&${vI.contractName}.Vault>(from: ${vI.storagePath}) == nil {
             let vault <- ${vI.contractName}.createEmptyVault()
-            signer.save(<-vault, to: ${vI.storagePath})
+            acct.save(<-vault, to: ${vI.storagePath})
         }
 
-        if signer.getCapability<&${vI.publicLinkedType}>(from: ${vI.publicPath}) == nil {
-            signer.unlink(${vI.publicPath})
-            signer.link<&${vI.publicLinkedType}>(${vI.publicPath},target: ${vI.storagePath})
-
+        if acct.getCapability<&${vI.publicLinkedType}>(${vI.publicPath}) == nil {
+            acct.unlink(${vI.publicPath})
+            acct.link<&${vI.publicLinkedType}>(${vI.publicPath},target: ${vI.storagePath})
+        }
         
         // Set up NFT to make sure this account has NFT setup correctly
-        if signer.borrow<&${cI.contractName}.Collection>(from: ${cI.storagePath}) == nil {
+        if acct.borrow<&${cI.contractName}.Collection>(from: ${cI.storagePath}) == nil {
             let collection <- ${cI.contractName}.createEmptyCollection()
-            signer.save(<-collection, to: ${cI.storagePath})
-            }
-        if (signer.getCapability<&${cI.publicLinkedType}>(${cI.publicPath}).borrow() == nil) {
-            signer.unlink(${cI.publicPath})
-            signer.link<&${cI.publicLinkedType}>(${cI.publicPath}, target: ${cI.storagePath})
+            acct.save(<-collection, to: ${cI.storagePath})
+        }
+        if (acct.getCapability<&${cI.publicLinkedType}>(${cI.publicPath}).borrow() == nil) {
+            acct.unlink(${cI.publicPath})
+            acct.link<&${cI.publicLinkedType}>(${cI.publicPath}, target: ${cI.storagePath})
         }
 
-        if (signer.getCapability<&${cI.privateLinkedType}>(${cI.privatePath}).borrow() == nil) {
-            signer.unlink(${cI.privatePath})
-            signer.link<&${cI.privateLinkedType}>(${cI.privatePath}, target: ${cI.storagePath})
+        if (acct.getCapability<&${cI.privateLinkedType}>(${cI.privatePath}).borrow() == nil) {
+            acct.unlink(${cI.privatePath})
+            acct.link<&${cI.privateLinkedType}>(${cI.privatePath}, target: ${cI.storagePath})
         }
-
-        // We need a provider capability, but one is not provided by default so we create one if needed.
-        let nftCollectionProviderPrivatePath = ${ci.privateLinkedType}
 
         // Receiver for the sale cut.
         self.ftReceiver = acct.getCapability<&{FungibleToken.Receiver}>(${vI.publicPath})!
         assert(self.ftReceiver.borrow() != nil, message: "Missing or mis-typed Fungible Token receiver")
 
-        self.nftProvider = acct.getCapability<${cI.privateLinkedType}>(${cI.privatePath})!
-        let collection = acct
+        self.nftProvider = acct.getCapability<&{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(${cI.privatePath})!
+        let collectionRef = acct
             .getCapability(${cI.publicPath})
-            .borrow<${cI.publicLinkedType}>()
+            .borrow<&${cI.publicLinkedType}>()
             ?? panic("Could not borrow a reference to the collection")
         var totalRoyaltyCut = 0.0
         let effectiveSaleItemPrice = saleItemPrice - commissionAmount

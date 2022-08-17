@@ -1,4 +1,5 @@
 import FungibleToken from "./FungibleToken.cdc"
+import FlowToken from "./FlowToken.cdc"
 import NonFungibleToken from "./NonFungibleToken.cdc"
 import MetadataViews from "./MetadataViews.cdc"
 import NFTCatalog from "./NFTCatalog.cdc"
@@ -87,12 +88,12 @@ pub contract TransactionGenerationUtils {
             case "flow":
                 return FTSchema(
                     contractName: "FlowToken",
-                    storagePath: "/storage/flow",
+                    storagePath: "/storage/flowTokenVault",
                     publicPath: "/public/flow",
                     privatePath: "/private/flow",
-                    type: Type<@FungibleToken.Vault>(),
-                    publicLinkedType: Type<@FungibleToken.Vault>(),
-                    privateLinkedType: Type<@FungibleToken.Vault>()
+                    type: Type<@FlowToken.Vault>(),
+                    publicLinkedType: Type<@FlowToken.Vault{FungibleToken.Receiver, FungibleToken.Balance}>(),
+                    privateLinkedType: Type<@FlowToken.Vault{FungibleToken.Provider}>()
                 )
             default:
                 return nil

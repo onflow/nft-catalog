@@ -84,8 +84,9 @@ pub contract TransactionGeneration {
         ]
 
         let imports = TransactionGenerationUtils.createImports(imports: types)
+        let tx = TransactionTemplates.StorefrontBuyItemTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
         
-        return imports
+        return StringUtils.join([imports, tx], "\n")
     }
 
     pub fun getSupportedTx(): [String] {

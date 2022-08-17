@@ -79,9 +79,9 @@ describe('NFT Catalog Test Suite', () => {
         expect(result.status).toBe(4);
 
         [result, error] = await createTx('StorefrontListItem', collectionIdentifier);
+        expect(error).toBe(null);
 
-        //console.log("Reaching listing!")
-        //[result, error] = await runTransaction(result, [0, 10.0, null, 1.0, 3869152398.0, []], [Bob])
-        //[result, error] = await createTx('StorefrontBuyItem', collectionIdentifier);
+        [result, error] = await createTx('StorefrontBuyItem', collectionIdentifier);
+        expect(error).toBe(null);
     });
 })
