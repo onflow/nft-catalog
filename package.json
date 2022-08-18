@@ -15,8 +15,8 @@
         "@babel/preset-env": "^7.17.10",
         "@onflow/types": "^0.0.6",
         "babel-jest": "^28.0.3",
+        "cadence-to-json": "^1.0.3",
         "flow-js-testing": "^0.2.3-alpha.5",
-        "jest": "^28.0.3",
-        "cadence-to-json": "^1.0.3"
+        "jest": "^28.0.3"
     }
 }
