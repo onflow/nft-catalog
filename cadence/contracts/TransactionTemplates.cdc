@@ -105,7 +105,7 @@ let lines: [[String]] = [
 ["            acct.save(<-vault, to: ", ftSchema!.storagePath, ")"],
 ["        }"],
 [""],
-["        if acct.getCapability<&", ftPublicLink, ">(", ftSchema!.publicPath, ") == nil {"],
+["        if acct.getCapability<&", ftPublicLink, ">(", ftSchema!.publicPath, ").borrow() == nil {"],
 ["            acct.unlink(", ftSchema!.publicPath, ")"],
 ["            acct.link<&", ftPublicLink, ">(", ftSchema!.publicPath, ",target: ", ftSchema!.storagePath, ")"],
 ["        }"],

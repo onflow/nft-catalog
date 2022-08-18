@@ -4,7 +4,8 @@ import {
     init,
     shallPass,
     shallResolve,
-    getAccountAddress
+    getAccountAddress,
+    mintFlow
 } from 'flow-js-testing';
 import {
     deployNFTCatalog,
@@ -13,13 +14,14 @@ import {
 } from '../src/nftcatalog';
 import {
     deployExampleNFT,
-    getExampleNFTCollectionLength,
     getExampleNFTType,
     mintExampleNFT,
-    setupExampleNFTCollection
+    setupExampleNFTCollection,
+    getExampleNFTCollectionLength
 } from '../src/examplenft';
 import { TIMEOUT, runTransaction } from '../src/common';
-import { createInitTx, createTx } from "../src/txgeneration"
+import { createInitTx, createTx } from "../src/txgeneration";
+import { setupStorefront } from '../src/nftstorefront';
 
 const TEST_NFT_NAME = 'Test Name';
 const TEST_NFT_DESCRIPTION = 'Test Description';
@@ -42,7 +44,7 @@ describe('NFT Catalog Test Suite', () => {
         return new Promise((resolve) => setTimeout(resolve, 1000));
     });
 
-    it('Setup transaction should run on new account and accept a mint into its collection', async () => {
+    it('Should be able to run generated transactions for NFT', async () => {
         await deployNFTCatalog();
 
         let res = await deployExampleNFT();
@@ -78,10 +80,26 @@ describe('NFT Catalog Test Suite', () => {
         [result, error] = await shallPass(mintExampleNFT(Bob, TEST_NFT_NAME, TEST_NFT_DESCRIPTION, TEST_NFT_THUMBNAIL, [], [], []));
         expect(result.status).toBe(4);
 
+        await shallPass(setupStorefront(Bob));
+        await shallPass(setupStorefront(Alice));
+
         [result, error] = await createTx('StorefrontListItem', collectionIdentifier);
         expect(error).toBe(null);
+        [result, error] = await runTransaction(result, [1, 10, null, 0, 32503698000, []], [Bob]);
+        expect(error).toBe(null);
+        const listingResourceID = result.events[0].data.listingResourceID;
+
+        await mintFlow(Alice, '10.0');
 
         [result, error] = await createTx('StorefrontBuyItem', collectionIdentifier);
         expect(error).toBe(null);
+        [result, error] = await runTransaction(result, [listingResourceID, Bob, null], [Alice]);
+        expect(error).toBe(null);
+
+        [result, error] = await shallResolve(getExampleNFTCollectionLength(Alice));
+        expect(result).toBe(2);
+
+        [result, error] = await shallResolve(getExampleNFTCollectionLength(Bob))
+        expect(result).toBe(0);
     });
 })

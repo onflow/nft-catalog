@@ -36,7 +36,7 @@ transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commis
             acct.save(<-vault, to: ${vI.storagePath})
         }
 
-        if acct.getCapability<&${vI.publicLinkedType}>(${vI.publicPath}) == nil {
+        if acct.getCapability<&${vI.publicLinkedType}>(${vI.publicPath}).borrow() == nil {
             acct.unlink(${vI.publicPath})
             acct.link<&${vI.publicLinkedType}>(${vI.publicPath},target: ${vI.storagePath})
         }
