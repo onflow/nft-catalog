@@ -36,7 +36,8 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
           return nft.Id === nftID
         })
         if (selectedNft && selectedNft.NFTCollectionDisplay) {
-          setCollectionIdentifier(selectedNft.NFTCollectionDisplay.collectionName)
+          // Get rid of spaces if they exist..
+          setCollectionIdentifier(selectedNft.NFTCollectionDisplay.collectionName.replace(/\s+/g,''))
         }
       }
     }
