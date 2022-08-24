@@ -147,24 +147,24 @@ describe('NFT Retrieval Test Suite', () => {
         expect(result['NotARealNFT'] ?? null).toBe(null)
         expect(error).toBe(null);
 
-        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, 'ExampleNFT', [0]));
-        expect(result[0].name).toBe(nftName);
-        expect(result[0].description).toBe(nftDescription);
-        expect(result[0].thumbnail).toBe(thumbnail);
+        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, { 'ExampleNFT': [0] }));
+        expect(result['ExampleNFT'][0].name).toBe(nftName);
+        expect(result['ExampleNFT'][0].description).toBe(nftDescription);
+        expect(result['ExampleNFT'][0].thumbnail).toBe(thumbnail);
         expect(error).toBe(null);
 
-        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, 'ExampleNFT', [1, 2]));
-        expect(result.length).toBe(0);
+        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, { 'ExampleNFT': [1, 2] }));
+        expect(result['ExampleNFT'].length).toBe(0);
         expect(error).toBe(null);
 
-        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, 'ExampleNFT', [0, 2]));
-        expect(result[0].name).toBe(nftName);
-        expect(result[0].description).toBe(nftDescription);
-        expect(result[0].thumbnail).toBe(thumbnail);
+        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, { 'ExampleNFT': [0, 2] }));
+        expect(result['ExampleNFT'][0].name).toBe(nftName);
+        expect(result['ExampleNFT'][0].description).toBe(nftDescription);
+        expect(result['ExampleNFT'][0].thumbnail).toBe(thumbnail);
         expect(error).toBe(null);
 
-        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, 'NotARealNFT', [0]));
-        expect(result.length).toBe(0);
+        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, { 'NotARealNFT': [0] }));
+        expect(Object.keys(result).length).toBe(0);
         expect(error).toBe(null);
     });
 
