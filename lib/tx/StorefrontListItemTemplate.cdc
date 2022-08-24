@@ -1,22 +1,5 @@
 /*
-    Template parameters:
-    Wrap template in ${} to be replaced
-    
-    collectionIdentifier + vaultIdentifier
-    {cI.field} and {vI.field}
-
-        available template fields within `cI and vI`:
-            pub let contractName: String
-            pub let storagePath: String
-            pub let publicPath: String
-            pub let privatePath: String
-            pub let type: Type
-            pub let publicCollection: Type
-            pub let publicLinkedType: Type
-            pub let privateLinkedType: Type
-
-    createFtSetupTx == Replace with create ft setup tx code
-    createNftSetupTx == Replace with create nft setup tx code
+    Transaction facilitates the listing of a NFT.
 */
 
 transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {

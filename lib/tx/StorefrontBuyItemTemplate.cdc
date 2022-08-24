@@ -1,5 +1,5 @@
 /*
-    Transaction facilitates the purcahse of listed NFT.
+    Transaction facilitates the purchase of listed NFT.
     It takes the storefront address, listing resource that need
     to be purchased & a address that will takeaway the commission.
 
