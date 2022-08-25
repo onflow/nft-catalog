@@ -288,7 +288,172 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
 }
 ```
 
-**Example - Setup a user’s account to receive a specific collection**
+**Example 5 - Retrieve all NFTs including metadata owned by an account for large wallets**
+
+For Wallets that have a lot of NFTs you may run into memory issues. The common pattern to get around this for now is to retrieve just the ID's in a wallet by calling the following script
+
+```swift
+import MetadataViews from 0x1d7e57aa55817448 
+import NFTCatalog from 0x49a7cda3a1eecc29 
+import NFTRetrieval from 0x49a7cda3a1eecc29 
+
+pub fun main(ownerAddress: Address) : {String : [UInt64]} {
+    let catalog = NFTCatalog.getCatalog()
+    let account = getAuthAccount(ownerAddress)
+
+    let items : {String : [UInt64]} = {}
+
+    for key in catalog.keys {
+        let value = catalog[key]!
+        let tempPathStr = "catalogIDs".concat(key)
+        let tempPublicPath = PublicPath(identifier: tempPathStr)!
+        account.link<&{MetadataViews.ResolverCollection}>(
+            tempPublicPath,
+            target: value.collectionData.storagePath
+        )
+
+        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+        if !collectionCap.check() {
+            continue
+        }
+
+        let ids = NFTRetrieval.getNFTIDsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
+
+        if ids.length > 0 {
+            items[key] = ids
+        }
+    }
+    return items
+
+}
+```
+
+and then use the ids to retrieve the full metadata for only those ids by calling the following script and passing in a map of collectlionIdentifer -> [ids]
+```swift
+import MetadataViews from 0x1d7e57aa55817448 
+import NFTCatalog from 0x49a7cda3a1eecc29 
+import NFTRetrieval from 0x49a7cda3a1eecc29 
+
+pub struct NFT {
+    pub let id : UInt64
+    pub let name : String
+    pub let description : String
+    pub let thumbnail : String
+    pub let externalURL : String
+    pub let storagePath : StoragePath
+    pub let publicPath : PublicPath
+    pub let privatePath: PrivatePath
+    pub let publicLinkedType: Type
+    pub let privateLinkedType: Type
+    pub let collectionName : String
+    pub let collectionDescription: String
+    pub let collectionSquareImage : String
+    pub let collectionBannerImage : String
+    pub let royalties: [MetadataViews.Royalty]
+
+    init(
+            id: UInt64,
+            name : String,
+            description : String,
+            thumbnail : String,
+            externalURL : String,
+            storagePath : StoragePath,
+            publicPath : PublicPath,
+            privatePath : PrivatePath,
+            publicLinkedType : Type,
+            privateLinkedType : Type,
+            collectionName : String,
+            collectionDescription : String,
+            collectionSquareImage : String,
+            collectionBannerImage : String,
+            royalties : [MetadataViews.Royalty]
+    ) {
+        self.id = id
+        self.name = name
+        self.description = description
+        self.thumbnail = thumbnail
+        self.externalURL = externalURL
+        self.storagePath = storagePath
+        self.publicPath = publicPath
+        self.privatePath = privatePath
+        self.publicLinkedType = publicLinkedType
+        self.privateLinkedType = privateLinkedType
+        self.collectionName = collectionName
+        self.collectionDescription = collectionDescription
+        self.collectionSquareImage = collectionSquareImage
+        self.collectionBannerImage = collectionBannerImage
+        self.royalties = royalties
+    }
+}
+
+pub fun main(ownerAddress: Address, collections: {String : [UInt64]}) : {String : [NFT] } {
+    let data : {String : [NFT] } = {}
+
+    let catalog = NFTCatalog.getCatalog()
+    let account = getAuthAccount(ownerAddress)
+    for collectionIdentifier in collections.keys {
+        if catalog.containsKey(collectionIdentifier) {
+            let value = catalog[collectionIdentifier]!
+            let tempPathStr = "catalog".concat(collectionIdentifier)
+            let tempPublicPath = PublicPath(identifier: tempPathStr)!
+            account.link<&{MetadataViews.ResolverCollection}>(
+                tempPublicPath,
+                target: value.collectionData.storagePath
+            )
+
+            let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+
+            if !collectionCap.check() {
+                return data
+            }
+
+            let views = NFTRetrieval.getNFTViewsFromIDs(collectionIdentifier : collectionIdentifier, ids: collections[collectionIdentifier]!, collectionCap : collectionCap)
+
+            let items : [NFT] = []
+
+            for view in views {
+                    let displayView = view.display
+                    let externalURLView = view.externalURL
+                    let collectionDataView = view.collectionData
+                    let collectionDisplayView = view.collectionDisplay
+                    let royaltyView = view.royalties
+                    if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
+                        // Bad NFT. Skipping....
+                        continue
+                    }
+
+                    items.append(
+                        NFT(
+                            id: view.id,
+                            name : displayView!.name,
+                            description : displayView!.description,
+                            thumbnail : displayView!.thumbnail.uri(),
+                            externalURL : externalURLView!.url,
+                            storagePath : collectionDataView!.storagePath,
+                            publicPath : collectionDataView!.publicPath,
+                            privatePath : collectionDataView!.providerPath,
+                            publicLinkedType : collectionDataView!.publicLinkedType,
+                            privateLinkedType : collectionDataView!.providerLinkedType,
+                            collectionName : collectionDisplayView!.name,
+                            collectionDescription : collectionDisplayView!.description,
+                            collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
+                            collectionBannerImage : collectionDisplayView!.bannerImage.file.uri(),
+                            royalties : royaltyView!.getRoyalties()
+                        )
+                    )
+                }
+
+                data[collectionIdentifier] = items
+        }
+    }
+
+
+    return data
+}
+```
+
+
+**Example 6 - Setup a user’s account to receive a specific collection**
 
 1. Run the following script to retrieve some collection-level information for an NFT collection identifier from the catalog
 
