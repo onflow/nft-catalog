@@ -1,4 +1,4 @@
-export * as cadut from "@onflow/flow-cadut"
+export * from "@onflow/flow-cadut"
 import json from  "./lib/CadenceToJson.json" assert { type: "json" };
 export {json}
-export * as generated from "./lib/cadut-generated/index.js"
+export * as cadence from "./lib/cadut-generated/index.js"

@@ -9,7 +9,7 @@
     "author": "Bilal Shahid",
     "license": "ISC",
     "dependencies": {
-        "@onflow/fcl": "^0.0.78",
+        "@onflow/fcl": "^1.2.0",
         "@onflow/flow-cadut": "^0.2.0-alpha.8",
         "install": "^0.13.0",
         "npm": "^8.18.0"
