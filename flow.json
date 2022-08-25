@@ -91,6 +91,17 @@
             },
             "chain": "flow-mainnet"
         },
+        "mainnet-transaction-generation-account": {
+            "address": "0x2f3fd80af271669c",
+            "key": {
+                "type": "google-kms",
+                "index": 0,
+                "signatureAlgorithm": "ECDSA_P256",
+                "hashAlgorithm": "SHA2_256",
+                "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog-admin/cryptoKeyVersions/1"
+            },
+            "chain": "flow-mainnet"
+        },
         "mainnet-nft-catalog-admin-account": {
             "address": "0xf589fc579a72e43d",
             "key": {
@@ -140,6 +151,13 @@
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
+            ],
+            "mainnet-transaction-generation-account": [
+                "ArrayUtils",
+                "StringUtils",
+                "TransactionGenerationUtils",
+                "TransactionTemplates",
+                "TransactionGeneration"
             ]
         }
     }
