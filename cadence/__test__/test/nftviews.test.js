@@ -26,7 +26,8 @@ import {
     getNFTInAccount,
     getNFTsInAccountFromPath,
     getNFTsCountInAccount,
-    getNFTIDsInAccount
+    getNFTIDsInAccount,
+    getNFTsInAccountFromIDs
 } from '../src/nftviews';
 import { TIMEOUT } from '../src/common';
 
@@ -144,6 +145,26 @@ describe('NFT Retrieval Test Suite', () => {
         [result, error] = await shallResolve(getNFTsCountInAccount(Alice));
         expect(result['ExampleNFT']).toBe(1)
         expect(result['NotARealNFT'] ?? null).toBe(null)
+        expect(error).toBe(null);
+
+        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, { 'ExampleNFT': [0] }));
+        expect(result['ExampleNFT'][0].name).toBe(nftName);
+        expect(result['ExampleNFT'][0].description).toBe(nftDescription);
+        expect(result['ExampleNFT'][0].thumbnail).toBe(thumbnail);
+        expect(error).toBe(null);
+
+        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, { 'ExampleNFT': [1, 2] }));
+        expect(result['ExampleNFT'].length).toBe(0);
+        expect(error).toBe(null);
+
+        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, { 'ExampleNFT': [0, 2] }));
+        expect(result['ExampleNFT'][0].name).toBe(nftName);
+        expect(result['ExampleNFT'][0].description).toBe(nftDescription);
+        expect(result['ExampleNFT'][0].thumbnail).toBe(thumbnail);
+        expect(error).toBe(null);
+
+        [result, error] = await shallResolve(getNFTsInAccountFromIDs(Alice, { 'NotARealNFT': [0] }));
+        expect(Object.keys(result).length).toBe(0);
         expect(error).toBe(null);
     });
 

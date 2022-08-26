@@ -352,6 +352,37 @@ export async function proposeNFTToCatalog(
   }
 
   const cadence = catalogJson.transactions.propose_nft_to_catalog
+
+
+  // Check if the image is an IPFS one, and convert it to one that is 
+  // easily viewable from the catalog.
+  let collectionSquareImage = sampleNFTView.NFTCollectionDisplay.collectionSquareImage.file.url
+  if (sampleNFTView.NFTCollectionDisplay.collectionSquareImage.file.cid) {
+    const cid = sampleNFTView.NFTCollectionDisplay.collectionSquareImage.file.cid
+    const path = sampleNFTView.NFTCollectionDisplay.collectionSquareImage.file.path || ""
+    // Using pinata public gateway, since we don't have a proper ipfs gateway as part of the view.
+    collectionSquareImage = `https://gateway.pinata.cloud/ipfs/${cid}/${path}`
+  }
+
+  let collectionBannerImage = sampleNFTView.NFTCollectionDisplay.collectionBannerImage.file.url
+  if (sampleNFTView.NFTCollectionDisplay.collectionBannerImage.file.cid) {
+    const cid = sampleNFTView.NFTCollectionDisplay.collectionBannerImage.file.cid
+    const path = sampleNFTView.NFTCollectionDisplay.collectionBannerImage.file.path || ""
+    // Using pinata public gateway, since we don't have a proper ipfs gateway as part of the view.
+    collectionBannerImage = `https://gateway.pinata.cloud/ipfs/${cid}/${path}`
+  }
+
+  let privateLinkedType: string|null = null;
+  let privateRestrictedType: any = null;
+  try {
+    privateRestrictedType = buildRestrictedType(sampleNFTView.NFTCollectionData.privateLinkedType.type)
+    privateLinkedType = sampleNFTView.NFTCollectionData.privateLinkedType.type.type.typeID
+  } catch (err) {
+    // continue on with an empty array for private restricted type. This fails if it was not a restricted type
+    // to begin with.
+    privateLinkedType = sampleNFTView.NFTCollectionData.privateLinkedType.type.typeID
+    privateRestrictedType = []
+  }
   try {
     const txId = await fcl.mutate({
       cadence: cadence,
@@ -359,21 +390,21 @@ export async function proposeNFTToCatalog(
       args: (arg: any, t: any) => [
         fcl.arg(collectionIdentifier, t.String),
         fcl.arg(contractName, t.String),
-        fcl.arg(contractAddress, t.Address),
+        fcl.arg(fcl.withPrefix(contractAddress), t.Address),
         fcl.arg(`A.${fcl.sansPrefix(contractAddress)}.${contractName}.NFT`, t.String),
         fcl.arg(sampleNFTView.NFTCollectionData.storagePath.identifier, t.String),
         fcl.arg(sampleNFTView.NFTCollectionData.publicPath.identifier, t.String),
         fcl.arg(sampleNFTView.NFTCollectionData.privatePath.identifier, t.String),
         fcl.arg(sampleNFTView.NFTCollectionData.publicLinkedType.type.type.typeID, t.String),
         fcl.arg(buildRestrictedType(sampleNFTView.NFTCollectionData.publicLinkedType.type), t.Array(t.String)),
-        fcl.arg(sampleNFTView.NFTCollectionData.privateLinkedType.type.type.typeID, t.String),
-        fcl.arg(buildRestrictedType(sampleNFTView.NFTCollectionData.privateLinkedType.type), t.Array(t.String)),
+        fcl.arg(privateLinkedType, t.String),
+        fcl.arg(privateRestrictedType, t.Array(t.String)),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionName, t.String),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionDescription, t.String),
         fcl.arg(sampleNFTView.ExternalURL.externalURL, t.String),
-        fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionSquareImage.file.url, t.String),
+        fcl.arg(collectionSquareImage, t.String),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionSquareImage.mediaType, t.String),
-        fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionBannerImage.file.url, t.String),
+        fcl.arg(collectionBannerImage, t.String),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionBannerImage.mediaType, t.String),
         fcl.arg(socialsDictionary, t.Dictionary({ key: t.String, value: t.String })),
         fcl.arg(message, t.String)

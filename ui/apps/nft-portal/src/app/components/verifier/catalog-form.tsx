@@ -36,7 +36,8 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
           return nft.Id === nftID
         })
         if (selectedNft && selectedNft.NFTCollectionDisplay) {
-          setCollectionIdentifier(selectedNft.NFTCollectionDisplay.collectionName)
+          // Get rid of spaces if they exist..
+          setCollectionIdentifier(selectedNft.NFTCollectionDisplay.collectionName.replace(/\s+/g,''))
         }
       }
     }
@@ -59,7 +60,7 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
   }, [debouncedCollectionIdentifier])
 
   function validateIdentifier(collectionIdentifier: string): boolean {
-    return !/\s/.test(collectionIdentifier)
+    return !/\s/.test(collectionIdentifier) && !/-/.test(collectionIdentifier)
   }
 
   return (
@@ -79,7 +80,7 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
           return;
         }
         if (!validateIdentifier(collectionIdentifier)) {
-          setError("Invalid identifier, please make sure you don't include any spaces.")
+          setError("Invalid identifier, please make sure you don't include any spaces or dashes.")
           return;
         }
         if (!user.loggedIn) {
