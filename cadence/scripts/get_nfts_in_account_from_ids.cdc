@@ -17,6 +17,7 @@ pub struct NFT {
     pub let collectionDescription: String
     pub let collectionSquareImage : String
     pub let collectionBannerImage : String
+    pub let collectionExternalURL : String
     pub let royalties: [MetadataViews.Royalty]
 
     init(
@@ -34,6 +35,7 @@ pub struct NFT {
             collectionDescription : String,
             collectionSquareImage : String,
             collectionBannerImage : String,
+            collectionExternalURL : String,
             royalties : [MetadataViews.Royalty]
     ) {
         self.id = id
@@ -50,6 +52,7 @@ pub struct NFT {
         self.collectionDescription = collectionDescription
         self.collectionSquareImage = collectionSquareImage
         self.collectionBannerImage = collectionBannerImage
+        self.collectionExternalURL = collectionExternalURL
         self.royalties = royalties
     }
 }
@@ -106,6 +109,7 @@ pub fun main(ownerAddress: Address, collections: {String : [UInt64]}) : {String 
                             collectionDescription : collectionDisplayView!.description,
                             collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
                             collectionBannerImage : collectionDisplayView!.bannerImage.file.uri(),
+                            collectionExternalURL : collectionDisplayView!.externalURL.url,
                             royalties : royaltyView!.getRoyalties()
                         )
                     )
