@@ -401,7 +401,7 @@ export async function proposeNFTToCatalog(
         fcl.arg(privateRestrictedType, t.Array(t.String)),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionName, t.String),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionDescription, t.String),
-        fcl.arg(sampleNFTView.ExternalURL.externalURL, t.String),
+        fcl.arg(sampleNFTView.NFTCollectionDisplay.externalURL, t.String),
         fcl.arg(collectionSquareImage, t.String),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionSquareImage.mediaType, t.String),
         fcl.arg(collectionBannerImage, t.String),
