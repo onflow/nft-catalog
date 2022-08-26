@@ -69,7 +69,7 @@
             "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
         },
         "transaction-generation-testnet-account": {
-            "address": "0x8b9703babd267e81",
+            "address": "0x44051d81c4720882",
             "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
         },
         "examplenft-testnet-account": {

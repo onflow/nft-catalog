@@ -1,4 +1,6 @@
 
+// Collection Identifier: ${cI.identifier}
+
 transaction {
 
   prepare(signer: AuthAccount) {

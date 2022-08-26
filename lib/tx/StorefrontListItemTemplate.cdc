@@ -1,7 +1,8 @@
 /*
     Transaction facilitates the listing of a NFT.
 */
-
+// Collection Identifier: ${cI.identifier}
+// Vault Identifier: ${vI.identifier}
 transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {
     let ftReceiver: Capability<&AnyResource{FungibleToken.Receiver}>
     let nftProvider: Capability<&AnyResource{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>

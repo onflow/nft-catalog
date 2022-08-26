@@ -7,7 +7,8 @@
     transaction and if purchase happens then transacted NFT would store in
     buyer's collection.
 */
-
+// Collection Identifier: ${cI.identifier}
+// Vault Identifier: ${vI.identifier}
 transaction(listingResourceID: UInt64, storefrontAddress: Address, commissionRecipient: Address?) {
     let paymentVault: @FungibleToken.Vault
     let nftCollection: &${cI.publicLinkedType}

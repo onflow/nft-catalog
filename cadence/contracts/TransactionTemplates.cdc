@@ -1,4 +1,3 @@
-
 import FungibleToken from "./FungibleToken.cdc"
 import NonFungibleToken from "./NonFungibleToken.cdc"
 import MetadataViews from "./MetadataViews.cdc"
@@ -30,6 +29,8 @@ pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSche
     }
   
 let lines: [[String]] = [
+[""],
+["// Collection Identifier: ", nftSchema!.identifier, ""],
 [""],
 ["transaction {"],
 [""],

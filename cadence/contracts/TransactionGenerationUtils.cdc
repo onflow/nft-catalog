@@ -17,6 +17,7 @@ import NFTStorefrontV2 from "./NFTStorefrontV2.cdc"
 
 pub contract TransactionGenerationUtils {
     pub struct interface TokenSchema {
+        pub let identifier: String
         pub let contractName: String
         pub let storagePath: String
         pub let publicPath: String
@@ -27,6 +28,7 @@ pub contract TransactionGenerationUtils {
     }
 
     pub struct FTSchema: TokenSchema {
+        pub let identifier: String
         pub let contractName: String
         pub let storagePath: String
         pub let publicPath: String
@@ -35,6 +37,7 @@ pub contract TransactionGenerationUtils {
         pub let publicLinkedType: Type
         pub let privateLinkedType: Type
         init(
+            identifier: String,
             contractName: String,
             storagePath: String,
             publicPath: String,
@@ -43,6 +46,7 @@ pub contract TransactionGenerationUtils {
             publicLinkedType: Type,
             privateLinkedType: Type
         ) {
+            self.identifier = identifier
             self.contractName = contractName
             self.storagePath = storagePath
             self.publicPath = publicPath
@@ -54,6 +58,7 @@ pub contract TransactionGenerationUtils {
     }
 
     pub struct NFTSchema: TokenSchema {
+        pub let identifier: String
         pub let contractName: String
         pub let storagePath: String
         pub let publicPath: String
@@ -62,6 +67,7 @@ pub contract TransactionGenerationUtils {
         pub let publicLinkedType: Type
         pub let privateLinkedType: Type
         init(
+            identifier: String,
             contractName: String,
             storagePath: String,
             publicPath: String,
@@ -70,6 +76,7 @@ pub contract TransactionGenerationUtils {
             publicLinkedType: Type,
             privateLinkedType: Type
         ) {
+            self.identifier = identifier
             self.contractName = contractName
             self.storagePath = storagePath
             self.publicPath = publicPath
@@ -87,6 +94,7 @@ pub contract TransactionGenerationUtils {
         switch vaultIdentifier {
             case "flow":
                 return FTSchema(
+                    identifier: vaultIdentifier,
                     contractName: "FlowToken",
                     storagePath: "/storage/flowTokenVault",
                     publicPath: "/public/flow",
@@ -116,6 +124,7 @@ pub contract TransactionGenerationUtils {
 
         let contractName = StringUtils.split(catalogData.nftType.identifier, ".")[2]
         return NFTSchema(
+            identifier: collectionIdentifier,
             contractName: contractName,
             storagePath: storagePath.toString(),
             publicPath: publicPath.toString(),
