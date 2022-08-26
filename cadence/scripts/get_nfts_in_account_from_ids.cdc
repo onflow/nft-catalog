@@ -17,6 +17,7 @@ pub struct NFT {
     pub let collectionDescription: String
     pub let collectionSquareImage : String
     pub let collectionBannerImage : String
+    pub let collectionExternalURL : String
     pub let royalties: [MetadataViews.Royalty]
 
     init(
@@ -34,6 +35,7 @@ pub struct NFT {
             collectionDescription : String,
             collectionSquareImage : String,
             collectionBannerImage : String,
+            collectionExternalURL : String,
             royalties : [MetadataViews.Royalty]
     ) {
         self.id = id
@@ -50,64 +52,71 @@ pub struct NFT {
         self.collectionDescription = collectionDescription
         self.collectionSquareImage = collectionSquareImage
         self.collectionBannerImage = collectionBannerImage
+        self.collectionExternalURL = collectionExternalURL
         self.royalties = royalties
     }
 }
 
-pub fun main(ownerAddress: Address, collectionIdentifier: String, ids: [UInt64]) : [NFT] {
-    let data : [NFT]  = []
+pub fun main(ownerAddress: Address, collections: {String : [UInt64]}) : {String : [NFT] } {
+    let data : {String : [NFT] } = {}
 
     let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
+    for collectionIdentifier in collections.keys {
+        if catalog.containsKey(collectionIdentifier) {
+            let value = catalog[collectionIdentifier]!
+            let tempPathStr = "catalog".concat(collectionIdentifier)
+            let tempPublicPath = PublicPath(identifier: tempPathStr)!
+            account.link<&{MetadataViews.ResolverCollection}>(
+                tempPublicPath,
+                target: value.collectionData.storagePath
+            )
 
-    if catalog.containsKey(collectionIdentifier) {
-        let value = catalog[collectionIdentifier]!
-        let tempPathStr = "catalog".concat(collectionIdentifier)
-        let tempPublicPath = PublicPath(identifier: tempPathStr)!
-        account.link<&{MetadataViews.ResolverCollection}>(
-            tempPublicPath,
-            target: value.collectionData.storagePath
-        )
+            let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
 
-        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+            if !collectionCap.check() {
+                return data
+            }
 
-        if !collectionCap.check() {
-            return data
-        }
+            let views = NFTRetrieval.getNFTViewsFromIDs(collectionIdentifier : collectionIdentifier, ids: collections[collectionIdentifier]!, collectionCap : collectionCap)
 
-        let views = NFTRetrieval.getNFTViewsFromIDs(collectionIdentifier : collectionIdentifier, ids: ids, collectionCap : collectionCap)
+            let items : [NFT] = []
 
-        for view in views {
-                let displayView = view.display
-                let externalURLView = view.externalURL
-                let collectionDataView = view.collectionData
-                let collectionDisplayView = view.collectionDisplay
-                let royaltyView = view.royalties
-                if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
-                    // Bad NFT. Skipping....
-                    continue
+            for view in views {
+                    let displayView = view.display
+                    let externalURLView = view.externalURL
+                    let collectionDataView = view.collectionData
+                    let collectionDisplayView = view.collectionDisplay
+                    let royaltyView = view.royalties
+                    if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
+                        // Bad NFT. Skipping....
+                        continue
+                    }
+
+                    items.append(
+                        NFT(
+                            id: view.id,
+                            name : displayView!.name,
+                            description : displayView!.description,
+                            thumbnail : displayView!.thumbnail.uri(),
+                            externalURL : externalURLView!.url,
+                            storagePath : collectionDataView!.storagePath,
+                            publicPath : collectionDataView!.publicPath,
+                            privatePath : collectionDataView!.providerPath,
+                            publicLinkedType : collectionDataView!.publicLinkedType,
+                            privateLinkedType : collectionDataView!.providerLinkedType,
+                            collectionName : collectionDisplayView!.name,
+                            collectionDescription : collectionDisplayView!.description,
+                            collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
+                            collectionBannerImage : collectionDisplayView!.bannerImage.file.uri(),
+                            collectionExternalURL : collectionDisplayView!.externalURL.url,
+                            royalties : royaltyView!.getRoyalties()
+                        )
+                    )
                 }
 
-                data.append(
-                    NFT(
-                        id: view.id,
-                        name : displayView!.name,
-                        description : displayView!.description,
-                        thumbnail : displayView!.thumbnail.uri(),
-                        externalURL : externalURLView!.url,
-                        storagePath : collectionDataView!.storagePath,
-                        publicPath : collectionDataView!.publicPath,
-                        privatePath : collectionDataView!.providerPath,
-                        publicLinkedType : collectionDataView!.publicLinkedType,
-                        privateLinkedType : collectionDataView!.providerLinkedType,
-                        collectionName : collectionDisplayView!.name,
-                        collectionDescription : collectionDisplayView!.description,
-                        collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
-                        collectionBannerImage : collectionDisplayView!.bannerImage.file.uri(),
-                        royalties : royaltyView!.getRoyalties()
-                    )
-                )
-            }
+                data[collectionIdentifier] = items
+        }
     }
 
 
