@@ -92,8 +92,8 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
           await proposeNFTToCatalog(collectionIdentifier, sampleAddress, nftID, storagePath, selectedContract, selectedAddress, proposalMessage);
           setError(null);
           navigate(`/proposals/${selectedNetwork}`);
-        } catch (e) {
-          setError("Error running Flow transaction.");
+        } catch (e : any) {
+          setError(e.toString());
         }
         setLoading(false);
       }}>
