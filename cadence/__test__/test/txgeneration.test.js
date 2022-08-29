@@ -83,7 +83,7 @@ describe('NFT Catalog Test Suite', () => {
         await shallPass(setupStorefront(Bob));
         await shallPass(setupStorefront(Alice));
 
-        [result, error] = await createTx('StorefrontListItem', collectionIdentifier);
+        [result, error] = await createTx('StorefrontListItem', collectionIdentifier, "flow");
         expect(error).toBe(null);
         [result, error] = await runTransaction(result, [1, 10, null, 0, 32503698000, []], [Bob]);
         expect(error).toBe(null);
@@ -91,7 +91,7 @@ describe('NFT Catalog Test Suite', () => {
 
         await mintFlow(Alice, '10.0');
 
-        [result, error] = await createTx('StorefrontBuyItem', collectionIdentifier);
+        [result, error] = await createTx('StorefrontBuyItem', collectionIdentifier, "flow");
         expect(error).toBe(null);
         [result, error] = await runTransaction(result, [listingResourceID, Bob, null], [Alice]);
         expect(error).toBe(null);
