@@ -89,11 +89,40 @@ pub contract TransactionGeneration {
         return StringUtils.join([imports, tx], "\n")
     }
 
+    pub fun createDapperBuyNFTMarketplaceTx(collectionIdentifier: String) : String? {
+        let nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier)
+        if (nftSchema == nil) {
+            return nil
+        }
+
+        let ftSchema = TransactionGenerationUtils.getFtSchema(vaultIdentifier: "duc")
+
+        let types: [Type] = [
+            Type<FungibleToken>(),
+            Type<NonFungibleToken>(),
+            Type<MetadataViews>(),
+            Type<NFTStorefrontV2>(),
+            nftSchema!.type,
+            nftSchema!.publicLinkedType,
+            nftSchema!.privateLinkedType,
+            ftSchema!.type,
+            ftSchema!.publicLinkedType,
+            ftSchema!.privateLinkedType
+        ]
+
+        let imports = TransactionGenerationUtils.createImports(imports: types)
+
+        let tx = TransactionTemplates.DapperBuyNFTMarketplace(nftSchema: nftSchema, ftSchema: nil)
+
+        return StringUtils.join([imports, tx], "\n")
+    }
+
     pub fun getSupportedTx(): [String] {
         return [
             "CollectionInitialization",
             "StorefrontListItem",
-            "StorefrontBuyItem"
+            "StorefrontBuyItem",
+            "DapperBuyNFTMarketplace"
         ]
     }
 
@@ -106,6 +135,8 @@ pub contract TransactionGeneration {
                 return self.createStorefrontListingTx(collectionIdentifier: params["collectionIdentifier"]!, vaultIdentifier: params["vaultIdentifier"]!)
             case "StorefrontBuyItem":
                 return self.createStorefrontBuyTx(collectionIdentifier: params["collectionIdentifier"]!, vaultIdentifier: params["vaultIdentifier"]!)
+            case "DapperBuyNFTMarketplace":
+                return self.createDapperBuyNFTMarketplaceTx(collectionIdentifier: params["collectionIdentifier"]!)
             default:
                 return nil
         }

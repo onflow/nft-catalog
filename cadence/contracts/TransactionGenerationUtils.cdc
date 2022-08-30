@@ -6,6 +6,7 @@ import NFTCatalog from "./NFTCatalog.cdc"
 import StringUtils from "./StringUtils.cdc"
 import ArrayUtils from "./ArrayUtils.cdc"
 import NFTStorefrontV2 from "./NFTStorefrontV2.cdc"
+import DapperUtilityCoin from "./DapperUtilityCoin.cdc"
 
 // TransactionGenerationUtils
 //
@@ -103,6 +104,17 @@ pub contract TransactionGenerationUtils {
                     publicLinkedType: Type<@FlowToken.Vault{FungibleToken.Receiver, FungibleToken.Balance}>(),
                     privateLinkedType: Type<@FlowToken.Vault{FungibleToken.Provider}>()
                 )
+            case "duc":
+                return FTSchema(
+                    identifier: vaultIdentifier,
+                    contractName: "DapperUtilityCoin",
+                    storagePath: "/storage/dapperUtilityCoinVault",
+                    publicPath: "/public/dapperUtilityCoinReceiver",
+                    privatePath: "/private/dapperUtilityCoinVault",
+                    type: Type<@DapperUtilityCoin.Vault>(),
+                    publicLinkedType: Type<@DapperUtilityCoin.Vault{FungibleToken.Receiver}>(),
+                    privateLinkedType: Type<@DapperUtilityCoin.Vault{FungibleToken.Provider}>()
+                ) 
             default:
                 return nil
         }

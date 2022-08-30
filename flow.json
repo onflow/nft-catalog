@@ -36,6 +36,13 @@
                 "mainnet": "0x1654653399040a61"
             }
         },
+        "DapperUtilityCoin": {
+            "source": "./cadence/contracts/DapperUtilityCoin.cdc",
+            "aliases": {
+                "testnet": "0x82ec283f88a62e65",
+                "mainnet": "0xead892083b3e2c6c"
+            }
+        },
         "NFTStorefrontV2": {
             "source": "./cadence/contracts/NFTStorefrontV2.cdc",
             "aliases": {
@@ -126,6 +133,7 @@
                 "NFTRetrieval",
                 "ArrayUtils",
                 "StringUtils",
+                "DapperUtilityCoin",
                 "NFTStorefrontV2",
                 "TransactionGenerationUtils",
                 "TransactionTemplates",
