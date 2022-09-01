@@ -5,7 +5,7 @@ transaction(storefrontAddress: Address, listingResourceID: UInt64,  expectedPric
     let listing: &NFTStorefrontV2.Listing{NFTStorefrontV2.ListingPublic}
     let salePrice: UFix64
     let balanceBeforeTransfer: UFix64
-    let mainDapperUtilityCoinVault: &DapperUtilityCoin.Vault
+    let mainUtilityCoinVault: &${vI.contractName}.Vault
     var commissionRecipientCap: Capability<&{FungibleToken.Receiver}>?
 
     prepare(dapper: AuthAccount, buyer: AuthAccount) {
@@ -40,11 +40,11 @@ transaction(storefrontAddress: Address, listingResourceID: UInt64,  expectedPric
             ?? panic("No Offer with that ID in Storefront")
         self.salePrice = self.listing.getDetails().salePrice
 
-        // Get a DUC vault from Dapper's account
-        self.mainDapperUtilityCoinVault = dapper.borrow<&DapperUtilityCoin.Vault>(from: /storage/dapperUtilityCoinVault)
-            ?? panic("Cannot borrow DapperUtilityCoin vault from account storage")
-        self.balanceBeforeTransfer = self.mainDapperUtilityCoinVault.balance
-        self.paymentVault <- self.mainDapperUtilityCoinVault.withdraw(amount: self.salePrice)
+        // Get a vault from Dapper's account
+        self.mainUtilityCoinVault = dapper.borrow<&${vI.contractName}.Vault>(from: ${vI.storagePath})
+            ?? panic("Cannot borrow UtilityCoin vault from account storage")
+        self.balanceBeforeTransfer = self.mainUtilityCoinVault.balance
+        self.paymentVault <- self.mainUtilityCoinVault.withdraw(amount: self.salePrice)
 
         // Get the collection from the buyer so the NFT can be deposited into it
         self.nftCollection = buyer.borrow<&${cI.publicLinkedType}>(
@@ -56,7 +56,7 @@ transaction(storefrontAddress: Address, listingResourceID: UInt64,  expectedPric
 
         if commissionRecipient != nil && commissionAmount != 0.0 {
             // Access the capability to receive the commission.
-            let _commissionRecipientCap = getAccount(commissionRecipient!).getCapability<&{FungibleToken.Receiver}>(/public/dapperUtilityCoinReceiver)
+            let _commissionRecipientCap = getAccount(commissionRecipient!).getCapability<&{FungibleToken.Receiver}>(${vI.publicPath})
             assert(_commissionRecipientCap.check(), message: "Commission Recipient doesn't have flowtoken receiving capability")
             self.commissionRecipientCap = _commissionRecipientCap
         } else if commissionAmount == 0.0 {
@@ -80,8 +80,8 @@ transaction(storefrontAddress: Address, listingResourceID: UInt64,  expectedPric
         self.nftCollection.deposit(token: <-item)
     }
 
-    // Check that all dapperUtilityCoin was routed back to Dapper
+    // Check that all utilityCoin was routed back to Dapper
     post {
-        self.mainDapperUtilityCoinVault.balance == self.balanceBeforeTransfer: "DapperUtilityCoin leakage"
+        self.mainUtilityCoinVault.balance == self.balanceBeforeTransfer: "UtilityCoin leakage"
     }
 }
