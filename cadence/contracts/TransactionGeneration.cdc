@@ -13,108 +13,44 @@ import TransactionTemplates from "./TransactionTemplates.cdc"
 // An entrance point to generating transactions with the nft and ft
 // catalog related collections
 //
-// WIP made by amit
+// To add a new transaction, add to the `getSupportedTx()` returned list
+// and add a new switch case for your template within the `getTx` function
 //
 
 pub contract TransactionGeneration {
 
-    pub fun createCollectionInitializationTx(collectionIdentifier: String): String? {
-        let nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier)
-        if nftSchema == nil {
-            return nil
-        }
-        let types: [Type] = [
-            Type<NonFungibleToken>(),
-            Type<MetadataViews>(),
-            nftSchema!.type,
-            nftSchema!.publicLinkedType,
-            nftSchema!.privateLinkedType
-        ]
-        let imports = TransactionGenerationUtils.createImports(imports: types)
-
-        let tx = TransactionTemplates.NFTInitTemplate(nftSchema: nftSchema, ftSchema: nil)    
-
-        return StringUtils.join([imports, tx], "\n")
-    }
-
-    pub fun createStorefrontListingTx(collectionIdentifier: String, vaultIdentifier: String): String? {
-        let nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier)
-        let ftSchema = TransactionGenerationUtils.getFtSchema(vaultIdentifier: vaultIdentifier)
-        if (nftSchema == nil || ftSchema == nil) {
-            return nil
-        }
-
-        let types: [Type] = [
+    pub fun createTx(
+        collectionIdentifier: String?,
+        vaultIdentifier: String?,
+        createTxCode: ((TransactionGenerationUtils.NFTSchema?,TransactionGenerationUtils.FTSchema?): String)
+    ) : String? {
+        var nftSchema: TransactionGenerationUtils.NFTSchema? = nil
+        var ftSchema: TransactionGenerationUtils.FTSchema? = nil
+        var importTypes: [Type] = [
             Type<FungibleToken>(),
             Type<NonFungibleToken>(),
             Type<MetadataViews>(),
-            Type<NFTStorefrontV2>(),
-            nftSchema!.type,
-            nftSchema!.publicLinkedType,
-            nftSchema!.privateLinkedType,
-            ftSchema!.type,
-            ftSchema!.publicLinkedType,
-            ftSchema!.privateLinkedType
+            Type<NFTStorefrontV2>()
         ]
-
-        let imports = TransactionGenerationUtils.createImports(imports: types)
-        let tx = TransactionTemplates.StorefrontListItemTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
-        
-        return StringUtils.join([imports, tx], "\n")
-    }
-
-    pub fun createStorefrontBuyTx(collectionIdentifier: String, vaultIdentifier: String): String? {
-        let nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier)
-        let ftSchema = TransactionGenerationUtils.getFtSchema(vaultIdentifier: vaultIdentifier)
-        if (nftSchema == nil || ftSchema == nil) {
-            return nil
+        if (collectionIdentifier != nil) {
+            nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier!)
+            importTypes = importTypes.concat([
+                nftSchema!.type,
+                nftSchema!.publicLinkedType,
+                nftSchema!.privateLinkedType
+            ])
         }
-
-        let types: [Type] = [
-            Type<FungibleToken>(),
-            Type<NonFungibleToken>(),
-            Type<MetadataViews>(),
-            Type<NFTStorefrontV2>(),
-            nftSchema!.type,
-            nftSchema!.publicLinkedType,
-            nftSchema!.privateLinkedType,
-            ftSchema!.type,
-            ftSchema!.publicLinkedType,
-            ftSchema!.privateLinkedType
-        ]
-
-        let imports = TransactionGenerationUtils.createImports(imports: types)
-        let tx = TransactionTemplates.StorefrontBuyItemTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
-        
-        return StringUtils.join([imports, tx], "\n")
-    }
-
-    pub fun createDapperBuyNFTMarketplaceTx(collectionIdentifier: String) : String? {
-        let nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier)
-        if (nftSchema == nil) {
-            return nil
+        if (vaultIdentifier != nil) {
+            ftSchema = TransactionGenerationUtils.getFtSchema(vaultIdentifier: vaultIdentifier!)
+            importTypes = importTypes.concat([
+                ftSchema!.type,
+                ftSchema!.publicLinkedType,
+                ftSchema!.privateLinkedType
+            ])
         }
-
-        let ftSchema = TransactionGenerationUtils.getFtSchema(vaultIdentifier: "duc")
-
-        let types: [Type] = [
-            Type<FungibleToken>(),
-            Type<NonFungibleToken>(),
-            Type<MetadataViews>(),
-            Type<NFTStorefrontV2>(),
-            nftSchema!.type,
-            nftSchema!.publicLinkedType,
-            nftSchema!.privateLinkedType,
-            ftSchema!.type,
-            ftSchema!.publicLinkedType,
-            ftSchema!.privateLinkedType
-        ]
-
-        let imports = TransactionGenerationUtils.createImports(imports: types)
-
-        let tx = TransactionTemplates.DapperBuyNFTMarketplace(nftSchema: nftSchema, ftSchema: nil)
-
-        return StringUtils.join([imports, tx], "\n")
+        let imports = TransactionGenerationUtils.createImports(imports: importTypes)
+        let tx = createTxCode(nftSchema, ftSchema)
+        return StringUtils.join([imports, tx!], "\n")
     }
 
     pub fun getSupportedTx(): [String] {
@@ -127,19 +63,39 @@ pub contract TransactionGeneration {
     }
 
     pub fun getTx(tx: String, params: {String: String}): String? {
-        // Currently hardcoded vault identifier to `flow`
+        // This function will get overrode, and utilized towards the end.
+        // If we're unable to override this function due to not having a relevant template,
+        // the function will not continue, and will just return nil
+        var createTxCode: ((TransactionGenerationUtils.NFTSchema?,TransactionGenerationUtils.FTSchema?): String) = (
+            fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
+                return ""
+            }
+        )
         switch tx {
             case "CollectionInitialization":
-                return self.createCollectionInitializationTx(collectionIdentifier: params["collectionIdentifier"]!)
+                createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
+                    return TransactionTemplates.NFTInitTemplate(nftSchema: nftSchema, ftSchema: nil)
+                })
             case "StorefrontListItem":
-                return self.createStorefrontListingTx(collectionIdentifier: params["collectionIdentifier"]!, vaultIdentifier: params["vaultIdentifier"]!)
+                createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
+                    return TransactionTemplates.StorefrontListItemTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
+                })
             case "StorefrontBuyItem":
-                return self.createStorefrontBuyTx(collectionIdentifier: params["collectionIdentifier"]!, vaultIdentifier: params["vaultIdentifier"]!)
+                createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
+                    return TransactionTemplates.StorefrontBuyItemTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
+                })
             case "DapperBuyNFTMarketplace":
-                return self.createDapperBuyNFTMarketplaceTx(collectionIdentifier: params["collectionIdentifier"]!)
+                createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
+                    return TransactionTemplates.DapperBuyNFTMarketplace(nftSchema: nftSchema, ftSchema: ftSchema)
+                })
             default:
                 return nil
         }
+        return self.createTx(
+            collectionIdentifier: params["collectionIdentifier"],
+            vaultIdentifier: params["vaultIdentifier"],
+            createTxCode: createTxCode
+        )
     }
 
     init() {}
