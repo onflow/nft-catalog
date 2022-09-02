@@ -36,11 +36,37 @@
                 "mainnet": "0x1654653399040a61"
             }
         },
+        "DapperUtilityCoin": {
+            "source": "./cadence/contracts/DapperUtilityCoin.cdc",
+            "aliases": {
+                "testnet": "0x82ec283f88a62e65",
+                "mainnet": "0xead892083b3e2c6c"
+            }
+        },
+        "FlowUtilityToken": {
+            "source": "./cadence/contracts/FlowUtilityToken.cdc",
+            "aliases": {
+                "testnet": "0x82ec283f88a62e65",
+                "mainnet": "0xead892083b3e2c6c"
+            }
+        },
+        "NFTStorefrontV2": {
+            "source": "./cadence/contracts/NFTStorefrontV2.cdc",
+            "aliases": {
+                "testnet": "0x2d55b98eb200daef",
+                "mainnet": "0x4eb8a10cb9f87357"
+            }
+        },
         "ExampleNFT": "./cadence/contracts/ExampleNFT.cdc",
         "NonStandardNFT": "./cadence/contracts/NonStandardNFT.cdc",
         "NFTCatalog": "./cadence/contracts/NFTCatalog.cdc",
         "NFTCatalogAdmin": "./cadence/contracts/NFTCatalogAdmin.cdc",
-        "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc"
+        "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc",
+        "TransactionGenerationUtils": "./cadence/contracts/TransactionGenerationUtils.cdc",
+        "TransactionGeneration": "./cadence/contracts/TransactionGeneration.cdc",
+        "TransactionTemplates": "./cadence/contracts/TransactionTemplates.cdc",
+        "StringUtils": "./cadence/contracts/StringUtils.cdc",
+        "ArrayUtils": "./cadence/contracts/ArrayUtils.cdc"
     },
     "networks": {
         "emulator": "127.0.0.1:3569",
@@ -54,6 +80,10 @@
         },
         "catalog-testnet-account": {
             "address": "0x324c34e1c517e4db",
+            "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
+        },
+        "transaction-generation-testnet-account": {
+            "address": "0x44051d81c4720882",
             "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
         },
         "examplenft-testnet-account": {
@@ -72,6 +102,17 @@
                 "signatureAlgorithm": "ECDSA_P256",
                 "hashAlgorithm": "SHA2_256",
                 "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog/cryptoKeyVersions/1"
+            },
+            "chain": "flow-mainnet"
+        },
+        "mainnet-transaction-generation-account": {
+            "address": "0x2f3fd80af271669c",
+            "key": {
+                "type": "google-kms",
+                "index": 0,
+                "signatureAlgorithm": "ECDSA_P256",
+                "hashAlgorithm": "SHA2_256",
+                "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog-admin/cryptoKeyVersions/1"
             },
             "chain": "flow-mainnet"
         },
@@ -96,18 +137,28 @@
                 "NonStandardNFT",
                 "NFTCatalog",
                 "NFTCatalogAdmin",
-                "NFTRetrieval"
+                "NFTRetrieval",
+                "ArrayUtils",
+                "StringUtils",
+                "DapperUtilityCoin",
+                "NFTStorefrontV2",
+                "TransactionGenerationUtils",
+                "TransactionTemplates",
+                "TransactionGeneration"
             ]
         },
         "testnet": {
-            "examplenft-testnet-account": [
-                "ExampleNFT",
-                "NonStandardNFT"
-            ],
             "catalog-testnet-account": [
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
+            ],
+            "transaction-generation-testnet-account": [
+                "ArrayUtils",
+                "StringUtils",
+                "TransactionGenerationUtils",
+                "TransactionTemplates",
+                "TransactionGeneration"
             ]
         },
         "mainnet": {
@@ -115,6 +166,13 @@
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
+            ],
+            "mainnet-transaction-generation-account": [
+                "ArrayUtils",
+                "StringUtils",
+                "TransactionGenerationUtils",
+                "TransactionTemplates",
+                "TransactionGeneration"
             ]
         }
     }

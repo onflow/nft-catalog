@@ -7,7 +7,15 @@ export const deployNFTCatalog = async () => {
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NonFungibleToken' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'MetadataViews' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalog' })
-    return deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'ArrayUtils' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'StringUtils' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'DapperUtilityCoin' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'FlowUtilityToken' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTStorefrontV2' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGenerationUtils' });
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionTemplates' });
+    return await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGeneration' })
 }
 
 export const addToCatalogAdmin = async (collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier) => {
@@ -139,4 +147,11 @@ export const getNFTProposalForID = async (proposalID) => {
     const args = [proposalID];
 
     return executeScript({ name, args });
+}
+
+export const getInitFunction = async (collectionIdentifier) => {
+    const name = "get_init_script";
+    const args = [collectionIdentifier]
+
+    return executeScript({ name, args })
 }

@@ -3,20 +3,26 @@
     "version": "0.0.1",
     "scripts": {
         "test": "jest --runInBand",
-        "prepare": "mkdir -p lib & node build.js && cp lib/CadenceToJson.json ui/apps/nft-portal/src/flow/catalog_c2j.json"
+        "prepare": "sh lib/create_templates.sh && mkdir -p lib mkdir -p lib/cadut-generated & node build.cjs && cp lib/CadenceToJson.json ui/apps/nft-portal/src/flow/catalog_c2j.json && sh lib/generate-cadut.sh",
+        "test-module-exports": "node --experimental-specifier-resolution=node index.js"
     },
     "author": "Bilal Shahid",
     "license": "ISC",
     "dependencies": {
-        "@onflow/fcl": "^0.0.78"
+        "@onflow/fcl": "^1.2.0",
+        "@onflow/flow-cadut": "^0.2.0-alpha.8",
+        "install": "^0.13.0",
+        "npm": "^8.18.0"
     },
     "devDependencies": {
         "@babel/core": "^7.17.10",
         "@babel/preset-env": "^7.17.10",
+        "@onflow/flow-cadut-generator": "^0.0.1",
         "@onflow/types": "^0.0.6",
         "babel-jest": "^28.0.3",
+        "cadence-to-json": "^1.0.3",
         "flow-js-testing": "^0.2.3-alpha.5",
-        "jest": "^28.0.3",
-        "cadence-to-json": "^1.0.3"
-    }
+        "jest": "^28.0.3"
+    },
+    "type": "module"
 }
