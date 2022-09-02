@@ -9,7 +9,7 @@ pub struct DisplayView {
     init (
         name : String,
         description : String,
-        thumbnail : String,
+        thumbnail : String
     ) {
         self.name = name
         self.description = description
@@ -54,6 +54,7 @@ pub struct NFTCollectionDisplayView {
     pub let collectionDescription: String
     pub let collectionSquareImage : MetadataViews.Media
     pub let collectionBannerImage : MetadataViews.Media
+    pub let externalURL : String
     pub let socials : {String: MetadataViews.ExternalURL}
 
     init (
@@ -61,12 +62,14 @@ pub struct NFTCollectionDisplayView {
         collectionDescription : String,
         collectionSquareImage : MetadataViews.Media,
         collectionBannerImage : MetadataViews.Media,
+        externalURL : String,
         socials : {String: MetadataViews.ExternalURL}
     ) {
         self.collectionName = collectionName
         self.collectionDescription = collectionDescription
         self.collectionSquareImage = collectionSquareImage
         self.collectionBannerImage = collectionBannerImage
+        self.externalURL = externalURL
         self.socials = socials
     }
 }
@@ -190,6 +193,7 @@ pub fun getNFTData(nftID: UInt64, collection: &AnyResource{MetadataViews.Resolve
             collectionDescription : collectionDisplayView!.description,
             collectionSquareImage : collectionDisplayView!.squareImage,
             collectionBannerImage : collectionDisplayView!.bannerImage,
+            externalURL : collectionDisplayView!.externalURL.url,
             socials : collectionDisplayView!.socials
         )
     }

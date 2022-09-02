@@ -93,6 +93,8 @@ export function SampleNFTView({
 
   let invalidViews: any = []
 
+  let otherErrors: any = []
+
   const accordianItems = Object.keys(viewsImplemented).map((item) => {
     let title = item;
     let content = <div>Failed to load details</div>
@@ -110,6 +112,10 @@ export function SampleNFTView({
         <div>No display view was found.</div>
     } else if (item.indexOf('MetadataViews.NFTCollectionData') >= 0) {
       title = 'NFT Collection Data View';
+      if ((viewData["NFTCollectionData"] as any).publicLinkedType.type.typeID.indexOf("NonFungibleToken.Provider") > -1) {
+        invalidViews.push(title)
+        otherErrors.push("NFTCollectionData view should not include NonFungibleToken.Provider within the public link, as this would allow anyone to publically withdraw nfts from an account")
+      }
       content = viewData["NFTCollectionData"] ?
         <CollectionDataView view={viewData["NFTCollectionData"]} withRawView={false} />
         :
@@ -187,10 +193,10 @@ export function SampleNFTView({
           {
             invalidViews.length > 0 && (
               <div className="mt-8">
-                You have not implemented all recommended metadata views required to be added to the NFT catalog.
+                You have not properly implemented all recommended metadata views required to be added to the NFT catalog.
                 <br />
                 <br />
-                Please implement the following views in your contract to continue:
+                Please implement the following views in your contract correctly to continue:
                 <ul>
                   {
                     invalidViews.map((view: any) => {
@@ -201,7 +207,20 @@ export function SampleNFTView({
               </div>
             )
           }
-
+          {
+            otherErrors.length > 0 && (
+              <div className="mt-8">
+                Please fix the following problems in your metadata implementation:
+                <ul>
+                  {
+                    otherErrors.map((view: any) => {
+                      return <li className="font-semibold my-2" key={view}>* {view}</li>
+                    })
+                  }
+                </ul>
+              </div>
+            )
+          }
           <br />
 
           {
