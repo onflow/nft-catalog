@@ -101,8 +101,5 @@ describe('NFT Catalog Test Suite', () => {
 
         [result, error] = await shallResolve(getExampleNFTCollectionLength(Bob))
         expect(result).toBe(0);
-
-        [result, error] = await createTx('DapperBuyNFTMarketplace', collectionIdentifier, "fut");
-        console.log(result);
     });
 })
