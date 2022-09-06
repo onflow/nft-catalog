@@ -345,6 +345,8 @@ export async function proposeNFTToCatalog(
 ): Promise<any> {
   const sampleNFTView = await getNFTInAccountFromPath(sampleAddress, storagePath, nftID);
 
+  await validateCatalogProposal(collectionIdentifier, contractAddress, contractName, sampleNFTView)
+
   let socialsDictionary: any = []
   for (const key in sampleNFTView.NFTCollectionDisplay.socials) {
     let socialsObj = { key: key, value: sampleNFTView.NFTCollectionDisplay.socials[key].url }
@@ -372,7 +374,7 @@ export async function proposeNFTToCatalog(
     collectionBannerImage = `https://gateway.pinata.cloud/ipfs/${cid}/${path}`
   }
 
-  let privateLinkedType: string|null = null;
+  let privateLinkedType: string | null = null;
   let privateRestrictedType: any = null;
   try {
     privateRestrictedType = buildRestrictedType(sampleNFTView.NFTCollectionData.privateLinkedType.type)
@@ -418,6 +420,27 @@ export async function proposeNFTToCatalog(
     console.error(e);
     throw e;
   }
+}
+
+async function validateCatalogProposal(collectionIdentifier: string, contractAddress: string, contractName: string, sampleNFTView: any) {
+  let collections = await getCollections();
+  let displayName = sampleNFTView.NFTCollectionDisplay.collectionName;
+  let storagePathIdentifier = sampleNFTView.NFTCollectionData.storagePath.identifier;
+  
+  for (const key in collections) {
+    if (key !== collectionIdentifier && collections[key].collectionDisplay.name === displayName) {
+      throw new Error(`An nft collection with the collection display name: ${displayName} already exists`);
+    }
+    if (
+      key !== collectionIdentifier &&
+      collections[key].contractName !== contractName &&
+      collections[key].contractAddress !== contractAddress &&
+      collections[key].collectionData.storagePath.identifier === storagePathIdentifier
+    ) {
+      throw new Error(`An nft contract with the storage path: ${storagePathIdentifier} already exists`);
+    }
+  }
+
 }
 
 function buildRestrictedType(restrictedType: any) {

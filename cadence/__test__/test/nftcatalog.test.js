@@ -24,7 +24,8 @@ import {
     updateNFTCatalogEntry,
     hasAdminProxy,
     isCatalogAdmin,
-    getNFTMetadataForCollectionIdentifier
+    getNFTMetadataForCollectionIdentifier,
+    getInitFunction
 } from '../src/nftcatalog';
 import {
     deployExampleNFT,
@@ -72,9 +73,10 @@ describe('NFT Catalog Test Suite', () => {
         await setupExampleNFTCollection(Alice);
         await shallPass(mintExampleNFT(Alice, TEST_NFT_NAME, TEST_NFT_DESCRIPTION, TEST_NFT_THUMBNAIL, [], [], []));
 
+        const collectionIdentifier = nftCreationEvent.data.contract
 
         await shallPass(addToCatalogAdmin(
-            nftCreationEvent.data.contract,
+            collectionIdentifier,
             nftCreationEvent.data.contract,
             nftCreationEvent.data.address,
             nftTypeIdentifier,

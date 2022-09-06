@@ -1,3 +1,7 @@
+cadence/transactions/generated
+generated
+lib/cadut-generated
+
 # dependencies
 node_modules
 

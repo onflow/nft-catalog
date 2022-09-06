@@ -36,7 +36,7 @@ function setupMainnet() {
   Object.keys(catalogJson.vars["mainnet"]).forEach(
     (contractAddressKey) => {
       // @ts-ignore
-      if (contractAddressKey.indexOf("0xNFTCatalog") === -1) {
+      if (contractAddressKey.indexOf("0xNFTCatalog") > 0) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         config.put("0xNFTCatalogAdmin", catalogJson.vars["mainnet"][contractAddressKey])
@@ -75,7 +75,7 @@ function setupTestnet() {
   Object.keys(catalogJson.vars["testnet"]).forEach(
     (contractAddressKey) => {
       // @ts-ignore
-      if (contractAddressKey.indexOf("0xNFTCatalog") === -1) {
+      if (contractAddressKey.indexOf("0xNFTCatalog") > 0) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         config.put("0xNFTCatalogAdmin", catalogJson.vars["testnet"][contractAddressKey])
