@@ -90,6 +90,36 @@ export async function retrieveMetadataInformation(sampleAddress: string, storage
   }
 }
 
+export async function getSupportedGeneratedTransactions(): Promise<any> {
+  try {
+    const scriptResult = await fcl.send([
+      fcl.script(catalogJson.scripts.get_supported_generated_transactions),
+      fcl.args([])
+    ]).then(fcl.decode)
+    return scriptResult
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}
+
+export async function getGeneratedTransaction(tx: string, collectionIdentifer: string, vaultIdentifier: string): Promise<any> {
+  try {
+    const scriptResult = await fcl.send([
+      fcl.script(catalogJson.scripts.gen_tx),
+      fcl.args([
+        fcl.arg(tx, t.String),
+        fcl.arg(collectionIdentifer, t.String),
+        fcl.arg(vaultIdentifier, t.String)
+      ])
+    ]).then(fcl.decode)
+    return scriptResult
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}
+
 export async function getCollections(): Promise<any> {
   try {
     const scriptResult = await fcl.send([
@@ -426,7 +456,7 @@ async function validateCatalogProposal(collectionIdentifier: string, contractAdd
   let collections = await getCollections();
   let displayName = sampleNFTView.NFTCollectionDisplay.collectionName;
   let storagePathIdentifier = sampleNFTView.NFTCollectionData.storagePath.identifier;
-  
+
   for (const key in collections) {
     if (key !== collectionIdentifier && collections[key].collectionDisplay.name === displayName) {
       throw new Error(`An nft collection with the collection display name: ${displayName} already exists`);

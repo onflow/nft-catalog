@@ -13,13 +13,16 @@
   "dependencies": {
     "@onflow/fcl": "^1.0.0",
     "@onflow/types": "^1.0.1",
+    "@uiw/react-codemirror": "^4.12.1",
+    "add": "^2.0.6",
     "core-js": "^3.6.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "^6.3.0",
     "react-social-icons": "^5.14.0",
     "regenerator-runtime": "0.13.7",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@nrwl/cli": "14.3.6",
