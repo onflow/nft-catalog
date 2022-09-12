@@ -88,6 +88,10 @@ pub contract TransactionGeneration {
                 createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
                     return TransactionTemplates.DapperBuyNFTMarketplace(nftSchema: nftSchema, ftSchema: ftSchema)
                 })
+            case "StorefrontRemoveItemTemplate":
+                createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
+                    return TransactionTemplates.StorefrontRemoveItemTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
+                })
             default:
                 return nil
         }
