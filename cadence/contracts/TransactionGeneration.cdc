@@ -30,44 +30,6 @@ pub contract TransactionGeneration {
         return StringUtils.join([imports, tx!], "\n")
     }
 
-    pub fun createTx(
-        collectionIdentifier: String?,
-        vaultIdentifier: String?,
-        createTxCode: ((TransactionGenerationUtils.NFTSchema?,TransactionGenerationUtils.FTSchema?): String)
-    ) : String? {
-        var nftSchema: TransactionGenerationUtils.NFTSchema? = nil
-        var ftSchema: TransactionGenerationUtils.FTSchema? = nil
-        var importTypes: [Type] = [
-            Type<FungibleToken>(),
-            Type<NonFungibleToken>(),
-            Type<MetadataViews>(),
-            Type<NFTStorefrontV2>()
-        ]
-        if (collectionIdentifier != nil) {
-            nftSchema = TransactionGenerationUtils.getNftSchema(collectionIdentifier: collectionIdentifier!)
-            importTypes = importTypes.concat([
-                nftSchema!.type,
-                nftSchema!.publicLinkedType,
-                nftSchema!.privateLinkedType
-            ])
-        }
-        if (vaultIdentifier != nil) {
-            ftSchema = TransactionGenerationUtils.getFtSchema(vaultIdentifier: vaultIdentifier!)
-            importTypes = importTypes.concat([
-                ftSchema!.type,
-                ftSchema!.publicLinkedType,
-                ftSchema!.privateLinkedType
-            ])
-        }
-
-        return self.createTxFromSchemas(
-            nftSchema: nftSchema,
-            ftSchema: ftSchema,
-            createTxCode: createTxCode,
-            importTypes: importTypes
-        )
-    }
-
     pub fun getSupportedTx(): [String] {
         return [
             "CollectionInitialization",
