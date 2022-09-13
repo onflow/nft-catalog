@@ -102,16 +102,19 @@ pub contract TransactionGeneration {
                 importTypes = nftImportTypes.concat(ftImportTypes).concat(storefrontTypes)
             case "DapperBuyNFTMarketplace":
                 createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
-                    return TransactionTemplates.DapperBuyNFTMarketplace(nftSchema: nftSchema, ftSchema: ftSchema)
+                    return TransactionTemplates.DapperBuyNFTMarketplaceTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
                 })
+                importTypes = nftImportTypes.concat(ftImportTypes).concat(storefrontTypes)
             case "DapperCreateListing":
                 createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
                     return TransactionTemplates.DapperCreateListingTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
                 })
+                importTypes = nftImportTypes.concat(ftImportTypes).concat(storefrontTypes)
             case "DapperBuyNFTDirect":
                 createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
                     return TransactionTemplates.DapperBuyNFTDirectTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
                 })
+                importTypes = nftImportTypes.concat(ftImportTypes).concat(storefrontTypes)
             default:
                 return nil
         }

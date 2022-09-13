@@ -11,7 +11,7 @@ pub contract TransactionTemplates {
 
 /*
   The following functions are available:
-  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplace, DapperCreateListingTemplate, DapperBuyNFTDirectTemplate
+  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplaceTemplate, DapperCreateListingTemplate, DapperBuyNFTDirectTemplate
 */
 pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
 
@@ -271,7 +271,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperBuyNFTMarketplace(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+pub fun DapperBuyNFTMarketplaceTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
