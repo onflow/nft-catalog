@@ -5,18 +5,21 @@ import { CatalogSelect } from "../catalog/catalog-select";
 import { changeFCLEnvironment } from "apps/nft-portal/src/flow/setup";
 import { TransactionContent } from "./transaction-content";
 import { TextInput } from "../shared/text-input";
+import { DropDown } from "../shared/drop-down";
 
 type TransactionParams = {
     network: Network;
     identifier: string;
     transaction: string;
+    vault: string;
 }
 
 export default function Layout() {
 
-    const { network = 'testnet', transaction, identifier } = useParams<TransactionParams>()
+    const { network = 'testnet', transaction, identifier, vault = 'flow'} = useParams<TransactionParams>()
 
     const [collectionIdentifier, setCollectionIdentifier] = useState<string>(identifier ?? "")
+    const [ftVault, setFTVault] = useState<string>(vault ?? "flow")
 
     const navigate = useNavigate()
 
@@ -50,11 +53,24 @@ export default function Layout() {
                                 />
                             </div>
                         </div>
-                        <CatalogSelect type="Transactions" network={network} selected={transaction} collectionIdentifier={collectionIdentifier} />
+                        <div>
+                            <DropDown
+                                value={ftVault ?? ""}
+                                label="Fungible Token"
+                                options={[
+                                    { value: "flow", label: "Flow" },
+                                    { value: "fut", label: "Flow Utility Token" },
+                                    { value: "duc", label: "Dapper Utility Coin" }
+                                ]}
+                                onChange={setFTVault}
+                            />
+
+                        </div>
+                        <CatalogSelect type="Transactions" network={network} selected={transaction} collectionIdentifier={collectionIdentifier} ftVault={ftVault} />
                     </div>
                 </div>
                 <div className="px-10 w-3/4 self-start py-10 justify-self-start text-left">
-                    <TransactionContent network={network} identifier={identifier} transaction={transaction} />
+                    <TransactionContent network={network} identifier={identifier} vault={vault ?? "flow"} transaction={transaction} />
                 </div>
             </div>
         </div>
