@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { getAllNFTsInAccountFromCatalog, getCollections, getProposals } from "../../../flow/utils"
+import { getAllNFTsInAccountFromCatalog, getCollections, getProposals, getSupportedGeneratedTransactions } from "../../../flow/utils"
 import { Network } from "./network-dropdown";
 import { changeFCLEnvironment } from "../../../flow/setup";
 import { Badge } from "../shared/badge";
@@ -9,12 +9,16 @@ export function CatalogSelect({
   type,
   network,
   selected,
-  userAddress = null
+  userAddress = null,
+  collectionIdentifier = null,
+  ftVault = null
 }: {
-  type: "Catalog" | "Proposals" | "NFTs",
+  type: "Catalog" | "Proposals" | "NFTs" | "Transactions",
   network: Network
   selected: string | undefined,
-  userAddress?: string | null
+  userAddress?: string | null,
+  collectionIdentifier?: string | null,
+  ftVault?: string | null
 }) {
   const navigate = useNavigate()
   const [items, setItems] = useState<null | Array<any>>(null)
@@ -70,6 +74,21 @@ export function CatalogSelect({
           setItems([])
         }
       }
+      else if (type == "Transactions") {
+        const supportedTransactions = await getSupportedGeneratedTransactions()
+        if (supportedTransactions == null) {
+          setItems([])
+          return
+        }
+        const items = supportedTransactions.map((tx: string) => {
+          return {
+            name: tx,
+            subtext: '',
+            id: tx,
+          }
+        })
+        setItems(items ?? [])
+      }
     }
     setup()
   }, [type, network, userAddress])
@@ -86,6 +105,12 @@ export function CatalogSelect({
                   navigate(`/nfts/${network}/${userAddress}/${item.collectionIdentifier}/${item.id}`)
                 } else if (type === 'Proposals') {
                   navigate(`/proposals/${network}/${item.id}`)
+                } else if (type === 'Transactions') {
+                  if (collectionIdentifier == null || collectionIdentifier === '') {
+                    navigate(`/transactions/${network}/${item.id}/${collectionIdentifier}`)
+                  } else {
+                    navigate(`/transactions/${network}/${item.id}/${collectionIdentifier}/${ftVault}`)
+                  }
                 } else {
                   navigate(`/catalog/${network}/${item.id}`)
                 }

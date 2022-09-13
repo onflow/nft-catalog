@@ -15,6 +15,7 @@ import { Terms } from "./components/terms/terms";
 import { Privacy } from "./components/privacy/privacy";
 import { AdminSetup } from "./components/admin/setup";
 import NFTs from './components/nft'
+import Transactions from './components/transactions'
 
 export function App() {
   return (
@@ -53,6 +54,13 @@ export function App() {
               <Route path=":network" element={<NFTs />} />
               <Route path=":network/:address" element={<NFTs />} />
               <Route path=":network/:address/:identifier/:nftID" element={<NFTs />} />
+            </Route>
+            <Route path="transactions">
+              <Route index={true} element={<Navigate to="/transactions/mainnet" />} />
+              <Route path=":network" element={<Transactions />} />
+              <Route path=":network/:transaction" element={<Transactions />} />
+              <Route path=":network/:transaction/:identifier" element={<Transactions />} />
+              <Route path=":network/:transaction/:identifier/:vault" element={<Transactions />} />
             </Route>
             <Route path="admin" element={<AdminSetup />} />
             <Route path="terms" element={<Terms />} />
