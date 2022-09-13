@@ -108,7 +108,7 @@ describe('NFT Catalog Test Suite', () => {
         expect(error).toBe(null);
         listingResourceID = result.events[0].data.listingResourceID;
 
-        [result, error] = await createTx('StorefrontRemoveItemTemplate', collectionIdentifier, "flow");
+        [result, error] = await createTx('StorefrontRemoveItem', collectionIdentifier, "flow");
         expect(error).toBe(null);
         [result, error] = await runTransaction(result, [listingResourceID], [Alice]);
         expect(error).toBe(null);

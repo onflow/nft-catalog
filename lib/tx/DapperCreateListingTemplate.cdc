@@ -1,0 +1,104 @@
+transaction(saleItemID: UInt64, saleItemPrice: UFix64, commissionAmount: UFix64, marketplacesAddress: [Address], expiry: UInt64, customID: String?) {
+    let sellerPaymentReceiver: Capability<&{FungibleToken.Receiver}>
+    let nftProvider: Capability<&${cI.contractName}.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
+    let storefront: &NFTStorefrontV2.Storefront
+    let dappAddress: Address
+    var saleCuts: [NFTStorefrontV2.SaleCut]
+    var marketplacesCapability: [Capability<&AnyResource{FungibleToken.Receiver}>]
+
+    // It's important that the dapp account authorize this transaction so the dapp has the ability
+    // to validate and approve the royalty included in the sale.
+    prepare(dapp: AuthAccount, seller: AuthAccount) {
+        self.saleCuts = []
+        self.marketplacesCapability = []
+        self.dappAddress = dapp.address
+
+        // If the account doesn't already have a storefront, create one and add it to the account
+        if seller.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath) == nil {
+            // Create a new empty Storefront
+            let storefront <- NFTStorefrontV2.createStorefront() as! @NFTStorefrontV2.Storefront
+            // save it to the account
+            seller.save(<-storefront, to: NFTStorefrontV2.StorefrontStoragePath)
+            // create a public capability for the Storefront
+            seller.link<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(NFTStorefrontV2.StorefrontPublicPath, target: NFTStorefrontV2.StorefrontStoragePath)
+        }
+
+        // Get a reference to the receiver that will receive the fungible tokens if the sale executes.
+        // Note that the sales receiver aka MerchantAddress should be an account owned by Dapper or an end-user Dapper Wallet account address.
+        self.sellerPaymentReceiver = getAccount(seller.address).getCapability<&{FungibleToken.Receiver}>(${vI.publicPath})
+        assert(self.sellerPaymentReceiver.borrow() != nil, message: "Missing or mis-typed DapperUtilityCoin receiver")
+
+        // If the user does not have their collection linked to their account, link it.
+        if seller.borrow<&${cI.contractName}.Collection>(from: ${cI.storagePath}) == nil {
+            let collection <- ${cI.contractName}.createEmptyCollection()
+            seller.save(<-collection, to: ${cI.storagePath})
+        }
+        if (seller.getCapability<&${cI.publicLinkedType}>(${cI.publicPath}).borrow() == nil) {
+            seller.unlink(${cI.publicPath})
+            seller.link<&${cI.publicLinkedType}>(${cI.publicPath}, target: ${cI.storagePath})
+        }
+
+        if (seller.getCapability<&${cI.privateLinkedType}>(${cI.privatePath}).borrow() == nil) {
+            seller.unlink(${cI.privatePath})
+            seller.link<&${cI.privateLinkedType}>(${cI.privatePath}, target: ${cI.storagePath})
+        }
+
+        self.nftProvider = seller.getCapability<&${cI.contractName}.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(${cI.privatePath})!
+        assert(self.nftProvider.borrow() != nil, message: "Missing or mis-typed collection provider")
+
+        if seller.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath) == nil {
+            // Create a new empty Storefront
+            let storefront <- NFTStorefrontV2.createStorefront() as! @NFTStorefrontV2.Storefront
+            // save it to the account
+            seller.save(<-storefront, to: NFTStorefrontV2.StorefrontStoragePath)
+            // create a public capability for the Storefront
+            seller.link<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(NFTStorefrontV2.StorefrontPublicPath, target: NFTStorefrontV2.StorefrontStoragePath)
+        }
+        self.storefront = seller.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath)
+            ?? panic("Missing or mis-typed NFTStorefront Storefront")
+
+        
+        let collectionRef = seller
+            .getCapability(${cI.publicPath})
+            .borrow<&${cI.publicLinkedType}>()
+            ?? panic("Could not borrow a reference to the collection")
+        var totalRoyaltyCut = 0.0
+        let effectiveSaleItemPrice = saleItemPrice - commissionAmount
+
+        let nft = collectionRef.borrowViewResolver(id: saleItemID)!       
+        if (nft.getViews().contains(Type<MetadataViews.Royalties>())) {
+            let royaltiesRef = nft.resolveView(Type<MetadataViews.Royalties>()) ?? panic("Unable to retrieve the royalties")
+            let royalties = (royaltiesRef as! MetadataViews.Royalties).getRoyalties()
+            for royalty in royalties {
+                // TODO - Verify the type of the vault and it should exists
+                self.saleCuts.append(NFTStorefrontV2.SaleCut(receiver: royalty.receiver, amount: royalty.cut * effectiveSaleItemPrice))
+                totalRoyaltyCut = totalRoyaltyCut + royalty.cut * effectiveSaleItemPrice
+            }
+        }
+
+        // Append the cut for the seller.
+        self.saleCuts.append(NFTStorefrontV2.SaleCut(
+            receiver: self.sellerPaymentReceiver,
+            amount: effectiveSaleItemPrice - totalRoyaltyCut
+        ))
+
+        for marketplace in marketplacesAddress {
+            self.marketplacesCapability.append(getAccount(marketplace).getCapability<&{FungibleToken.Receiver}>(${vI.publicPath}))
+        }
+    }
+
+    execute {
+
+         self.storefront.createListing(
+            nftProviderCapability: self.nftProvider,
+            nftType: Type<${cI.type}>(),
+            nftID: saleItemID,
+            salePaymentVaultType: Type<${vI.type}>(),
+            saleCuts: self.saleCuts,
+            marketplacesCapability: self.marketplacesCapability.length == 0 ? nil : self.marketplacesCapability,
+            customID: customID,
+            commissionAmount: commissionAmount,
+            expiry: expiry
+        )
+    }
+}

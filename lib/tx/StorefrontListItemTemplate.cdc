@@ -70,6 +70,15 @@ transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commis
         ))
         assert(self.nftProvider.borrow() != nil, message: "Missing or mis-typed nftProvider")
 
+
+        if acct.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath) == nil {
+            // Create a new empty Storefront
+            let storefront <- NFTStorefrontV2.createStorefront() as! @NFTStorefrontV2.Storefront
+            // save it to the account
+            acct.save(<-storefront, to: NFTStorefrontV2.StorefrontStoragePath)
+            // create a public capability for the Storefront
+            acct.link<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(NFTStorefrontV2.StorefrontPublicPath, target: NFTStorefrontV2.StorefrontStoragePath)
+        }
         self.storefront = acct.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath)
             ?? panic("Missing or mis-typed NFTStorefront Storefront")
 

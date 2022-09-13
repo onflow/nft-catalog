@@ -60,6 +60,7 @@ export function App() {
               <Route path=":network" element={<Transactions />} />
               <Route path=":network/:transaction" element={<Transactions />} />
               <Route path=":network/:transaction/:identifier" element={<Transactions />} />
+              <Route path=":network/:transaction/:identifier/:vault" element={<Transactions />} />
             </Route>
             <Route path="admin" element={<AdminSetup />} />
             <Route path="terms" element={<Terms />} />

@@ -4,8 +4,9 @@ import { Spinner } from "../shared/spinner";
 import { Alert } from "../shared/alert";
 import { getGeneratedTransaction } from "apps/nft-portal/src/flow/utils";
 import CodeMirror from '@uiw/react-codemirror';
+import { Button } from "../shared/button";
 
-export function TransactionContent({ identifier, transaction, network }: { identifier: string | undefined, transaction: string | undefined, network: Network }) {
+export function TransactionContent({ identifier, transaction, network, vault }: { identifier: string | undefined, transaction: string | undefined, network: Network, vault: string | undefined }) {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
     const [transactionData, setTransactionData] = useState<string | null>(null);
@@ -15,12 +16,7 @@ export function TransactionContent({ identifier, transaction, network }: { ident
         const setup = async () => {
             setLoading(true)
             if (identifier != null && identifier !== '' && transaction != null && transaction !== '') {
-                //TODO: Currently defaults to DUC for dapper and Flow for non dapper. Add ability to select vault
-                let fVault = 'flow';
-                if (transaction.includes("Dapper")) {
-                    fVault = 'duc';
-                }
-                const res = await getGeneratedTransaction(transaction, identifier, fVault)
+                const res = await getGeneratedTransaction(transaction, identifier, vault ?? "flow")
                 if (res) {
                     setTransactionData(res);
                 } else {
@@ -32,7 +28,7 @@ export function TransactionContent({ identifier, transaction, network }: { ident
             setLoading(false)
         }
         setup()
-    }, [identifier, transaction])
+    }, [identifier, transaction, vault])
 
     if (transaction == null) {
         return (
@@ -65,8 +61,16 @@ export function TransactionContent({ identifier, transaction, network }: { ident
         return <Alert status="error" title={error} body={""} />
     }
 
-    return <CodeMirror
-        value={transactionData ?? ""}
-        height="auto"
-    />
+    return <div>
+        <div className="my-4">
+            <Button onClick={() => { navigator.clipboard.writeText(transactionData ?? "") }}
+            >Copy Code</Button>
+        </div>
+        <div className="my-4">
+            <CodeMirror
+                value={transactionData ?? ""}
+                height="auto"
+            />
+        </div>
+    </div>
 }
