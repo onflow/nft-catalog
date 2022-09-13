@@ -112,7 +112,7 @@ export function SampleNFTView({
         <div>No display view was found.</div>
     } else if (item.indexOf('MetadataViews.NFTCollectionData') >= 0) {
       title = 'NFT Collection Data View';
-      if ((viewData["NFTCollectionData"] as any).publicLinkedType.type.typeID.indexOf("NonFungibleToken.Provider") > -1) {
+      if ((viewData["NFTCollectionData"] as any)?.publicLinkedType.type.typeID.indexOf("NonFungibleToken.Provider") > -1) {
         invalidViews.push(title)
         otherErrors.push("NFTCollectionData view should not include NonFungibleToken.Provider within the public link, as this would allow anyone to publically withdraw nfts from an account")
       }
