@@ -1,5 +1,5 @@
 {
-    "name": "nft-catalog",
+    "name": "flow-catalog",
     "version": "0.1.0",
     "scripts": {
         "test": "jest --runInBand",

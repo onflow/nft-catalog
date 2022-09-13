@@ -64,8 +64,8 @@ withdrawNftProposalFromCatalog
 ### Installation
 
 ```
-npm install nft-catalog
-yarn add nft-catalog
+npm install flow-catalog
+yarn add flow-catalog
 ```
 
 ### Usage
@@ -75,7 +75,7 @@ Methods can be imported as follows, all nested methods live under the `scripts` 
 NOTE: In order to properly bootstrap the method, you will need to run and `await` on the `getAddressMaps()` method, passing it into all of the methods as shown below.
 
 ```
-import { getAddressMaps, scripts, transactions } from "nft-catalog";
+import { getAddressMaps, scripts, transactions } from "flow-catalog";
 
 const main = async () => {
     const addressMap = await getAddressMaps();
