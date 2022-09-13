@@ -10,13 +10,15 @@ export function CatalogSelect({
   network,
   selected,
   userAddress = null,
-  collectionIdentifier = null
+  collectionIdentifier = null,
+  ftVault = null
 }: {
   type: "Catalog" | "Proposals" | "NFTs" | "Transactions",
   network: Network
   selected: string | undefined,
   userAddress?: string | null,
-  collectionIdentifier?: string | null
+  collectionIdentifier?: string | null,
+  ftVault?: string | null
 }) {
   const navigate = useNavigate()
   const [items, setItems] = useState<null | Array<any>>(null)
@@ -104,7 +106,11 @@ export function CatalogSelect({
                 } else if (type === 'Proposals') {
                   navigate(`/proposals/${network}/${item.id}`)
                 } else if (type === 'Transactions') {
-                  navigate(`/transactions/${network}/${item.id}/${collectionIdentifier}`)
+                  if (collectionIdentifier == null || collectionIdentifier === '') {
+                    navigate(`/transactions/${network}/${item.id}/${collectionIdentifier}`)
+                  } else {
+                    navigate(`/transactions/${network}/${item.id}/${collectionIdentifier}/${ftVault}`)
+                  }
                 } else {
                   navigate(`/catalog/${network}/${item.id}`)
                 }
