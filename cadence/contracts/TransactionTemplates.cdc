@@ -11,7 +11,7 @@ pub contract TransactionTemplates {
 
 /*
   The following functions are available:
-  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplace, DapperCreateListingTemplate
+  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplace, DapperCreateListingTemplate, DapperBuyNFTDirectTemplate
 */
 pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
 
@@ -499,6 +499,118 @@ let lines: [[String]] = [
 ["            commissionAmount: commissionAmount,"],
 ["            expiry: expiry"],
 ["        )"],
+["    }"],
+["}"],
+[""]]
+var combinedLines: [String] = []
+for line in lines {
+combinedLines.append(StringUtils.join(line, ""))
+}
+return StringUtils.join(combinedLines, "\n")
+}
+pub fun DapperBuyNFTDirectTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+
+    var nftPublicLink = ""
+    var nftPrivateLink = ""
+    var ftPublicLink = ""
+    var ftPrivateLink = ""
+    if nftSchema != nil {
+      nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.publicLinkedType)
+      nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.privateLinkedType)
+    }
+    if ftSchema != nil {
+      ftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.publicLinkedType)
+      ftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.privateLinkedType)
+    }
+  
+let lines: [[String]] = [
+["transaction(storefrontAddress: Address, listingResourceID: UInt64, expectedPrice: UFix64, commissionRecipient: Address?) {"],
+["    let paymentVault: @FungibleToken.Vault"],
+["    let nftCollection: &", nftPublicLink, ""],
+["    let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}"],
+["    let listing: &NFTStorefrontV2.Listing{NFTStorefrontV2.ListingPublic}"],
+["    let dappAddress: Address"],
+["    let salePrice: UFix64"],
+["    let balanceBeforeTransfer: UFix64"],
+["    let mainUtilityCoinVault: &", ftSchema!.contractName, ".Vault"],
+["    var commissionRecipientCap: Capability<&{FungibleToken.Receiver}>?"],
+[""],
+["    prepare(dapp: AuthAccount, dapper: AuthAccount, buyer: AuthAccount) {"],
+["        self.commissionRecipientCap = nil"],
+["        self.dappAddress = dapp.address"],
+["        "],
+["        // Initialize the buyer's collection if they do not already have one"],
+["        if buyer.borrow<&", nftSchema!.contractName, ".Collection>(from: ", nftSchema!.storagePath, ") == nil {"],
+["            let collection <- ", nftSchema!.contractName, ".createEmptyCollection() as! @", nftSchema!.contractName, ".Collection"],
+["            buyer.save(<-collection, to: ", nftSchema!.storagePath, ")"],
+["        }"],
+[""],
+["        if (buyer.getCapability<&", nftPublicLink, ">(", nftSchema!.publicPath, ").borrow() == nil) {"],
+["            buyer.unlink(", nftSchema!.publicPath, ")"],
+["            buyer.link<&", nftPublicLink, ">(", nftSchema!.publicPath, ", target: ", nftSchema!.storagePath, ")"],
+["        }"],
+[""],
+["        if (buyer.getCapability<&", nftPrivateLink, ">(", nftSchema!.privatePath, ").borrow() == nil) {"],
+["            buyer.unlink(", nftSchema!.privatePath, ")"],
+["            buyer.link<&", nftPrivateLink, ">(", nftSchema!.privatePath, ", target: ", nftSchema!.storagePath, ")"],
+["        }"],
+[""],
+["        self.storefront = dapp"],
+["            .getCapability<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>("],
+["                NFTStorefrontV2.StorefrontPublicPath"],
+["            )!"],
+["            .borrow()"],
+["            ?? panic(\"Could not borrow Storefront from provided address\")"],
+[""],
+["        // Get the listing by ID from the storefront"],
+["        self.listing = self.storefront.borrowListing(listingResourceID: listingResourceID)"],
+["            ?? panic(\"No Offer with that ID in Storefront\")"],
+["        self.salePrice = self.listing.getDetails().salePrice"],
+[""],
+["        // Get a vault from Dapper's account"],
+["        self.mainUtilityCoinVault = dapper.borrow<&", ftSchema!.contractName, ".Vault>(from: ", ftSchema!.storagePath, ")"],
+["            ?? panic(\"Cannot borrow UtilityCoin vault from account storage\")"],
+["        self.balanceBeforeTransfer = self.mainUtilityCoinVault.balance"],
+["        self.paymentVault <- self.mainUtilityCoinVault.withdraw(amount: self.salePrice)"],
+[""],
+["        // Get the collection from the buyer so the NFT can be deposited into it"],
+["        self.nftCollection = buyer.borrow<&", nftPublicLink, ">("],
+["            from: ", nftSchema!.storagePath, ""],
+["        ) ?? panic(\"Cannot borrow NFT collection receiver from account\")"],
+[""],
+["         // Fetch the commission amt."],
+["        let commissionAmount = self.listing.getDetails().commissionAmount"],
+[""],
+["        if commissionRecipient != nil && commissionAmount != 0.0 {"],
+["            // Access the capability to receive the commission."],
+["            let _commissionRecipientCap = getAccount(commissionRecipient!).getCapability<&{FungibleToken.Receiver}>(", ftSchema!.publicPath, ")"],
+["            assert(_commissionRecipientCap.check(), message: \"Commission Recipient doesn't have flowtoken receiving capability\")"],
+["            self.commissionRecipientCap = _commissionRecipientCap"],
+["        } else if commissionAmount == 0.0 {"],
+["            self.commissionRecipientCap = nil"],
+["        } else {"],
+["            panic(\"Commission recipient can not be empty when commission amount is non zero\")"],
+["        }"],
+["    }"],
+[""],
+["    // Check that the price is right"],
+["    pre {"],
+["        self.salePrice == expectedPrice: \"unexpected price\""],
+["        self.dappAddress == storefrontAddress: \"Requires valid authorizing signature\""],
+["    }"],
+[""],
+["    execute {"],
+["        let item <- self.listing.purchase("],
+["            payment: <-self.paymentVault,"],
+["            commissionRecipient: self.commissionRecipientCap"],
+["        )"],
+[""],
+["        self.nftCollection.deposit(token: <-item)"],
+["    }"],
+[""],
+["    // Check that all utilityCoin was routed back to Dapper"],
+["    post {"],
+["        self.mainUtilityCoinVault.balance == self.balanceBeforeTransfer: \"UtilityCoin leakage\""],
 ["    }"],
 ["}"],
 [""]]
