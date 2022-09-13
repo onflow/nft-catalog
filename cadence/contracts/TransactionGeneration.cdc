@@ -35,6 +35,7 @@ pub contract TransactionGeneration {
             "CollectionInitialization",
             "StorefrontListItem",
             "StorefrontBuyItem",
+            "StorefrontRemoveItem",
             "DapperBuyNFTMarketplace",
             "DapperCreateListing",
             "DapperBuyNFTDirect"
@@ -100,6 +101,11 @@ pub contract TransactionGeneration {
                     return TransactionTemplates.StorefrontBuyItemTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
                 })
                 importTypes = nftImportTypes.concat(ftImportTypes).concat(storefrontTypes)
+            case "StorefrontRemoveItem":
+                createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
+                    return TransactionTemplates.StorefrontRemoveItemTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
+                })
+                importTypes = storefrontTypes
             case "DapperBuyNFTMarketplace":
                 createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
                     return TransactionTemplates.DapperBuyNFTMarketplaceTemplate(nftSchema: nftSchema, ftSchema: ftSchema)

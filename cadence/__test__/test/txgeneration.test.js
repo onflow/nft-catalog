@@ -87,7 +87,7 @@ describe('NFT Catalog Test Suite', () => {
         expect(error).toBe(null);
         [result, error] = await runTransaction(result, [1, 10, null, 0, 32503698000, []], [Bob]);
         expect(error).toBe(null);
-        const listingResourceID = result.events[0].data.listingResourceID;
+        let listingResourceID = result.events[0].data.listingResourceID;
 
         await mintFlow(Alice, '10.0');
 
@@ -101,5 +101,28 @@ describe('NFT Catalog Test Suite', () => {
 
         [result, error] = await shallResolve(getExampleNFTCollectionLength(Bob))
         expect(result).toBe(0);
+
+        [result, error] = await createTx('StorefrontListItem', collectionIdentifier, "flow");
+        expect(error).toBe(null);
+        [result, error] = await runTransaction(result, [1, 10, null, 0, 32503698000, []], [Alice]);
+        expect(error).toBe(null);
+        listingResourceID = result.events[0].data.listingResourceID;
+
+        [result, error] = await createTx('StorefrontRemoveItem', collectionIdentifier, "flow");
+        expect(error).toBe(null);
+        [result, error] = await runTransaction(result, [listingResourceID], [Alice]);
+        expect(error).toBe(null);
+
+        // should fail to buy the nft because the listing no longer exists
+        [result, error] = await createTx('StorefrontBuyItem', collectionIdentifier, "flow");
+        expect(error).toBe(null);
+        let foundError = false
+        try {
+            [result, error] = await runTransaction(result, [listingResourceID, Alice, null], [Bob]);
+        } catch (e) {
+            foundError = true
+        }
+        expect(foundError).toBe(true)
+        await mintFlow(Alice, '10.0');
     });
 })

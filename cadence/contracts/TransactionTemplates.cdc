@@ -11,7 +11,7 @@ pub contract TransactionTemplates {
 
 /*
   The following functions are available:
-  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplaceTemplate, DapperCreateListingTemplate, DapperBuyNFTDirectTemplate
+  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplaceTemplate, StorefrontRemoveItemTemplate, DapperCreateListingTemplate, DapperBuyNFTDirectTemplate
 */
 pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
 
@@ -374,6 +374,42 @@ let lines: [[String]] = [
 ["        self.mainUtilityCoinVault.balance == self.balanceBeforeTransfer: \"UtilityCoin leakage\""],
 ["    }"],
 ["}"],
+[""]]
+var combinedLines: [String] = []
+for line in lines {
+combinedLines.append(StringUtils.join(line, ""))
+}
+return StringUtils.join(combinedLines, "\n")
+}
+pub fun StorefrontRemoveItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+
+    var nftPublicLink = ""
+    var nftPrivateLink = ""
+    var ftPublicLink = ""
+    var ftPrivateLink = ""
+    if nftSchema != nil {
+      nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.publicLinkedType)
+      nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.privateLinkedType)
+    }
+    if ftSchema != nil {
+      ftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.publicLinkedType)
+      ftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.privateLinkedType)
+    }
+  
+let lines: [[String]] = [
+["transaction(listingResourceID: UInt64) {"],
+["    let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontManager}"],
+[""],
+["    prepare(acct: AuthAccount) {"],
+["        self.storefront = acct.borrow<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontManager}>(from: NFTStorefrontV2.StorefrontStoragePath)"],
+["            ?? panic(\"Missing or mis-typed NFTStorefrontV2.Storefront\")"],
+["    }"],
+[""],
+["    execute {"],
+["        self.storefront.removeListing(listingResourceID: listingResourceID)"],
+["    }"],
+["}"],
+[""],
 [""]]
 var combinedLines: [String] = []
 for line in lines {
