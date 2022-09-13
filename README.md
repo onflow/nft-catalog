@@ -6,19 +6,125 @@ The NFT Catalog is an on chain registry listing NFT collections that exists on F
 
 Checkout the catalog [site](https://nft-catalog.vercel.app/) to submit your NFT collection both on testnet and mainnet.
 
+## NPM Module
+
+We exposed an interface to the catalog via a consumable NPM module. This library will expose a number of methods that can be called to interact with the catalog.
+
+### Methods
+
+Method signatures and their associating parameters/responses can be found in the `cadence/` folder of this repo.
+
+#### Scripts
+
+```
+checkForRecommendedV1Views
+genTx
+getAllNftsInAccount
+getExamplenftCollectionLength
+getExamplenftType
+getNftCatalog
+getNftCatalogProposals
+getNftCollectionsForNftType
+getNftIdsInAccount
+getNftInAccount
+getNftInAccountFromPath
+getNftMetadataForCollectionIdentifier
+getNftProposalForId
+getNftsCountInAccount
+getNftsInAccount
+getNftsInAccountFromIds
+getNftsInAccountFromPath
+getSupportedGeneratedTransactions
+hasAdminProxy
+isCatalogAdmin
+```
+
+#### Transactions
+
+```
+addToNftCatalog
+addToNftCatalogAdmin
+approveNftCatalogProposal
+mintExampleNft
+mintNonstandardNft
+proposeNftToCatalog
+rejectNftCatalogProposal
+removeFromNftCatalog
+removeNftCatalogProposal
+sendAdminCapabilityToProxy
+setupExamplenftCollection
+setupNftCatalogAdminProxy
+setupNonstandardnftCollection
+setupStorefront
+transferExamplenft
+updateNftCatalogEntry
+withdrawNftProposalFromCatalog
+```
+
+### Installation
+
+```
+npm install nft-catalog
+yarn add nft-catalog
+```
+
+### Usage
+
+Methods can be imported as follows, all nested methods live under the `scripts` or `transactions` variable.
+
+NOTE: In order to properly bootstrap the method, you will need to run and `await` on the `getAddressMaps()` method, passing it into all of the methods as shown below.
+
+```
+import { getAddressMaps, scripts, transactions } from "nft-catalog";
+
+const main = async () => {
+    const addressMap = await getAddressMaps();
+    console.log(await scripts.getNftCatalog(addressMap));
+};
+
+main();
+```
+
+The response of any method is a tuple-array, with the first element being the result, and the second being the error (if applicable).
+
+For example, the result of the method above would look like -
+
+```
+[
+  {
+    BILPlayerCollection: {
+      contractName: 'Player',
+      contractAddress: '0x9e6cdb88e34fa1f3',
+      nftType: [Object],
+      collectionData: [Object],
+      collectionDisplay: [Object]
+    },
+    ...
+    SoulMadeComponent: {
+      contractName: 'SoulMadeComponent',
+      contractAddress: '0x421c19b7dc122357',
+      nftType: [Object],
+      collectionData: [Object],
+      collectionDisplay: [Object]
+    }
+  },
+  null
+]
+```
+
 ## Contract Addresses
 
 `NFTCatalog.cdc`: This contract contains the NFT Catalog
 
-| Network | Address |
-| --- | --- |
+| Network | Address            |
+| ------- | ------------------ |
 | Mainnet | 0x49a7cda3a1eecc29 |
 | Testnet | 0x324c34e1c517e4db |
 
 `NFTRetrieval.cdc`: This contract contains helper functions to make it easier to discover NFTs within accounts and from the catalog
 
-| Network | Address |
-| --- | --- |
+| Network | Address            |
+| ------- | ------------------ |
 | Mainnet | 0x49a7cda3a1eecc29 |
 | Testnet | 0x324c34e1c517e4db |
 
@@ -26,14 +132,15 @@ Checkout the catalog [site](https://nft-catalog.vercel.app/) to submit your NFT 
 
 1. Visit [here](https://nft-catalog.vercel.app/v)
 2. Enter the address containing the NFT contract which contains the collection and select the contract
-    
+
     ![Verifier Step 1](https://user-images.githubusercontent.com/1332984/178290984-570dc87b-c2b7-4036-b0ba-0588ed2bfc96.png)
-    
+
 3. Enter the storage path where the NFTs are stored and enter an address that holds a sample NFT or log in if you have access to an account that owns the NFT
-    
+
     ![Verifier Step 2](https://user-images.githubusercontent.com/1332984/178290983-9509cad1-ae53-4ecf-bbb6-e9cb5adb5945.png)
-    
+
 4. The application will verify that your NFT collection implements the required Metadata views.
+
     1. The required metadata views include…
         1. NFT Display
             1. How to display an individual NFT part of the collection
@@ -47,23 +154,21 @@ Checkout the catalog [site](https://nft-catalog.vercel.app/) to submit your NFT 
             1. Any royalties that should be accounted for during marketplace transactions
     2. You can find sample implementations of all these views in this example NFT [contract](https://github.com/onflow/flow-nft/blob/master/contracts/ExampleNFT.cdc).
     3. If you are not implementing a view, the app will communicate this and you can update your NFT contract and try resubmitting.
-        
+
         ![Verifier Step 3](https://user-images.githubusercontent.com/1332984/178290981-90442443-5038-4feb-8721-7858cbfeef84.png)
-        
+
 5. Submit proposal transaction to the NFT catalog by entering a unique url safe identifier for the collection and a message including any additional context (like contact information).
-    
+
     ![Verifier Step 4](https://user-images.githubusercontent.com/1332984/178290980-8168b66a-d575-4c90-b6a5-7d19f36ff567.png)
-    
+
 6. Once submitted you can view all proposals [here](https://nft-catalog.vercel.app/proposals/mainnet) to track the review of your NFT.
 
 If you would like to make a proposal manually, you may submit the following transaction with all parameters filled in: [https://github.com/dapperlabs/nft-catalog/blob/main/cadence/transactions/propose_nft_to_catalog.cdc](https://github.com/dapperlabs/nft-catalog/blob/main/cadence/transactions/propose_nft_to_catalog.cdc)
 
-Proposals should be reviewed and approved within a few days.  Reasons for a proposal being rejected may include:
+Proposals should be reviewed and approved within a few days. Reasons for a proposal being rejected may include:
 
-- Providing duplicate path or name information of an existing collection on the catalog
-- Providing a not url safe or inaccurate name as the identifier
-
-
+-   Providing duplicate path or name information of an existing collection on the catalog
+-   Providing a not url safe or inaccurate name as the identifier
 
 ## Using the Catalog (For marketplaces and other NFT applications)
 
@@ -134,7 +239,9 @@ pub fun main(ownerAddress: Address) : {String : Number} {
     return items
 }
 ```
+
 `Sample Response...`
+
 ```text
 {
     "schmoes_prelaunch_token": 1
@@ -206,7 +313,7 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
     let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let items : [NFTRetrieval.BaseNFTViewsV1] = []
-    
+
     let data : {String : [NFT] } = {}
 
     for key in catalog.keys {
@@ -261,29 +368,31 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
     return data
 }
 ```
+
 `Sample Response...`
+
 ```text
 {
-    "FlovatarComponent": [], 
+    "FlovatarComponent": [],
     "schmoes_prelaunch_token": [
         s.aa16be98aac20e8073f923261531cbbdfae1464f570f5be796b57cdc97656248.NFT(
-            id: 1006, 
-            name: "Schmoes Pre Launch Token #1006", 
-            description: "", 
+            id: 1006,
+            name: "Schmoes Pre Launch Token #1006",
+            description: "",
             thumbnail: "https://gateway.pinata.cloud/ipfs/QmXQ1iBke5wjcjYG22ACVXsCvtMJKEkwFiMf96UChP8uJq",
-            externalURL: "https://schmoes.io", 
-            storagePath: /storage/SchmoesPreLaunchTokenCollection, 
-            publicPath: /public/SchmoesPreLaunchTokenCollection, 
-            privatePath: /private/SchmoesPreLaunchTokenCollection, 
-            publicLinkedType: Type<&A.6c4fe48768523577.SchmoesPreLaunchToken.Collection{A.1d7e57aa55817448.NonFungibleToken.CollectionPublic,A.  1d7e57aa55817448.NonFungibleToken.Receiver,A.1d7e57aa55817448.MetadataViews.ResolverCollection}>(),          
-            privateLinkedType: Type<&A.6c4fe48768523577.SchmoesPreLaunchToken.Collection{A.1d7e57aa55817448.NonFungibleToken.CollectionPublic,A.1d7e57aa55817448.NonFungibleToken.Provider,A.1d7e57aa55817448.MetadataViews.ResolverCollection}>(), 
-            collectionName: "Schmoes Pre Launch Token", 
-            collectionDescription: "", 
-            collectionSquareImage: "https://gateway.pinata.cloud/ipfs/QmXQ1iBke5wjcjYG22ACVXsCvtMJKEkwFiMf96UChP8uJq", 
-            collectionBannerImage: "https://gateway.pinata.cloud/ipfs/QmXQ1iBke5wjcjYG22ACVXsCvtMJKEkwFiMf96UChP8uJq", 
+            externalURL: "https://schmoes.io",
+            storagePath: /storage/SchmoesPreLaunchTokenCollection,
+            publicPath: /public/SchmoesPreLaunchTokenCollection,
+            privatePath: /private/SchmoesPreLaunchTokenCollection,
+            publicLinkedType: Type<&A.6c4fe48768523577.SchmoesPreLaunchToken.Collection{A.1d7e57aa55817448.NonFungibleToken.CollectionPublic,A.  1d7e57aa55817448.NonFungibleToken.Receiver,A.1d7e57aa55817448.MetadataViews.ResolverCollection}>(),
+            privateLinkedType: Type<&A.6c4fe48768523577.SchmoesPreLaunchToken.Collection{A.1d7e57aa55817448.NonFungibleToken.CollectionPublic,A.1d7e57aa55817448.NonFungibleToken.Provider,A.1d7e57aa55817448.MetadataViews.ResolverCollection}>(),
+            collectionName: "Schmoes Pre Launch Token",
+            collectionDescription: "",
+            collectionSquareImage: "https://gateway.pinata.cloud/ipfs/QmXQ1iBke5wjcjYG22ACVXsCvtMJKEkwFiMf96UChP8uJq",
+            collectionBannerImage: "https://gateway.pinata.cloud/ipfs/QmXQ1iBke5wjcjYG22ACVXsCvtMJKEkwFiMf96UChP8uJq",
             royalties: []
         )
-    ], 
+    ],
     "Flovatar": []
 }
 ```
@@ -293,9 +402,9 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
 For Wallets that have a lot of NFTs you may run into memory issues. The common pattern to get around this for now is to retrieve just the ID's in a wallet by calling the following script
 
 ```swift
-import MetadataViews from 0x1d7e57aa55817448 
-import NFTCatalog from 0x49a7cda3a1eecc29 
-import NFTRetrieval from 0x49a7cda3a1eecc29 
+import MetadataViews from 0x1d7e57aa55817448
+import NFTCatalog from 0x49a7cda3a1eecc29
+import NFTRetrieval from 0x49a7cda3a1eecc29
 
 pub fun main(ownerAddress: Address) : {String : [UInt64]} {
     let catalog = NFTCatalog.getCatalog()
@@ -329,10 +438,11 @@ pub fun main(ownerAddress: Address) : {String : [UInt64]} {
 ```
 
 and then use the ids to retrieve the full metadata for only those ids by calling the following script and passing in a map of collectlionIdentifer -> [ids]
+
 ```swift
-import MetadataViews from 0x1d7e57aa55817448 
-import NFTCatalog from 0x49a7cda3a1eecc29 
-import NFTRetrieval from 0x49a7cda3a1eecc29 
+import MetadataViews from 0x1d7e57aa55817448
+import NFTCatalog from 0x49a7cda3a1eecc29
+import NFTRetrieval from 0x49a7cda3a1eecc29
 
 pub struct NFT {
     pub let id : UInt64
@@ -452,7 +562,6 @@ pub fun main(ownerAddress: Address, collections: {String : [UInt64]}) : {String 
 }
 ```
 
-
 **Example 6 - Setup a user’s account to receive a specific collection**
 
 1. Run the following script to retrieve some collection-level information for an NFT collection identifier from the catalog
@@ -500,7 +609,7 @@ pub fun main(collectionIdentifier : String) : NFT? {
         let catalog = NFTCatalog.getCatalog()
 
         assert(catalog.containsKey(collectionIdentifier), message: "Invalid Collection")
-        
+
               return NFTCollection(
                   storagePath : collectionDataView!.storagePath,
                   publicPath : collectionDataView!.publicPath,
@@ -513,12 +622,12 @@ pub fun main(collectionIdentifier : String) : NFT? {
                   collectionBannerImage : collectionDisplayView!.bannerImage.file.uri()
               )
           }
-        
+
         panic("Invalid Token ID")
 }
 ```
 
-2. This script result can then be used to form a transaction by inserting the relevant variables from above into a transaction template like the following: 
+2. This script result can then be used to form a transaction by inserting the relevant variables from above into a transaction template like the following:
 
 ```swift
 import NonFungibleToken from 0x1d7e57aa55817448
@@ -549,8 +658,6 @@ transaction {
 }
 ```
 
-
-
 ## Developer Usage
 
 ### 1. [Install the Flow CLI](https://github.com/onflow/flow-cli)
@@ -558,27 +665,29 @@ transaction {
 ### 2. [Install Node](https://nodejs.org/en/)
 
 ### 3. Clone the project
+
 ```sh
 git clone --depth=1 https://github.com/onflow/nft-catalog.git
 ```
+
 ### 4. Install packages
 
-- Run `npm install` in the root of the project
+-   Run `npm install` in the root of the project
 
 ### 5. Run Test Suite
 
-- Run `npm test` in the root of the project
+-   Run `npm test` in the root of the project
 
 ## License
 
 The works in these files:
 
-- [FungibleToken.cdc](cadence/contracts/FungibleToken.cdc)
-- [NonFungibleToken.cdc](cadence/contracts/NonFungibleToken.cdc)
-- [ExampleNFT.cdc](cadence/contracts/ExampleNFT.cdc)
-- [MetadataViews.cdc](cadence/contracts/MetadataViews.cdc)
-- [NFTCatalog.cdc](cadence/contracts/NFTCatalog.cdc)
-- [NFTCatalogAdmin.cdc](cadence/contracts/NFTCatalogAdmin.cdc)
-- [NFTRetrieval.cdc](cadence/contracts/NFTRetrieval.cdc)
+-   [FungibleToken.cdc](cadence/contracts/FungibleToken.cdc)
+-   [NonFungibleToken.cdc](cadence/contracts/NonFungibleToken.cdc)
+-   [ExampleNFT.cdc](cadence/contracts/ExampleNFT.cdc)
+-   [MetadataViews.cdc](cadence/contracts/MetadataViews.cdc)
+-   [NFTCatalog.cdc](cadence/contracts/NFTCatalog.cdc)
+-   [NFTCatalogAdmin.cdc](cadence/contracts/NFTCatalogAdmin.cdc)
+-   [NFTRetrieval.cdc](cadence/contracts/NFTRetrieval.cdc)
 
 are under the [Unlicense](LICENSE).
