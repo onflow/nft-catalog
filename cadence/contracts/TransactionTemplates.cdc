@@ -11,7 +11,7 @@ pub contract TransactionTemplates {
 
 /*
   The following functions are available:
-  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplace
+  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplace, DapperCreateListingTemplate
 */
 pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
 
@@ -372,6 +372,133 @@ let lines: [[String]] = [
 ["    // Check that all utilityCoin was routed back to Dapper"],
 ["    post {"],
 ["        self.mainUtilityCoinVault.balance == self.balanceBeforeTransfer: \"UtilityCoin leakage\""],
+["    }"],
+["}"],
+[""]]
+var combinedLines: [String] = []
+for line in lines {
+combinedLines.append(StringUtils.join(line, ""))
+}
+return StringUtils.join(combinedLines, "\n")
+}
+pub fun DapperCreateListingTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+
+    var nftPublicLink = ""
+    var nftPrivateLink = ""
+    var ftPublicLink = ""
+    var ftPrivateLink = ""
+    if nftSchema != nil {
+      nftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.publicLinkedType)
+      nftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.privateLinkedType)
+    }
+    if ftSchema != nil {
+      ftPublicLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.publicLinkedType)
+      ftPrivateLink = TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.privateLinkedType)
+    }
+  
+let lines: [[String]] = [
+["transaction(saleItemID: UInt64, saleItemPrice: UFix64, commissionAmount: UFix64, marketplacesAddress: [Address], expiry: UInt64, customID: String?) {"],
+["    let sellerPaymentReceiver: Capability<&{FungibleToken.Receiver}>"],
+["    let nftProvider: Capability<&", nftSchema!.contractName, ".Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>"],
+["    let storefront: &NFTStorefrontV2.Storefront"],
+["    let dappAddress: Address"],
+["    var saleCuts: [NFTStorefrontV2.SaleCut]"],
+["    var marketplacesCapability: [Capability<&AnyResource{FungibleToken.Receiver}>]"],
+[""],
+["    // It's important that the dapp account authorize this transaction so the dapp has the ability"],
+["    // to validate and approve the royalty included in the sale."],
+["    prepare(dapp: AuthAccount, seller: AuthAccount) {"],
+["        self.saleCuts = []"],
+["        self.marketplacesCapability = []"],
+["        self.dappAddress = dapp.address"],
+[""],
+["        // If the account doesn't already have a storefront, create one and add it to the account"],
+["        if seller.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath) == nil {"],
+["            // Create a new empty Storefront"],
+["            let storefront <- NFTStorefrontV2.createStorefront() as! @NFTStorefrontV2.Storefront"],
+["            // save it to the account"],
+["            seller.save(<-storefront, to: NFTStorefrontV2.StorefrontStoragePath)"],
+["            // create a public capability for the Storefront"],
+["            seller.link<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(NFTStorefrontV2.StorefrontPublicPath, target: NFTStorefrontV2.StorefrontStoragePath)"],
+["        }"],
+[""],
+["        // Get a reference to the receiver that will receive the fungible tokens if the sale executes."],
+["        // Note that the sales receiver aka MerchantAddress should be an account owned by Dapper or an end-user Dapper Wallet account address."],
+["        self.sellerPaymentReceiver = getAccount(seller.address).getCapability<&{FungibleToken.Receiver}>(", ftSchema!.publicPath, ")"],
+["        assert(self.sellerPaymentReceiver.borrow() != nil, message: \"Missing or mis-typed DapperUtilityCoin receiver\")"],
+[""],
+["        // If the user does not have their collection linked to their account, link it."],
+["        if seller.borrow<&", nftSchema!.contractName, ".Collection>(from: ", nftSchema!.storagePath, ") == nil {"],
+["            let collection <- ", nftSchema!.contractName, ".createEmptyCollection()"],
+["            seller.save(<-collection, to: ", nftSchema!.storagePath, ")"],
+["        }"],
+["        if (seller.getCapability<&", nftPublicLink, ">(", nftSchema!.publicPath, ").borrow() == nil) {"],
+["            seller.unlink(", nftSchema!.publicPath, ")"],
+["            seller.link<&", nftPublicLink, ">(", nftSchema!.publicPath, ", target: ", nftSchema!.storagePath, ")"],
+["        }"],
+[""],
+["        if (seller.getCapability<&", nftPrivateLink, ">(", nftSchema!.privatePath, ").borrow() == nil) {"],
+["            seller.unlink(", nftSchema!.privatePath, ")"],
+["            seller.link<&", nftPrivateLink, ">(", nftSchema!.privatePath, ", target: ", nftSchema!.storagePath, ")"],
+["        }"],
+[""],
+["        self.nftProvider = seller.getCapability<&", nftSchema!.contractName, ".Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(", nftSchema!.privatePath, ")!"],
+["        assert(self.nftProvider.borrow() != nil, message: \"Missing or mis-typed collection provider\")"],
+[""],
+["        if seller.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath) == nil {"],
+["            // Create a new empty Storefront"],
+["            let storefront <- NFTStorefrontV2.createStorefront() as! @NFTStorefrontV2.Storefront"],
+["            // save it to the account"],
+["            seller.save(<-storefront, to: NFTStorefrontV2.StorefrontStoragePath)"],
+["            // create a public capability for the Storefront"],
+["            seller.link<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(NFTStorefrontV2.StorefrontPublicPath, target: NFTStorefrontV2.StorefrontStoragePath)"],
+["        }"],
+["        self.storefront = seller.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath)"],
+["            ?? panic(\"Missing or mis-typed NFTStorefront Storefront\")"],
+[""],
+["        "],
+["        let collectionRef = seller"],
+["            .getCapability(", nftSchema!.publicPath, ")"],
+["            .borrow<&", nftPublicLink, ">()"],
+["            ?? panic(\"Could not borrow a reference to the collection\")"],
+["        var totalRoyaltyCut = 0.0"],
+["        let effectiveSaleItemPrice = saleItemPrice - commissionAmount"],
+[""],
+["        let nft = collectionRef.borrowViewResolver(id: saleItemID)!       "],
+["        if (nft.getViews().contains(Type<MetadataViews.Royalties>())) {"],
+["            let royaltiesRef = nft.resolveView(Type<MetadataViews.Royalties>()) ?? panic(\"Unable to retrieve the royalties\")"],
+["            let royalties = (royaltiesRef as! MetadataViews.Royalties).getRoyalties()"],
+["            for royalty in royalties {"],
+["                // TODO - Verify the type of the vault and it should exists"],
+["                self.saleCuts.append(NFTStorefrontV2.SaleCut(receiver: royalty.receiver, amount: royalty.cut * effectiveSaleItemPrice))"],
+["                totalRoyaltyCut = totalRoyaltyCut + royalty.cut * effectiveSaleItemPrice"],
+["            }"],
+["        }"],
+[""],
+["        // Append the cut for the seller."],
+["        self.saleCuts.append(NFTStorefrontV2.SaleCut("],
+["            receiver: self.sellerPaymentReceiver,"],
+["            amount: effectiveSaleItemPrice - totalRoyaltyCut"],
+["        ))"],
+[""],
+["        for marketplace in marketplacesAddress {"],
+["            self.marketplacesCapability.append(getAccount(marketplace).getCapability<&{FungibleToken.Receiver}>(", ftSchema!.publicPath, "))"],
+["        }"],
+["    }"],
+[""],
+["    execute {"],
+[""],
+["         self.storefront.createListing("],
+["            nftProviderCapability: self.nftProvider,"],
+["            nftType: Type<@", TransactionGenerationUtils.createStaticTypeFromType(nftSchema!.type), ">(),"],
+["            nftID: saleItemID,"],
+["            salePaymentVaultType: Type<@", TransactionGenerationUtils.createStaticTypeFromType(ftSchema!.type), ">(),"],
+["            saleCuts: self.saleCuts,"],
+["            marketplacesCapability: self.marketplacesCapability.length == 0 ? nil : self.marketplacesCapability,"],
+["            customID: customID,"],
+["            commissionAmount: commissionAmount,"],
+["            expiry: expiry"],
+["        )"],
 ["    }"],
 ["}"],
 [""]]
