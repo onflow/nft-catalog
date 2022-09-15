@@ -8,7 +8,7 @@ transaction(storefrontAddress: Address, listingResourceID: UInt64,  expectedPric
     let mainUtilityCoinVault: &${vI.contractName}.Vault
     var commissionRecipientCap: Capability<&{FungibleToken.Receiver}>?
 
-    prepare(dapper: AuthAccount, buyer: AuthAccount) {
+    prepare(buyer: AuthAccount, dapper: AuthAccount) {
         self.commissionRecipientCap = nil
         
         // Initialize the buyer's collection if they do not already have one
