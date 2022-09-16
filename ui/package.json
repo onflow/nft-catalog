@@ -6,6 +6,8 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
+    "e2e-headful": "nx e2e nft-portal-e2e --watch",
+    "e2e": "nx e2e nft-portal-e2e",
     "tailwind2": "nx run nft-portal:tailwindcss",
     "tailwind": "npx tailwindcss -i ./apps/nft-portal/src/styles.css -o ./apps/nft-portal/src/app/styles/tailwind.css --watch "
   },
@@ -46,7 +48,7 @@
     "@typescript-eslint/parser": "~5.24.0",
     "autoprefixer": "^10.4.7",
     "babel-jest": "27.5.1",
-    "cypress": "^9.1.0",
+    "cypress": "^9.7.0",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",

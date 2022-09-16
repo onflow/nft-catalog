@@ -57,7 +57,7 @@ describe('nft-metadata/verifier', () => {
       'border-primary-purple'
     );
     cy.contains(
-      'You have not implemented all recommended metadata views required to be added to the NFT catalog.'
+      'You have not properly implemented all recommended metadata views required to be added to the NFT catalog.'
     );
   });
 });
