@@ -65,6 +65,11 @@ withdrawNftProposalFromCatalog
 
 ```
 npm install flow-catalog
+```
+
+or
+
+```
 yarn add flow-catalog
 ```
 
