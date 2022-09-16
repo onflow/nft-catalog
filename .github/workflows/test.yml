@@ -28,7 +28,9 @@ jobs:
         run: npm install
 
       - name: Run Cadence Tests
+        if: always()
         run: npm test
 
       - name: Run E2E Cypress Tests
+        if: always()
         run: npm run e2e
