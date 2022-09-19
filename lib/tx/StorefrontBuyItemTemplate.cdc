@@ -1,14 +1,12 @@
-/*
-    Transaction facilitates the purchase of listed NFT.
-    It takes the storefront address, listing resource that need
-    to be purchased & a address that will takeaway the commission.
-
-    Buyer of the listing (,i.e. underling NFT) would authorize and sign the
-    transaction and if purchase happens then transacted NFT would store in
-    buyer's collection.
-*/
+// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)
+//
+// This transaction facilitates the purchase of a listed NFT with the StorefrontV2 contract 
+// 
 // Collection Identifier: ${cI.identifier}
 // Vault Identifier: ${vI.identifier}
+//
+// Version: ${version}
+
 transaction(listingResourceID: UInt64, storefrontAddress: Address, commissionRecipient: Address?) {
     let paymentVault: @FungibleToken.Vault
     let nftCollection: &${cI.publicLinkedType}

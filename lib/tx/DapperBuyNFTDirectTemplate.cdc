@@ -1,4 +1,12 @@
+// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)
+//
 // This transaction purchases an NFT from a dapp directly (i.e. **not** on a peer-to-peer marketplace).
+// 
+// Collection Identifier: ${cI.identifier}
+// Vault Identifier: ${vI.identifier}
+//
+// Version: ${version}
+
 transaction(storefrontAddress: Address, listingResourceID: UInt64, expectedPrice: UFix64, commissionRecipient: Address?) {
     let paymentVault: @FungibleToken.Vault
     let nftCollection: &${cI.publicLinkedType}
@@ -10,7 +18,7 @@ transaction(storefrontAddress: Address, listingResourceID: UInt64, expectedPrice
     let mainUtilityCoinVault: &${vI.contractName}.Vault
     var commissionRecipientCap: Capability<&{FungibleToken.Receiver}>?
 
-    prepare(buyer: AuthAccount, dapp: AuthAccount, dapper: AuthAccount) {
+    prepare(dapp: AuthAccount, dapper: AuthAccount, buyer: AuthAccount) {
         self.commissionRecipientCap = nil
         self.dappAddress = dapp.address
         

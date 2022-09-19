@@ -29,8 +29,13 @@ pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSche
     }
   
 let lines: [[String]] = [
-[""],
+["// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)"],
+["//"],
+["// This transaction initializes a user's collection to support a specific NFT"],
+["// "],
 ["// Collection Identifier: ", nftSchema!.identifier, ""],
+["//"],
+["// Version: 0.0.1"],
 [""],
 ["transaction {"],
 [""],
@@ -297,7 +302,7 @@ let lines: [[String]] = [
 ["    let mainUtilityCoinVault: &", ftSchema!.contractName, ".Vault"],
 ["    var commissionRecipientCap: Capability<&{FungibleToken.Receiver}>?"],
 [""],
-["    prepare(buyer: AuthAccount, dapper: AuthAccount) {"],
+["    prepare(dapper: AuthAccount, buyer: AuthAccount) {"],
 ["        self.commissionRecipientCap = nil"],
 ["        "],
 ["        // Initialize the buyer's collection if they do not already have one"],
@@ -569,7 +574,7 @@ let lines: [[String]] = [
 ["    let mainUtilityCoinVault: &", ftSchema!.contractName, ".Vault"],
 ["    var commissionRecipientCap: Capability<&{FungibleToken.Receiver}>?"],
 [""],
-["    prepare(buyer: AuthAccount, dapp: AuthAccount, dapper: AuthAccount) {"],
+["    prepare(dapp: AuthAccount, dapper: AuthAccount, buyer: AuthAccount) {"],
 ["        self.commissionRecipientCap = nil"],
 ["        self.dappAddress = dapp.address"],
 ["        "],
