@@ -28,7 +28,7 @@ jobs:
               run: npm install
 
             - name: Install UI Dependencies
-              run: npm install-ui
+              run: npm run install-ui
 
             - name: Run Cadence Tests
               if: always()
