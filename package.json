@@ -3,9 +3,10 @@
     "version": "0.1.0",
     "scripts": {
         "test": "jest --runInBand cadence/__test__",
-        "e2e": "cd ui && nx e2e nft-portal-e2e",
-        "prepare": "sh lib/create_templates.sh && mkdir -p lib/cadut-generated & node build.cjs && cp lib/CadenceToJson.json ui/apps/nft-portal/src/flow/catalog_c2j.json && sh lib/generate-cadut.sh",
-        "prepublish": "npm run prepare",
+        "e2e": "cd ui && npx nx e2e nft-portal-e2e",
+        "prepare": "sh lib/create_templates.sh && mkdir -p lib/cadut-generated && node build.cjs && cp lib/CadenceToJson.json ui/apps/nft-portal/src/flow/catalog_c2j.json && sh lib/generate-cadut.sh",
+        "prepublishOnly": "npm run prepare",
+        "install-ui": "cd ui && npm install",
         "test-module-exports": "node --experimental-specifier-resolution=node index.js"
     },
     "author": "Ecosystem Growth",
