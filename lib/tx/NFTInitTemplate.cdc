@@ -1,5 +1,10 @@
-
+// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)
+//
+// This transaction initializes a user's collection to support a specific NFT
+// 
 // Collection Identifier: ${cI.identifier}
+//
+// Version: ${version}
 
 transaction {
 

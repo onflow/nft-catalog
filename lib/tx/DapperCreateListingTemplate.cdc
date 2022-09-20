@@ -1,17 +1,24 @@
+// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)
+//
+// This transaction purchases an NFT from a dapp directly (i.e. **not** on a peer-to-peer marketplace).
+// 
+// Collection Identifier: ${cI.identifier}
+// Vault Identifier: ${vI.identifier}
+//
+// Version: ${version}
+
 transaction(saleItemID: UInt64, saleItemPrice: UFix64, commissionAmount: UFix64, marketplacesAddress: [Address], expiry: UInt64, customID: String?) {
     let sellerPaymentReceiver: Capability<&{FungibleToken.Receiver}>
     let nftProvider: Capability<&${cI.contractName}.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
     let storefront: &NFTStorefrontV2.Storefront
-    let dappAddress: Address
     var saleCuts: [NFTStorefrontV2.SaleCut]
     var marketplacesCapability: [Capability<&AnyResource{FungibleToken.Receiver}>]
 
     // It's important that the dapp account authorize this transaction so the dapp has the ability
     // to validate and approve the royalty included in the sale.
-    prepare(dapp: AuthAccount, seller: AuthAccount) {
+    prepare(seller: AuthAccount) {
         self.saleCuts = []
         self.marketplacesCapability = []
-        self.dappAddress = dapp.address
 
         // If the account doesn't already have a storefront, create one and add it to the account
         if seller.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath) == nil {

@@ -1,3 +1,12 @@
+// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)
+//
+// This transaction purchases an NFT from a p2p marketplace.
+// 
+// Collection Identifier: ${cI.identifier}
+// Vault Identifier: ${vI.identifier}
+//
+// Version: ${version}
+
 transaction(storefrontAddress: Address, listingResourceID: UInt64,  expectedPrice: UFix64, commissionRecipient: Address?) {
     let paymentVault: @FungibleToken.Vault
     let nftCollection: &${cI.publicLinkedType}

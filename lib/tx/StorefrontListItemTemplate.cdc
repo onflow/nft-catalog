@@ -1,8 +1,12 @@
-/*
-    Transaction facilitates the listing of a NFT.
-*/
+// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)
+//
+// This transaction facilitates the listing of an NFT with the StorefrontV2 contract
+// 
 // Collection Identifier: ${cI.identifier}
 // Vault Identifier: ${vI.identifier}
+//
+// Version: ${version}
+
 transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {
     let ftReceiver: Capability<&AnyResource{FungibleToken.Receiver}>
     let nftProvider: Capability<&AnyResource{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>

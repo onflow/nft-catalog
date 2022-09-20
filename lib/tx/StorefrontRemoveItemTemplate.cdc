@@ -1,4 +1,10 @@
+// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)
+//
+// This transaction facilitates the removal of a listing with the StorefrontV2 contract
+// 
 // Collection Identifier: ${cI.identifier}
+//
+// Version: ${version}
 
 transaction(listingResourceID: UInt64) {
     let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontManager}
