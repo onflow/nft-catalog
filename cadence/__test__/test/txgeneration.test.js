@@ -19,7 +19,7 @@ import {
     setupExampleNFTCollection,
     getExampleNFTCollectionLength
 } from '../src/examplenft';
-import { TIMEOUT, runTransaction } from '../src/common';
+import { TIMEOUT, runTransaction, runScript } from '../src/common';
 import { createInitTx, createTx } from "../src/txgeneration";
 import { setupStorefront } from '../src/nftstorefront';
 
@@ -107,6 +107,13 @@ describe('NFT Catalog Test Suite', () => {
         [result, error] = await runTransaction(result, [1, 10, null, 0, 32503698000, []], [Alice]);
         expect(error).toBe(null);
         listingResourceID = result.events[0].data.listingResourceID;
+
+        [result, error] = await createTx('GetStorefrontListingMetadata', collectionIdentifier, 'flow');
+        expect(error).toBe(null);
+        [result, error] = await runScript(result, [Alice, Alice, listingResourceID, 10.0]);
+        expect(error).toBe(null);
+        expect(parseInt(result.amount)).toBe(10);
+        expect(result.name).toBe("Test Name");
 
         [result, error] = await createTx('StorefrontRemoveItem', collectionIdentifier, "flow");
         expect(error).toBe(null);

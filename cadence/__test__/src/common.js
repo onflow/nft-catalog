@@ -18,6 +18,10 @@ export const runFailingScript = async (code, args) => {
   expect(passed).toBe(false)
 }
 
+export const runScript = async (code, args) => {
+  return await executeScript({code: code, args: args})
+}
+
 export const runTransaction = async (code, args, signers) => {
   return await shallPass(await sendTransaction({code: code, args: args, signers: signers}))
 }
