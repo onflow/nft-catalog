@@ -56,7 +56,7 @@ export default function Layout({
           {identifier && type === 'Proposals' && <ProposalContent proposalID={identifier} />}
           {identifier && type === 'Catalog' && <NftCollectionContent collectionIdentifier={identifier} />}
         </div>
-        <div className="lg:flex hidden">
+        <div className="lg:flex hidden overflow-hidden">
           <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen md:max-w-xs lg:max-w-sm">
             <div className="flex-col">
               <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />

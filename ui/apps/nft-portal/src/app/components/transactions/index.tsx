@@ -46,7 +46,7 @@ export default function Layout() {
                     <CatalogSelect type="Transactions" network={network} selected={transaction} collectionIdentifier={collectionIdentifier} ftVault={ftVault} />
                     <TransactionContent network={network} identifier={identifier} vault={vault ?? "flow"} transaction={transaction} />
                 </div>
-                <div className="lg:flex hidden">
+                <div className="lg:flex hidden overflow-hidden">
                     <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen w-full md:max-w-xs lg:max-w-sm">
                         <div className="flex-col">
                             <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />

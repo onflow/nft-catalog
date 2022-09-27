@@ -761,6 +761,10 @@ select {
   pointer-events: none;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .absolute {
   position: absolute;
 }
@@ -858,6 +862,10 @@ select {
   margin-top: 0.25rem;
 }
 
+.mt-8 {
+  margin-top: 2rem;
+}
+
 .mt-2 {
   margin-top: 0.5rem;
 }
@@ -868,10 +876,6 @@ select {
 
 .mb-6 {
   margin-bottom: 1.5rem;
-}
-
-.mt-8 {
-  margin-top: 2rem;
 }
 
 .block {
@@ -951,18 +955,6 @@ select {
   width: max-content;
 }
 
-.w-14 {
-  width: 3.5rem;
-}
-
-.w-32 {
-  width: 8rem;
-}
-
-.w-9\/12 {
-  width: 75%;
-}
-
 .max-w-full {
   max-width: 100%;
 }
@@ -973,10 +965,6 @@ select {
 
 .max-w-7xl {
   max-width: 80rem;
-}
-
-.max-w-sm {
-  max-width: 24rem;
 }
 
 .flex-1 {
@@ -1003,10 +991,6 @@ select {
   grid-auto-flow: column;
 }
 
-.flex-row {
-  flex-direction: row;
-}
-
 .flex-col {
   flex-direction: column;
 }
@@ -1019,16 +1003,8 @@ select {
   align-items: flex-start;
 }
 
-.items-end {
-  align-items: flex-end;
-}
-
 .items-center {
   align-items: center;
-}
-
-.items-baseline {
-  align-items: baseline;
 }
 
 .items-stretch {
@@ -1079,6 +1055,10 @@ select {
 
 .overflow-x-auto {
   overflow-x: auto;
+}
+
+.overflow-x-hidden {
+  overflow-x: hidden;
 }
 
 .text-ellipsis {
@@ -1944,6 +1924,10 @@ select {
 }
 
 @media (min-width: 768px) {
+  .md\:visible {
+    visibility: visible;
+  }
+
   .md\:mr-20 {
     margin-right: 5rem;
   }
@@ -2049,6 +2033,10 @@ select {
 }
 
 @media (min-width: 1440px) {
+  .lg\:visible {
+    visibility: visible;
+  }
+
   .lg\:flex {
     display: flex;
   }
@@ -2057,12 +2045,12 @@ select {
     display: none;
   }
 
-  .lg\:w-2\/3 {
-    width: 66.666667%;
-  }
-
   .lg\:w-1\/3 {
     width: 33.333333%;
+  }
+
+  .lg\:w-2\/3 {
+    width: 66.666667%;
   }
 
   .lg\:max-w-sm {
