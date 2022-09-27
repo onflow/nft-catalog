@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { CatalogSelect } from "../catalog/catalog-select";
 import { NFTContent } from "./nft-content";
 import { changeFCLEnvironment } from "apps/nft-portal/src/flow/setup";
+import { Hamburger } from "../shared/hamburger";
 
 type NFTParams = {
     network: Network;
@@ -31,14 +32,34 @@ export default function Layout() {
             <div
                 className="flex w-full h-full items-center text-center bg-white rounded-2xl sm:flex-col md:flex-row"
             >
-                <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen w-full md:max-w-xs lg:max-w-sm">
-                    <div className="flex-col">
-                        <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
-                        <CatalogSelect userAddress={address} type="NFTs" network={network} selected={undefined} />
+                <div className="flex-col lg:hidden w-full">
+                    <div className="flex w-full items-center">
+                        <div className="grow">
+                            <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
+                        </div>
+                        <div>
+                            <Hamburger onClick={() => {
+                                // Item selected
+                                if (identifier != null || address != null) {
+                                    navigate(`/nfts/${network}`)
+                                }
+                            }} />
+                        </div>
                     </div>
+                    {identifier == null && <CatalogSelect userAddress={address} type="NFTs" network={network} selected={undefined} />}
+                    {(address == null || identifier != null) && <NFTContent network={network} walletAddress={address} nftID={nftID} identifier={identifier} />}
                 </div>
-                <div className="px-10 w-3/4 self-start py-10 justify-self-start text-left">
-                    <NFTContent network={network} walletAddress={address} nftID={nftID} identifier={identifier} />
+                <div className="lg:flex hidden">
+                    <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen w-full md:max-w-xs lg:max-w-sm">
+                        <div className="flex-col">
+                            <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
+                            <CatalogSelect userAddress={address} type="NFTs" network={network} selected={undefined} />
+                        </div>
+                    </div>
+
+                    <div className="px-10 w-3/4 self-start py-10 justify-self-start text-left">
+                        <NFTContent network={network} walletAddress={address} nftID={nftID} identifier={identifier} />
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ import { getAllNFTsInAccountFromCatalog, getCollections, getProposals, getSuppor
 import { Network } from "./network-dropdown";
 import { changeFCLEnvironment } from "../../../flow/setup";
 import { Badge } from "../shared/badge";
+import { Hamburger } from "../shared/hamburger";
 
 export function CatalogSelect({
   type,

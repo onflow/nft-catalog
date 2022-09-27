@@ -16,7 +16,7 @@ type TransactionParams = {
 
 export default function Layout() {
 
-    const { network = 'testnet', transaction, identifier, vault = 'flow'} = useParams<TransactionParams>()
+    const { network = 'testnet', transaction, identifier, vault = 'flow' } = useParams<TransactionParams>()
 
     const [collectionIdentifier, setCollectionIdentifier] = useState<string>(identifier ?? "")
     const [ftVault, setFTVault] = useState<string>(vault ?? "flow")
@@ -36,43 +36,66 @@ export default function Layout() {
             <div
                 className="flex w-full h-full items-center text-center bg-white rounded-2xl sm:flex-col md:flex-row"
             >
-                <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen w-full md:max-w-xs lg:max-w-sm">
-                    <div className="flex-col">
-                        <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
-                        <div className="md:flex md:items-center my-6">
-                            <div className="md:w-1/3">
-                                <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
-                                    Collection Identifier
-                                </label>
-                            </div>
-                            <div className="md:w-2/3 px-2">
-                                <TextInput
-                                    value={collectionIdentifier ?? ""}
-                                    placeholder="UFCStrike"
-                                    updateValue={setCollectionIdentifier}
-                                />
-                            </div>
+                <div className="flex-col lg:hidden w-full">
+                    <div className="flex w-full items-center">
+                        <div className="grow">
+                            <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
+                            <TransactionForm collectionIdentifier={collectionIdentifier} setCollectionIdentifier={setCollectionIdentifier} ftVault={ftVault} setFTVault={setFTVault} />
                         </div>
-                        <div>
-                            <DropDown
-                                value={ftVault ?? ""}
-                                label="Fungible Token"
-                                options={[
-                                    { value: "flow", label: "Flow" },
-                                    { value: "fut", label: "Flow Utility Token" },
-                                    { value: "duc", label: "Dapper Utility Coin" }
-                                ]}
-                                onChange={setFTVault}
-                            />
-
-                        </div>
-                        <CatalogSelect type="Transactions" network={network} selected={transaction} collectionIdentifier={collectionIdentifier} ftVault={ftVault} />
                     </div>
-                </div>
-                <div className="px-10 w-3/4 self-start py-10 justify-self-start text-left">
+                    <CatalogSelect type="Transactions" network={network} selected={transaction} collectionIdentifier={collectionIdentifier} ftVault={ftVault} />
                     <TransactionContent network={network} identifier={identifier} vault={vault ?? "flow"} transaction={transaction} />
+                </div>
+                <div className="lg:flex hidden">
+                    <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen w-full md:max-w-xs lg:max-w-sm">
+                        <div className="flex-col">
+                            <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
+                            <TransactionForm collectionIdentifier={collectionIdentifier} setCollectionIdentifier={setCollectionIdentifier} ftVault={ftVault} setFTVault={setFTVault} />
+                            <CatalogSelect type="Transactions" network={network} selected={transaction} collectionIdentifier={collectionIdentifier} ftVault={ftVault} />
+                        </div>
+                    </div>
+                    <div className="px-10 w-3/4 self-start py-10 justify-self-start text-left">
+                        <TransactionContent network={network} identifier={identifier} vault={vault ?? "flow"} transaction={transaction} />
+                    </div>
                 </div>
             </div>
         </div>
     )
+}
+
+type TransactionFormParams = {
+    collectionIdentifier: string;
+    setCollectionIdentifier: (collectionIdentifier: string) => void,
+    setFTVault: (vault: string) => void;
+    ftVault: string;
+}
+
+function TransactionForm({ collectionIdentifier, setCollectionIdentifier, setFTVault, ftVault }: TransactionFormParams) {
+    return <><div className="md:flex md:items-center my-6">
+        <div className="md:w-1/3">
+            <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+                Collection Identifier
+            </label>
+        </div>
+        <div className="md:w-2/3 px-2">
+            <TextInput
+                value={collectionIdentifier ?? ""}
+                placeholder="UFCStrike"
+                updateValue={setCollectionIdentifier}
+            />
+        </div>
+    </div>
+        <div>
+            <DropDown
+                value={ftVault ?? ""}
+                label="Fungible Token"
+                options={[
+                    { value: "flow", label: "Flow" },
+                    { value: "fut", label: "Flow Utility Token" },
+                    { value: "duc", label: "Dapper Utility Coin" }
+                ]}
+                onChange={setFTVault}
+            />
+
+        </div></>
 }
