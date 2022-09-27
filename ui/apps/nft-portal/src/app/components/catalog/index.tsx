@@ -60,9 +60,7 @@ export default function Layout({
           <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen md:max-w-xs lg:max-w-sm">
             <div className="flex-col">
               <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
-              <div className="lg:flex hidden">
-                <CatalogSelect type={type} selected={identifier} network={network} />
-              </div>
+              <CatalogSelect type={type} selected={identifier} network={network} />
             </div>
           </div>
           <div className="px-10 w-3/4 self-start py-10 justify-self-start text-left">
