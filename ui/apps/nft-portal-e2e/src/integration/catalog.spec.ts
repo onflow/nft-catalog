@@ -6,10 +6,9 @@ describe('nft-metadata/catalog', () => {
   });
 
   it('should load an item from the catalog', () => {
-    cy.get('.w-11\\/12').select('Testnet');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(5000);
-    cy.get(':nth-child(1) > .font-semibold').click();
-    cy.get('.px-10').contains('The Example Collection');
+    cy.get('.border-t-1 > :nth-child(1)').first().click()
+    cy.get('.px-10 > .text-xs').contains("Visit Website")
   });
 });

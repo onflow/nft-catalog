@@ -42,6 +42,12 @@ pub contract TransactionGeneration {
         ]
     }
 
+    pub fun getSupportedScripts(): [String] {
+        return [
+            "GetStorefrontListingMetadata"
+        ]
+    }
+
     pub fun getTx(tx: String, params: {String: String}): String? {
         let collectionIdentifier = params["collectionIdentifier"]
         let vaultIdentifier = params["vaultIdentifier"]
@@ -121,6 +127,11 @@ pub contract TransactionGeneration {
                     return TransactionTemplates.DapperBuyNFTDirectTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
                 })
                 importTypes = nftImportTypes.concat(ftImportTypes).concat(storefrontTypes)
+            case "GetStorefrontListingMetadata":
+                createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
+                    return TransactionTemplates.GetStorefrontListingMetadata(nftSchema: nftSchema, ftSchema: ftSchema)
+                })
+                importTypes = nftImportTypes.concat(storefrontTypes)
             default:
                 return nil
         }
