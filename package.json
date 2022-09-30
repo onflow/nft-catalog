@@ -1,17 +1,17 @@
 {
     "name": "flow-catalog",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "scripts": {
         "test": "jest --runInBand cadence/__test__",
+        "build": "webpack",
         "e2e": "cd ui && npx nx e2e nft-portal-e2e",
         "prepare": "sh lib/create_templates.sh && mkdir -p lib/cadut-generated && node build.cjs && cp lib/CadenceToJson.json ui/apps/nft-portal/src/flow/catalog_c2j.json && sh lib/generate-cadut.sh",
         "prepublishOnly": "npm run prepare",
-        "install-ui": "cd ui && npm install",
-        "test-module-exports": "node --experimental-specifier-resolution=node index.js"
+        "install-ui": "cd ui && npm install"
     },
     "author": "Ecosystem Growth",
     "license": "ISC",
-    "main": "index.js",
+    "main": "dist/index_bundle.js",
     "dependencies": {
         "@onflow/fcl": "^1.2.0",
         "@onflow/flow-cadut": "^0.2.0-alpha.8",
@@ -19,15 +19,17 @@
         "npm": "^8.18.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.17.10",
-        "@babel/preset-env": "^7.17.10",
+        "@babel/core": "^7.19.3",
+        "@babel/preset-env": "^7.19.3",
         "@onflow/flow-cadut-generator": "^0.0.1",
         "@onflow/types": "^0.0.6",
         "babel-jest": "^28.0.3",
-        "cypress": "^9.7.0",
+        "babel-loader": "^8.2.5",
         "cadence-to-json": "^1.0.3",
-        "flow-js-testing": "^0.2.3-alpha.5",
-        "jest": "^28.0.3"
-    },
-    "type": "module"
+        "cypress": "^9.7.0",
+        "flow-js-testing": "^0.2.3-alpha.6",
+        "jest": "^28.0.3",
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0"
+    }
 }
