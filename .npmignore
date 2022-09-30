@@ -7,7 +7,6 @@ node_modules
 # production
 /web/build
 /api/dist
-dist
 
 # misc
 .DS_Store

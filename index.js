@@ -1,9 +1,11 @@
-const json = require("./lib/CadenceToJson.json");
+import json from "./lib/CadenceToJson.json";
 export { json };
 
-import contracts from "./lib/cadut-generated/contracts/index.js";
-import scripts from "./lib/cadut-generated/scripts/index.js";
-import transactions from "./lib/cadut-generated/transactions/index.js";
+import {
+    contracts,
+    scripts,
+    transactions,
+} from "./lib/cadut-generated/index.js";
 
 import {
     setEnvironment,
@@ -30,4 +32,16 @@ const getAddressMaps = async function () {
     return addressMaps;
 };
 
-export { getAddressMaps, contracts, scripts, transactions };
+// This is here just as an example of how to make use of
+// the templating transaction code.
+const getTemplatedTransactionCode = async function () {
+    const catalogAddressMap = await getAddressMaps();
+    const result = await cadence.scripts.genTx({
+        args: ["CollectionInitialization", "Flunks", "flow"],
+        addressMap: catalogAddressMap,
+    });
+    return result;
+};
+
+export { getAddressMaps };
+export { contracts, scripts, transactions };
