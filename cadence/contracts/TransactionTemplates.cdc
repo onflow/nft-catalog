@@ -83,6 +83,12 @@ pub fun StorefrontListItemTemplate(nftSchema: TransactionGenerationUtils.NFTSche
   
 let lines: [[String]] = [
 ["transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {"],
+["    /// `saleItemID` - ID of the NFT that is put on sale by the seller."],
+["    /// `saleItemPrice` - Amount of tokens (FT) buyer needs to pay for the purchase of listed NFT."],
+["    /// `customID` - Optional string to represent identifier of the dapp."],
+["    /// `commissionAmount` - Commission amount that will be taken away by the purchase facilitator."],
+["    /// `expiry` - Unix timestamp at which created listing become expired."],
+["    /// `marketplacesAddress` - List of addresses that are allowed to get the commission."],
 ["    let ftReceiver: Capability<&AnyResource{FungibleToken.Receiver}>"],
 ["    let nftProvider: Capability<&AnyResource{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>"],
 ["    let storefront: &NFTStorefrontV2.Storefront"],
@@ -205,6 +211,9 @@ pub fun StorefrontBuyItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchem
   
 let lines: [[String]] = [
 ["transaction(listingResourceID: UInt64, storefrontAddress: Address, commissionRecipient: Address?) {"],
+["    /// `listingResourceID` - ID of the Storefront listing resource"],
+["    /// `storefrontAddress` - The address that owns the storefront listing"],
+["    /// `commissionRecipient` - Optional recipient for transaction commission if comission exists."],
 ["    let paymentVault: @FungibleToken.Vault"],
 ["    let nftCollection: &", nftPublicLink, ""],
 ["    let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}"],
@@ -301,6 +310,10 @@ pub fun DapperBuyNFTMarketplaceTemplate(nftSchema: TransactionGenerationUtils.NF
   
 let lines: [[String]] = [
 ["transaction(storefrontAddress: Address, listingResourceID: UInt64,  expectedPrice: UFix64, commissionRecipient: Address?) {"],
+["    /// `storefrontAddress` - The address that owns the storefront listing"],
+["    /// `listingResourceID` - ID of the Storefront listing resource"],
+["    /// `expectedPrice: UFix64` - How much you expect to pay for the NFT"],
+["    /// `commissionRecipient` - Optional recipient for transaction commission if comission exists."],
 ["    let paymentVault: @FungibleToken.Vault"],
 ["    let nftCollection: &", nftPublicLink, ""],
 ["    let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}"],
@@ -411,6 +424,8 @@ pub fun StorefrontRemoveItemTemplate(nftSchema: TransactionGenerationUtils.NFTSc
   
 let lines: [[String]] = [
 ["transaction(listingResourceID: UInt64) {"],
+["    /// `listingResourceID` - ID of the Storefront listing resource"],
+["    "],
 ["    let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontManager}"],
 [""],
 ["    prepare(acct: AuthAccount) {"],
@@ -447,6 +462,12 @@ pub fun DapperCreateListingTemplate(nftSchema: TransactionGenerationUtils.NFTSch
   
 let lines: [[String]] = [
 ["transaction(saleItemID: UInt64, saleItemPrice: UFix64, commissionAmount: UFix64, marketplacesAddress: [Address], expiry: UInt64, customID: String?) {"],
+["    /// `saleItemID` - ID of the NFT that is put on sale by the seller."],
+["    /// `saleItemPrice` - Amount of tokens (FT) buyer needs to pay for the purchase of listed NFT."],
+["    /// `commissionAmount` - Commission amount that will be taken away by the purchase facilitator."],
+["    /// `marketplacesAddress` - List of addresses that are allowed to get the commission."],
+["    /// `expiry` - Unix timestamp at which created listing become expired."],
+["    /// `customID` - Optional string to represent identifier of the dapp."],
 ["    let sellerPaymentReceiver: Capability<&{FungibleToken.Receiver}>"],
 ["    let nftProvider: Capability<&", nftSchema!.contractName, ".Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>"],
 ["    let storefront: &NFTStorefrontV2.Storefront"],
@@ -571,20 +592,27 @@ pub fun DapperBuyNFTDirectTemplate(nftSchema: TransactionGenerationUtils.NFTSche
     }
   
 let lines: [[String]] = [
-["transaction(storefrontAddress: Address, listingResourceID: UInt64, expectedPrice: UFix64, commissionRecipient: Address?) {"],
+["transaction(merchantAccountAddress: Address, storefrontAddress: Address, listingResourceID: UInt64, expectedPrice: UFix64, commissionRecipient: Address?) {"],
+["    /* This transaction purchases an NFT from a dapp directly (i.e. **not** on a peer-to-peer marketplace). */"],
+["    "],
+["    /// `merchantAccountAddress` - The merchant account address provided by Dapper Labs"],
+["    /// `storefrontAddress` - The address that owns the storefront listing"],
+["    /// `listingResourceID` - ID of the Storefront listing resource"],
+["    /// `expectedPrice: UFix64` - How much you expect to pay for the NFT"],
+["    /// `commissionRecipient` - Optional recipient for transaction commission if comission exists."],
+[""],
+[""],
 ["    let paymentVault: @FungibleToken.Vault"],
 ["    let nftCollection: &", nftPublicLink, ""],
 ["    let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}"],
 ["    let listing: &NFTStorefrontV2.Listing{NFTStorefrontV2.ListingPublic}"],
-["    let dappAddress: Address"],
 ["    let salePrice: UFix64"],
 ["    let balanceBeforeTransfer: UFix64"],
 ["    let mainUtilityCoinVault: &", ftSchema!.contractName, ".Vault"],
 ["    var commissionRecipientCap: Capability<&{FungibleToken.Receiver}>?"],
 [""],
-["    prepare(dapp: AuthAccount, dapper: AuthAccount, buyer: AuthAccount) {"],
+["    prepare(dapper: AuthAccount, buyer: AuthAccount) {"],
 ["        self.commissionRecipientCap = nil"],
-["        self.dappAddress = dapp.address"],
 ["        "],
 ["        // Initialize the buyer's collection if they do not already have one"],
 ["        if buyer.borrow<&", nftSchema!.contractName, ".Collection>(from: ", nftSchema!.storagePath, ") == nil {"],
@@ -602,7 +630,7 @@ let lines: [[String]] = [
 ["            buyer.link<&", nftPrivateLink, ">(", nftSchema!.privatePath, ", target: ", nftSchema!.storagePath, ")"],
 ["        }"],
 [""],
-["        self.storefront = dapp"],
+["        self.storefront = getAccount(storefrontAddress)"],
 ["            .getCapability<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>("],
 ["                NFTStorefrontV2.StorefrontPublicPath"],
 ["            )!"],
@@ -643,7 +671,6 @@ let lines: [[String]] = [
 ["    // Check that the price is right"],
 ["    pre {"],
 ["        self.salePrice == expectedPrice: \"unexpected price\""],
-["        self.dappAddress == storefrontAddress: \"Requires valid authorizing signature\""],
 ["    }"],
 [""],
 ["    execute {"],
