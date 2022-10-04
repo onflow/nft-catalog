@@ -122,7 +122,6 @@ describe('NFT Catalog Test Suite', () => {
 
         // should fail to buy the nft because the listing no longer exists
         [result, error] = await createTx('StorefrontBuyItem', collectionIdentifier, "flow");
-        console.log(result)
         expect(error).toBe(null);
         let foundError = false
         try {
