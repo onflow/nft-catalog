@@ -36,6 +36,23 @@ transaction(saleItemID: UInt64, saleItemPrice: UFix64, commissionAmount: UFix64,
             seller.link<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(NFTStorefrontV2.StorefrontPublicPath, target: NFTStorefrontV2.StorefrontStoragePath)
         }
 
+         // FT Setup if the user's account is not initialized with FT receiver
+        if seller.borrow<&{FungibleToken.Receiver}>(from: ${vI.receiverStoragePath}) == nil {
+
+            let dapper = getAccount(${vI.contractAddress})
+            let dapperFTReceiver = dapper.getCapability<&{FungibleToken.Receiver}>(${vI.publicPath})!
+
+            // Create a new Forwarder resource for FUT and store it in the new account's storage
+            let ftForwarder <- TokenForwarding.createNewForwarder(recipient: dapperFTReceiver)
+            seller.save(<-ftForwarder, to: ${vI.receiverStoragePath})
+
+            // Publish a Receiver capability for the new account, which is linked to the FUT Forwarder
+            seller.link<&${vI.contractName}.Vault{FungibleToken.Receiver}>(
+                ${vI.publicPath},
+                target: ${vI.receiverStoragePath}
+            )
+        }
+
         // Get a reference to the receiver that will receive the fungible tokens if the sale executes.
         // Note that the sales receiver aka MerchantAddress should be an account owned by Dapper or an end-user Dapper Wallet account address.
         self.sellerPaymentReceiver = getAccount(seller.address).getCapability<&{FungibleToken.Receiver}>(${vI.publicPath})

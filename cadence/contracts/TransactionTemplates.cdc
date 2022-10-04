@@ -21,7 +21,7 @@ pub contract TransactionTemplates {
   The following functions are available:
   NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplaceTemplate, StorefrontRemoveItemTemplate, DapperCreateListingTemplate, DapperBuyNFTDirectTemplate, GetStorefrontListingMetadata
 */
-pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -66,7 +66,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun StorefrontListItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+pub fun StorefrontListItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -194,7 +194,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun StorefrontBuyItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+pub fun StorefrontBuyItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -293,7 +293,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperBuyNFTMarketplaceTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+pub fun DapperBuyNFTMarketplaceTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -407,7 +407,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun StorefrontRemoveItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+pub fun StorefrontRemoveItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -445,7 +445,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperCreateListingTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+pub fun DapperCreateListingTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -488,6 +488,23 @@ let lines: [[String]] = [
 ["            seller.save(<-storefront, to: NFTStorefrontV2.StorefrontStoragePath)"],
 ["            // create a public capability for the Storefront"],
 ["            seller.link<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(NFTStorefrontV2.StorefrontPublicPath, target: NFTStorefrontV2.StorefrontStoragePath)"],
+["        }"],
+[""],
+["         // FT Setup if the user's account is not initialized with FT receiver"],
+["        if seller.borrow<&{FungibleToken.Receiver}>(from: ", ftSchema!.receiverStoragePath ?? "", ") == nil {"],
+[""],
+["            let dapper = getAccount(", TransactionGenerationUtils.getAddressFromType(ftSchema!.type), ")"],
+["            let dapperFTReceiver = dapper.getCapability<&{FungibleToken.Receiver}>(", ftSchema!.publicPath, ")!"],
+[""],
+["            // Create a new Forwarder resource for FUT and store it in the new account's storage"],
+["            let ftForwarder <- TokenForwarding.createNewForwarder(recipient: dapperFTReceiver)"],
+["            seller.save(<-ftForwarder, to: ", ftSchema!.receiverStoragePath ?? "", ")"],
+[""],
+["            // Publish a Receiver capability for the new account, which is linked to the FUT Forwarder"],
+["            seller.link<&", ftSchema!.contractName, ".Vault{FungibleToken.Receiver}>("],
+["                ", ftSchema!.publicPath, ","],
+["                target: ", ftSchema!.receiverStoragePath ?? "", ""],
+["            )"],
 ["        }"],
 [""],
 ["        // Get a reference to the receiver that will receive the fungible tokens if the sale executes."],
@@ -576,7 +593,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperBuyNFTDirectTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+pub fun DapperBuyNFTDirectTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -694,7 +711,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun GetStorefrontListingMetadata(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchema?): String {
+pub fun GetStorefrontListingMetadata(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""

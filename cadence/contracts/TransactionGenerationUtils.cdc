@@ -59,6 +59,40 @@ pub contract TransactionGenerationUtils {
         }
     }
 
+    pub struct FTSchemaV2: TokenSchema {
+        pub let identifier: String
+        pub let contractName: String
+        pub let storagePath: String
+        pub let publicPath: String
+        pub let privatePath: String
+        pub let type: Type
+        pub let publicLinkedType: Type
+        pub let privateLinkedType: Type
+        pub let receiverStoragePath : String?
+        
+        init(
+            identifier: String,
+            contractName: String,
+            storagePath: String,
+            publicPath: String,
+            privatePath: String,
+            type: Type,
+            publicLinkedType: Type,
+            privateLinkedType: Type,
+            receiverStoragePath: String?
+        ) {
+            self.identifier = identifier
+            self.contractName = contractName
+            self.storagePath = storagePath
+            self.publicPath = publicPath
+            self.privatePath = privatePath
+            self.type = type
+            self.publicLinkedType = publicLinkedType
+            self.privateLinkedType = privateLinkedType
+            self.receiverStoragePath = receiverStoragePath
+        }
+    }
+
     pub struct NFTSchema: TokenSchema {
         pub let identifier: String
         pub let contractName: String
@@ -92,10 +126,10 @@ pub contract TransactionGenerationUtils {
     /*
         We do not yet have a FT catalog, so FTs must be hardcoded for now.
     */
-    pub fun getFtSchema(vaultIdentifier: String): FTSchema? {
+    pub fun getFtSchema(vaultIdentifier: String): FTSchemaV2? {
         switch vaultIdentifier {
             case "flow":
-                return FTSchema(
+                return FTSchemaV2(
                     identifier: vaultIdentifier,
                     contractName: "FlowToken",
                     storagePath: "/storage/flowTokenVault",
@@ -103,10 +137,11 @@ pub contract TransactionGenerationUtils {
                     privatePath: "/private/flow",
                     type: Type<@FlowToken.Vault>(),
                     publicLinkedType: Type<@FlowToken.Vault{FungibleToken.Receiver, FungibleToken.Balance}>(),
-                    privateLinkedType: Type<@FlowToken.Vault{FungibleToken.Provider}>()
+                    privateLinkedType: Type<@FlowToken.Vault{FungibleToken.Provider}>(),
+                    receiverStoragePath : nil
                 )
             case "duc":
-                return FTSchema(
+                return FTSchemaV2(
                     identifier: vaultIdentifier,
                     contractName: "DapperUtilityCoin",
                     storagePath: "/storage/dapperUtilityCoinVault",
@@ -114,10 +149,11 @@ pub contract TransactionGenerationUtils {
                     privatePath: "/private/dapperUtilityCoinVault",
                     type: Type<@DapperUtilityCoin.Vault>(),
                     publicLinkedType: Type<@DapperUtilityCoin.Vault{FungibleToken.Receiver}>(),
-                    privateLinkedType: Type<@DapperUtilityCoin.Vault{FungibleToken.Provider, FungibleToken.Balance}>()
+                    privateLinkedType: Type<@DapperUtilityCoin.Vault{FungibleToken.Provider, FungibleToken.Balance}>(),
+                    receiverStoragePath : "/storage/dapperUtilityCoinReceiver"
                 )
             case "fut":
-                return FTSchema(
+                return FTSchemaV2(
                     identifier: vaultIdentifier,
                     contractName: "FlowUtilityToken",
                     storagePath: "/storage/flowUtilityTokenVault",
@@ -125,7 +161,8 @@ pub contract TransactionGenerationUtils {
                     privatePath: "",
                     type: Type<@FlowUtilityToken.Vault>(),
                     publicLinkedType: Type<@FlowUtilityToken.Vault{FungibleToken.Receiver}>(),
-                    privateLinkedType: Type<@FlowUtilityToken.Vault>()
+                    privateLinkedType: Type<@FlowUtilityToken.Vault>(),
+                    receiverStoragePath : "/storage/flowUtilityTokenReceiver"
                 )
             default:
                 return nil
@@ -196,6 +233,11 @@ pub contract TransactionGenerationUtils {
             duplicates[line] = true
         }
         return StringUtils.join(res, "\n")
+    }
+
+    pub fun getAddressFromType(_ type: Type): String {
+        let typeStr = Type<@FlowUtilityToken.Vault>().identifier
+        return "0x".concat(StringUtils.split(typeStr, ".")[1])
     }
 
     pub fun createStaticTypeFromType(_ type: Type): String {
