@@ -8,6 +8,12 @@
 // Version: ${version}
 
 transaction(saleItemID: UInt64, saleItemPrice: UFix64, commissionAmount: UFix64, marketplacesAddress: [Address], expiry: UInt64, customID: String?) {
+    /// `saleItemID` - ID of the NFT that is put on sale by the seller.
+    /// `saleItemPrice` - Amount of tokens (FT) buyer needs to pay for the purchase of listed NFT.
+    /// `commissionAmount` - Commission amount that will be taken away by the purchase facilitator.
+    /// `marketplacesAddress` - List of addresses that are allowed to get the commission.
+    /// `expiry` - Unix timestamp at which created listing become expired.
+    /// `customID` - Optional string to represent identifier of the dapp.
     let sellerPaymentReceiver: Capability<&{FungibleToken.Receiver}>
     let nftProvider: Capability<&${cI.contractName}.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
     let storefront: &NFTStorefrontV2.Storefront
@@ -28,6 +34,23 @@ transaction(saleItemID: UInt64, saleItemPrice: UFix64, commissionAmount: UFix64,
             seller.save(<-storefront, to: NFTStorefrontV2.StorefrontStoragePath)
             // create a public capability for the Storefront
             seller.link<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(NFTStorefrontV2.StorefrontPublicPath, target: NFTStorefrontV2.StorefrontStoragePath)
+        }
+
+         // FT Setup if the user's account is not initialized with FT receiver
+        if seller.borrow<&{FungibleToken.Receiver}>(from: ${vI.receiverStoragePath}) == nil {
+
+            let dapper = getAccount(${vI.contractAddress})
+            let dapperFTReceiver = dapper.getCapability<&{FungibleToken.Receiver}>(${vI.publicPath})!
+
+            // Create a new Forwarder resource for FUT and store it in the new account's storage
+            let ftForwarder <- TokenForwarding.createNewForwarder(recipient: dapperFTReceiver)
+            seller.save(<-ftForwarder, to: ${vI.receiverStoragePath})
+
+            // Publish a Receiver capability for the new account, which is linked to the FUT Forwarder
+            seller.link<&${vI.contractName}.Vault{FungibleToken.Receiver}>(
+                ${vI.publicPath},
+                target: ${vI.receiverStoragePath}
+            )
         }
 
         // Get a reference to the receiver that will receive the fungible tokens if the sale executes.

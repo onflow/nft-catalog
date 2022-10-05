@@ -8,6 +8,10 @@
 // Version: ${version}
 
 transaction(storefrontAddress: Address, listingResourceID: UInt64,  expectedPrice: UFix64, commissionRecipient: Address?) {
+    /// `storefrontAddress` - The address that owns the storefront listing
+    /// `listingResourceID` - ID of the Storefront listing resource
+    /// `expectedPrice: UFix64` - How much you expect to pay for the NFT
+    /// `commissionRecipient` - Optional recipient for transaction commission if comission exists.
     let paymentVault: @FungibleToken.Vault
     let nftCollection: &${cI.publicLinkedType}
     let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}
