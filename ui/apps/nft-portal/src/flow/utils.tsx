@@ -93,7 +93,7 @@ export async function retrieveMetadataInformation(sampleAddress: string, storage
 export async function getSupportedGeneratedScripts(): Promise<any> {
   try {
     const scriptResult = await fcl.send([
-      fcl.script(catalogJson.scripts.get_supported_generated_transactions),
+      fcl.script(catalogJson.scripts.get_supported_generated_scripts),
       fcl.args([])
     ]).then(fcl.decode)
     return scriptResult
