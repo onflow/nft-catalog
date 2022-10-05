@@ -236,7 +236,7 @@ pub contract TransactionGenerationUtils {
     }
 
     pub fun getAddressFromType(_ type: Type): String {
-        let typeStr = Type<@FlowUtilityToken.Vault>().identifier
+        let typeStr = type.identifier
         return "0x".concat(StringUtils.split(typeStr, ".")[1])
     }
 
