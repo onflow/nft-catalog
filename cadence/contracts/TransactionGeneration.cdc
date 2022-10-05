@@ -44,7 +44,8 @@ pub contract TransactionGeneration {
 
     pub fun getSupportedScripts(): [String] {
         return [
-            "GetStorefrontListingMetadata"
+            "DapperGetPrimaryListingMetadata",
+            "DapperGetSecondaryListingMetadata"
         ]
     }
 
@@ -127,9 +128,14 @@ pub contract TransactionGeneration {
                     return TransactionTemplates.DapperBuyNFTDirectTemplate(nftSchema: nftSchema, ftSchema: ftSchema)
                 })
                 importTypes = nftImportTypes.concat(ftImportTypes).concat(storefrontTypes)
-            case "GetStorefrontListingMetadata":
+            case "DapperGetPrimaryListingMetadata":
                 createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
-                    return TransactionTemplates.GetStorefrontListingMetadata(nftSchema: nftSchema, ftSchema: ftSchema)
+                    return TransactionTemplates.DapperGetPrimaryListingMetadata(nftSchema: nftSchema, ftSchema: ftSchema)
+                })
+                importTypes = nftImportTypes.concat(storefrontTypes)
+            case "DapperGetSecondaryListingMetadata":
+                createTxCode = (fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchema?): String {
+                    return TransactionTemplates.DapperGetSecondaryListingMetadata(nftSchema: nftSchema, ftSchema: ftSchema)
                 })
                 importTypes = nftImportTypes.concat(storefrontTypes)
             default:
