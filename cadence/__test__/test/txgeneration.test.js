@@ -108,9 +108,16 @@ describe('NFT Catalog Test Suite', () => {
         expect(error).toBe(null);
         listingResourceID = result.events[0].data.listingResourceID;
 
-        [result, error] = await createTx('GetStorefrontListingMetadata', collectionIdentifier, 'flow');
+        [result, error] = await createTx('DapperGetPrimaryListingMetadata', collectionIdentifier, 'flow');
         expect(error).toBe(null);
         [result, error] = await runScript(result, [Alice, Alice, listingResourceID, 10.0]);
+        expect(error).toBe(null);
+        expect(parseInt(result.amount)).toBe(10);
+        expect(result.name).toBe("Test Name");
+
+        [result, error] = await createTx('DapperGetSecondaryListingMetadata', collectionIdentifier, 'flow');
+        expect(error).toBe(null);
+        [result, error] = await runScript(result, [Alice, listingResourceID, 10.0, Alice]);
         expect(error).toBe(null);
         expect(parseInt(result.amount)).toBe(10);
         expect(result.name).toBe("Test Name");
