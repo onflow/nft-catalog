@@ -19,7 +19,7 @@ pub contract TransactionTemplates {
 
 /*
   The following functions are available:
-  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplaceTemplate, StorefrontRemoveItemTemplate, DapperCreateListingTemplate, DapperBuyNFTDirectTemplate, DapperGetPrimaryListingMetadata, DapperGetSecondaryListingMetadata
+  NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplaceTemplate, StorefrontRemoveItemTemplate, DapperCreateListingTemplate, DapperBuyNFTDirectTemplate, DapperGetPrimaryListingMetadataTemplate, DapperGetSecondaryListingMetadataTemplate
 */
 pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
@@ -82,6 +82,15 @@ pub fun StorefrontListItemTemplate(nftSchema: TransactionGenerationUtils.NFTSche
     }
   
 let lines: [[String]] = [
+["// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)"],
+["//"],
+["// This transaction facilitates the listing of an NFT with the StorefrontV2 contract"],
+["// "],
+["// Collection Identifier: ", nftSchema!.identifier, ""],
+["// Vault Identifier: ", ftSchema!.identifier, ""],
+["//"],
+["// Version: 0.1.1"],
+[""],
 ["transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {"],
 ["    /// `saleItemID` - ID of the NFT that is put on sale by the seller."],
 ["    /// `saleItemPrice` - Amount of tokens (FT) buyer needs to pay for the purchase of listed NFT."],
@@ -210,6 +219,15 @@ pub fun StorefrontBuyItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchem
     }
   
 let lines: [[String]] = [
+["// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)"],
+["//"],
+["// This transaction facilitates the purchase of a listed NFT with the StorefrontV2 contract "],
+["// "],
+["// Collection Identifier: ", nftSchema!.identifier, ""],
+["// Vault Identifier: ", ftSchema!.identifier, ""],
+["//"],
+["// Version: 0.1.1"],
+[""],
 ["transaction(listingResourceID: UInt64, storefrontAddress: Address, commissionRecipient: Address?) {"],
 ["    /// `listingResourceID` - ID of the Storefront listing resource"],
 ["    /// `storefrontAddress` - The address that owns the storefront listing"],
@@ -309,6 +327,15 @@ pub fun DapperBuyNFTMarketplaceTemplate(nftSchema: TransactionGenerationUtils.NF
     }
   
 let lines: [[String]] = [
+["// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)"],
+["//"],
+["// This transaction purchases an NFT from a p2p marketplace."],
+["// "],
+["// Collection Identifier: ", nftSchema!.identifier, ""],
+["// Vault Identifier: ", ftSchema!.identifier, ""],
+["//"],
+["// Version: 0.1.1"],
+[""],
 ["transaction(storefrontAddress: Address, listingResourceID: UInt64,  expectedPrice: UFix64, commissionRecipient: Address?) {"],
 ["    /// `storefrontAddress` - The address that owns the storefront listing"],
 ["    /// `listingResourceID` - ID of the Storefront listing resource"],
@@ -423,6 +450,14 @@ pub fun StorefrontRemoveItemTemplate(nftSchema: TransactionGenerationUtils.NFTSc
     }
   
 let lines: [[String]] = [
+["// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)"],
+["//"],
+["// This transaction facilitates the removal of a listing with the StorefrontV2 contract"],
+["// "],
+["// Collection Identifier: ", nftSchema!.identifier, ""],
+["//"],
+["// Version: 0.1.1"],
+[""],
 ["transaction(listingResourceID: UInt64) {"],
 ["    /// `listingResourceID` - ID of the Storefront listing resource"],
 ["    "],
@@ -461,6 +496,15 @@ pub fun DapperCreateListingTemplate(nftSchema: TransactionGenerationUtils.NFTSch
     }
   
 let lines: [[String]] = [
+["// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)"],
+["//"],
+["// This transaction purchases an NFT from a dapp directly (i.e. **not** on a peer-to-peer marketplace)."],
+["// "],
+["// Collection Identifier: ", nftSchema!.identifier, ""],
+["// Vault Identifier: ", ftSchema!.identifier, ""],
+["//"],
+["// Version: 0.1.1"],
+[""],
 ["transaction(saleItemID: UInt64, saleItemPrice: UFix64, commissionAmount: UFix64, marketplacesAddress: [Address], expiry: UInt64, customID: String?) {"],
 ["    /// `saleItemID` - ID of the NFT that is put on sale by the seller."],
 ["    /// `saleItemPrice` - Amount of tokens (FT) buyer needs to pay for the purchase of listed NFT."],
@@ -609,6 +653,15 @@ pub fun DapperBuyNFTDirectTemplate(nftSchema: TransactionGenerationUtils.NFTSche
     }
   
 let lines: [[String]] = [
+["// This transaction was auto-generated with the NFT Catalog (https://github.com/dapperlabs/nft-catalog)"],
+["//"],
+["// This transaction purchases an NFT from a dapp directly (i.e. **not** on a peer-to-peer marketplace)."],
+["// "],
+["// Collection Identifier: ", nftSchema!.identifier, ""],
+["// Vault Identifier: ", ftSchema!.identifier, ""],
+["//"],
+["// Version: 0.1.1"],
+[""],
 ["transaction(merchantAccountAddress: Address, storefrontAddress: Address, listingResourceID: UInt64, expectedPrice: UFix64, commissionRecipient: Address?) {"],
 ["    /* This transaction purchases an NFT from a dapp directly (i.e. **not** on a peer-to-peer marketplace). */"],
 ["    "],
@@ -711,7 +764,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperGetPrimaryListingMetadata(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun DapperGetPrimaryListingMetadataTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -805,7 +858,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperGetSecondaryListingMetadata(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun DapperGetSecondaryListingMetadataTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
