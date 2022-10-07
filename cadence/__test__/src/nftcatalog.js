@@ -13,6 +13,7 @@ export const deployNFTCatalog = async () => {
     await deployContractByName({ to: NFTCatalogAdmin, name: 'DapperUtilityCoin' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'FlowUtilityToken' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTStorefrontV2' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'TokenForwarding' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGenerationUtils' });
     await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionTemplates' });
     return await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGeneration' })
