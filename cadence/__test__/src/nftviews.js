@@ -62,3 +62,10 @@ export const getNFTInAccountFromPath = async (ownerAddress, storagePathIdentifie
 
     return executeScript({ name, args });
 }
+
+export const getAllNFTsAndViewsInAccount = async (ownerAddress) => {
+    const name = 'get_all_nfts_and_views_in_account';
+    const args = [ownerAddress];
+
+    return executeScript({ name, args });
+}
