@@ -1,1 +1,1 @@
-*.cdc @dapperlabs/flow-smart-contracts @@dapperlabs/flow-devex-sc-eng-former-zaycodes
+*.cdc @dapperlabs/flow-smart-contracts @dapperlabs/flow-devex-sc-eng-former-zaycodes
