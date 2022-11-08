@@ -5,7 +5,7 @@ import * as json from "./c2j.json";
 //@ts-ignore
 import * as catalogJson from "./catalog_c2j.json";
 import { changeFCLEnvironment } from "./setup";
-import { Network } from "../app/components/catalog/network-dropdown";
+import { Network } from "../app/constants/networks";
 
 type AccountsMap = { [network in Network]: any }
 

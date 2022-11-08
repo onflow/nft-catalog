@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 import { useParams } from "react-router-dom";
-import { NetworkDropDown, Network } from "./network-dropdown";
+import { NetworkDropDown } from "./network-dropdown";
+import { Network } from "../../constants/networks"
 import { CatalogSelect } from "./catalog-select";
 import { NftCollectionContent } from "./nft-collection-content";
 import { ProposalContent } from "./proposal-content";

@@ -6,7 +6,7 @@ import { StepsProgressBar } from "./steps-progress-bar";
 import { AdditionalNftInfo } from "./additional-nft-info";
 import { AddToCatalog } from "./add-to-catalog";
 import { changeFCLEnvironment } from "../../../flow/setup";
-import { Network } from "../catalog/network-dropdown";
+import { Network } from "../../constants/networks";
 
 export default function ({
 }: {
