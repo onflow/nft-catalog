@@ -27,7 +27,8 @@ import {
     getNFTsInAccountFromPath,
     getNFTsCountInAccount,
     getNFTIDsInAccount,
-    getNFTsInAccountFromIDs
+    getNFTsInAccountFromIDs,
+    getAllNFTsAndViewsInAccount
 } from '../src/nftviews';
 import { TIMEOUT } from '../src/common';
 
@@ -230,5 +231,52 @@ describe('NFT Retrieval Test Suite', () => {
         expect(result[0].Display.description).toBe(nftDescription);
         expect(result[0].Display.thumbnail).toBe(thumbnail);
         expect(error).toBe(null);
+    });
+
+    it('should retrieve all views', async () => {
+        await deployNFTCatalog();
+        const Bob = await getAccountAddress('Bob');
+        await setupNFTCatalogAdminProxy(Bob);
+        await sendAdminProxyCapability(Bob)
+
+        let res = await deployExampleNFT();
+        const nftCreationEvent = res[0].events.find(element => element.type === 'flow.AccountContractAdded');
+        const Alice = await getAccountAddress('Alice');
+        await setupExampleNFTCollection(Alice)
+
+        await shallPass(deployNFTRetrieval());
+
+        const [nftTypeIdentifier, _] = await getExampleNFTType();
+
+
+        const nftName = 'Test Name';
+        const nftDescription = 'Test Description';
+        const thumbnail = 'https://flow.com/';
+        await mintExampleNFT(Alice, nftName, nftDescription, thumbnail, [], [], []);
+
+        await addToCatalog(
+            Bob,
+            nftCreationEvent.data.contract,
+            nftCreationEvent.data.contract,
+            nftCreationEvent.data.address,
+            nftTypeIdentifier,
+            Alice,
+            0,
+            'exampleNFTCollection',
+        )
+
+        let [result, error] = await shallResolve(getAllNFTsAndViewsInAccount(Alice));
+        expect(Object.keys(result['ExampleNFT']).length).toBe(8);
+        expect(error).toBe(null);
+
+        [result, error] = await shallResolve(getNFTsCountInAccount(Alice));
+        expect(result['ExampleNFT']).toBe(1)
+        expect(error).toBe(null);
+
+        [result, error] = await shallResolve(getNFTIDsInAccount(Alice));
+        expect(result['ExampleNFT'].length).toBe(1)
+        expect(result['ExampleNFT'][0]).toBe(0)
+        expect(error).toBe(null);
+
     });
 });
