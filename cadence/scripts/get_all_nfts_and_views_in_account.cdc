@@ -46,10 +46,14 @@ pub fun main(ownerAddress: Address) : { String : {String : AnyStruct} }  {
         
         var views = NFTRetrieval.getAllMetadataViewsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
         
+        if views.keys.length == 0 {
+            continue
+        }
+        
         // Cadence doesn't support function return types, lets manually get rid of it
         let nftCollectionDisplayView = views[Type<MetadataViews.NFTCollectionData>().identifier] as! MetadataViews.NFTCollectionData?
         let collectionDataView = NFTCollectionData(
-         storagePath : nftCollectionDisplayView!.storagePath,
+                    storagePath : nftCollectionDisplayView!.storagePath,
                     publicPath : nftCollectionDisplayView!.publicPath,
                     privatePath : nftCollectionDisplayView!.providerPath,
                     publicLinkedType : nftCollectionDisplayView!.publicLinkedType,
