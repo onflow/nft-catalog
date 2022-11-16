@@ -32,6 +32,8 @@ declare module '@onflow/types' {
   function String(): any;
   function Path(): any;
   function UInt64(): any;
+  function Array(any): any;
+  function Optional(any): any;
 }
 
 declare module '@onflow/transport-http' {
