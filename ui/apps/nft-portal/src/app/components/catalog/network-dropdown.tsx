@@ -1,13 +1,7 @@
 import { flushSync } from "react-dom";
 import { DropDown } from "../shared/drop-down"
+import { networks as _networks, Network, NetworkOption } from "../../constants/networks";
 import * as fcl from "@onflow/fcl";
-
-export type Network = "mainnet" | "testnet";
-
-type NetworkOption = {
-  value: Network,
-  label: string
-}
 
 type NetworkDropDownProps = {
   network: Network
@@ -16,10 +10,7 @@ type NetworkDropDownProps = {
 
 export function NetworkDropDown({ network, onNetworkChange }: NetworkDropDownProps) {
 
-  const networks: NetworkOption[] = [
-    { value: "mainnet", label: "Mainnet" },
-    { value: "testnet", label: "Testnet" },
-  ];
+  const networks: NetworkOption[] = _networks as  NetworkOption[];
   return <DropDown label="Network" options={networks} value={network} onChange={(e) => {
     fcl.unauthenticate()
     return onNetworkChange(e)

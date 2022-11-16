@@ -1,7 +1,7 @@
-export function Spinner({}: {}) {
+export function Spinner({ message }: { message?: string | null }) {
   return (
     <div className="flex items-center justify-center">
-      Loading...
+      { message ? message : "Loading..." }
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { getAllNFTsInAccountFromCatalog, getCollections, getProposals, getSupportedGeneratedTransactions, getSupportedGeneratedScripts, getProposalsCount } from "../../../flow/utils"
-import { Network } from "./network-dropdown";
+import { Network } from "../../constants/networks";
 import { changeFCLEnvironment } from "../../../flow/setup";
 import { Badge } from "../shared/badge";
 

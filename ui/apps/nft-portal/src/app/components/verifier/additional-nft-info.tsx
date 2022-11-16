@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { getAccount, retrieveContractInformation } from "../../../flow/utils"
-import { Network } from "../catalog/network-dropdown"
+import { Network } from "../../constants/networks"
 import { Alert } from "../shared/alert"
 import { Spinner } from "../shared/spinner"
 import { NFTValidity } from "./nft-validity"

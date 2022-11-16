@@ -1,5 +1,5 @@
 import { config } from "@onflow/fcl";
-import { Network } from "../app/components/catalog/network-dropdown";
+import { Network } from "../app/constants/networks";
 //@ts-ignore
 import * as json from "./c2j.json";
 //@ts-ignore

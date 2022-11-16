@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react"
-import { NetworkDropDown, Network } from "../catalog/network-dropdown";
+import { NetworkDropDown } from "../catalog/network-dropdown";
+import { Network } from "../../constants/networks"
 import { useParams, useNavigate } from "react-router-dom";
 import { CatalogSelect } from "../catalog/catalog-select";
 import { changeFCLEnvironment } from "apps/nft-portal/src/flow/setup";

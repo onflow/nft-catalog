@@ -9,7 +9,7 @@ import { DisplayView } from "../shared/views/display-view"
 import { CollectionDisplayView } from "../shared/views/collection-display-view"
 import { EmptyContent } from "../catalog/empty-content"
 import { Button } from "../shared/button"
-import { Network } from "../catalog/network-dropdown";
+import { Network } from "../../constants/networks";
 
 export function NFTContent({ nftID, identifier, walletAddress, network }: { nftID: string | undefined, identifier: string | undefined, walletAddress: string | undefined, network: Network }) {
     const [loading, setLoading] = useState<boolean>(false)
