@@ -63,8 +63,6 @@ export function TransactionContent({ identifier, transaction, network, vault }: 
                     auditors: auditors.map((a: any) => a.address),
                 })
 
-                console.log("interactionTemplateAudits", interactionTemplateAudits)
-
                 if (interactionTemplateAudits) {
                     const audits = auditors.map((auditor: any) => 
                     interactionTemplateAudits[auditor.address] !== undefined ?
@@ -76,8 +74,6 @@ export function TransactionContent({ identifier, transaction, network, vault }: 
                     ).filter((a: any) => a !== null)
 
                     if (audits) setInteractionTemplateAudits(audits)
-
-                    console.log("audits", audits)
                 }
             }
         }
