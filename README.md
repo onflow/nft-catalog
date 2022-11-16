@@ -567,7 +567,82 @@ pub fun main(ownerAddress: Address, collections: {String : [UInt64]}) : {String 
 }
 ```
 
-**Example 6 - Setup a user’s account to receive a specific collection**
+**Example 6 - Retrieve all MetadataViews for NFTs in a wallet**
+
+If you're looking for some MetadataViews that aren't in the [core view list](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L36) you can leverage this script to grab all the views each NFT supports. Note: You lose some typing here but get more data.
+
+```swift
+import MetadataViews from 0x1d7e57aa55817448
+import NFTCatalog from 0x49a7cda3a1eecc29
+import NFTRetrieval from 0x49a7cda3a1eecc29
+
+pub struct NFTCollectionData {
+    pub let storagePath : StoragePath
+    pub let publicPath : PublicPath
+    pub let privatePath: PrivatePath
+    pub let publicLinkedType: Type
+    pub let privateLinkedType: Type
+
+    init(
+            storagePath : StoragePath,
+            publicPath : PublicPath,
+            privatePath : PrivatePath,
+            publicLinkedType : Type,
+            privateLinkedType : Type,
+    ) {
+        self.storagePath = storagePath
+        self.publicPath = publicPath
+        self.privatePath = privatePath
+        self.publicLinkedType = publicLinkedType
+        self.privateLinkedType = privateLinkedType
+    }
+}
+
+pub fun main(ownerAddress: Address) : { String : {String : AnyStruct} }  {
+    let catalog = NFTCatalog.getCatalog()
+    let account = getAuthAccount(ownerAddress)
+    let items : [MetadataViews.NFTView] = []
+    
+    let data : { String : {String : AnyStruct} } = {}
+
+    for key in catalog.keys {
+        let value = catalog[key]!
+        let tempPathStr = "catalog".concat(key)
+        let tempPublicPath = PublicPath(identifier: tempPathStr)!
+        account.link<&{MetadataViews.ResolverCollection}>(
+            tempPublicPath,
+            target: value.collectionData.storagePath
+        )
+        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+        if !collectionCap.check() {
+            continue
+        }
+        
+        var views = NFTRetrieval.getAllMetadataViewsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
+
+        if views.keys.length == 0 {
+            continue
+        }
+        
+        // Cadence doesn't support function return types, lets manually get rid of it
+        let nftCollectionDisplayView = views[Type<MetadataViews.NFTCollectionData>().identifier] as! MetadataViews.NFTCollectionData?
+        let collectionDataView = NFTCollectionData(
+                    storagePath : nftCollectionDisplayView!.storagePath,
+                    publicPath : nftCollectionDisplayView!.publicPath,
+                    privatePath : nftCollectionDisplayView!.providerPath,
+                    publicLinkedType : nftCollectionDisplayView!.publicLinkedType,
+                    privateLinkedType : nftCollectionDisplayView!.providerLinkedType,
+        )
+        views.insert(key: Type<MetadataViews.NFTCollectionData>().identifier, collectionDataView)
+        
+        data[key] = views
+    }
+
+    return data
+}
+```
+
+**Example 7 - Setup a user’s account to receive a specific collection**
 
 1. Run the following script to retrieve some collection-level information for an NFT collection identifier from the catalog
 

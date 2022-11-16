@@ -148,6 +148,7 @@
                 "ArrayUtils",
                 "StringUtils",
                 "DapperUtilityCoin",
+                "FlowUtilityToken",
                 "NFTStorefrontV2",
                 "TokenForwarding",
                 "TransactionGenerationUtils",

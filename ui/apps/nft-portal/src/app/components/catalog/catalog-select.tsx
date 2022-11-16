@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { getAllNFTsInAccountFromCatalog, getCollections, getProposals, getSupportedGeneratedTransactions, getSupportedGeneratedScripts } from "../../../flow/utils"
+import { getAllNFTsInAccountFromCatalog, getCollections, getProposals, getSupportedGeneratedTransactions, getSupportedGeneratedScripts, getProposalsCount } from "../../../flow/utils"
 import { Network } from "../../constants/networks";
 import { changeFCLEnvironment } from "../../../flow/setup";
 import { Badge } from "../shared/badge";
+
+const CHUNK = 50;
 
 export function CatalogSelect({
   type,
@@ -29,7 +31,24 @@ export function CatalogSelect({
       changeFCLEnvironment(network);
       // retrieve list of proposals or 
       if (type === 'Proposals') {
-        const proposals = await getProposals() || []
+        const proposalCount = await getProposalsCount();
+        const proposalBatches: [string, string][] = []
+        for (let i = 0; i < proposalCount; i += CHUNK) {
+          if (i + CHUNK > proposalCount) {
+            proposalBatches.push([String(i), String(proposalCount)])
+          } else {
+            proposalBatches.push([String(i), String(i + CHUNK)])
+          }
+        }
+        let proposals: any = {};
+        for (const proposalBatch of proposalBatches) {
+          const currentBatch = await getProposals(proposalBatch) || []
+          proposals = {
+            ...currentBatch,
+            ...proposals
+          }
+
+        }
         const items = Object.keys(proposals).map((proposalID) => {
           const proposal = proposals[proposalID]
           return {

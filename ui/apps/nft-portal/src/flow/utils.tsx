@@ -146,11 +146,27 @@ export async function getCollections(): Promise<any> {
   }
 }
 
-export async function getProposals(): Promise<any> {
+export async function getProposals(batch: [string, string] | null): Promise<any> {
   try {
     const scriptResult = await fcl.send([
       fcl.script(catalogJson.scripts.get_nft_catalog_proposals),
-      fcl.args([])
+      fcl.args([
+        fcl.arg(batch, t.Optional(t.Array(t.UInt64)))
+      ])
+    ]).then(fcl.decode)
+    return scriptResult
+  } catch (e) {
+    console.error(e)
+    return null;
+  }
+}
+
+export async function getProposalsCount(): Promise<any> {
+  try {
+    const scriptResult = await fcl.send([
+      fcl.script(catalogJson.scripts.get_nft_catalog_proposals_count),
+      fcl.args([
+      ])
     ]).then(fcl.decode)
     return scriptResult
   } catch (e) {
