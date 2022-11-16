@@ -538,7 +538,73 @@ export const TRANSACTION_TYPES: any = {
         ],
       }),
     ],
-    args: ({ projectName }: { projectName: string }) => [],
+    args: ({ projectName }: { projectName: string }) => [
+      FLIX_Generators.arg({
+        tag: 'merchantAccountAddress',
+        type: 'Address',
+        index: 0,
+        messages: [
+          FLIX_Generators.message({
+            tag: 'title',
+            translations: [
+              FLIX_Generators.messageTranslation({
+                bcp47tag: 'en-US',
+                translation:
+                  'The merchant account address provided by Dapper Labs',
+              }),
+            ],
+          }),
+        ],
+      }),
+      FLIX_Generators.arg({
+        tag: 'address',
+        type: 'Address',
+        index: 1,
+        messages: [
+          FLIX_Generators.message({
+            tag: 'title',
+            translations: [
+              FLIX_Generators.messageTranslation({
+                bcp47tag: 'en-US',
+                translation: 'The address that owns the storefront listing',
+              }),
+            ],
+          }),
+        ],
+      }),
+      FLIX_Generators.arg({
+        tag: 'listingResourceID',
+        type: 'UInt64',
+        index: 2,
+        messages: [
+          FLIX_Generators.message({
+            tag: 'title',
+            translations: [
+              FLIX_Generators.messageTranslation({
+                bcp47tag: 'en-US',
+                translation: 'ID of the Storefront listing resource',
+              }),
+            ],
+          }),
+        ],
+      }),
+      FLIX_Generators.arg({
+        tag: 'expectedPrice',
+        type: 'UFix64',
+        index: 3,
+        messages: [
+          FLIX_Generators.message({
+            tag: 'title',
+            translations: [
+              FLIX_Generators.messageTranslation({
+                bcp47tag: 'en-US',
+                translation: 'How much you expect to pay for the NFT',
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
   },
   DapperGetSecondaryListingMetadata: {
     type: 'script',
@@ -553,6 +619,72 @@ export const TRANSACTION_TYPES: any = {
         ],
       }),
     ],
-    args: ({ projectName }: { projectName: string }) => [],
+    args: ({ projectName }: { projectName: string }) => [
+      FLIX_Generators.arg({
+        tag: 'storefrontAddress',
+        type: 'Address',
+        index: 0,
+        messages: [
+          FLIX_Generators.message({
+            tag: 'title',
+            translations: [
+              FLIX_Generators.messageTranslation({
+                bcp47tag: 'en-US',
+                translation: 'The address that owns the storefront listing',
+              }),
+            ],
+          }),
+        ],
+      }),
+      FLIX_Generators.arg({
+        tag: 'listingResourceID',
+        type: 'UInt64',
+        index: 1,
+        messages: [
+          FLIX_Generators.message({
+            tag: 'title',
+            translations: [
+              FLIX_Generators.messageTranslation({
+                bcp47tag: 'en-US',
+                translation: 'ID of the Storefront listing resource',
+              }),
+            ],
+          }),
+        ],
+      }),
+      FLIX_Generators.arg({
+        tag: 'expectedPrice',
+        type: 'UFix64',
+        index: 2,
+        messages: [
+          FLIX_Generators.message({
+            tag: 'title',
+            translations: [
+              FLIX_Generators.messageTranslation({
+                bcp47tag: 'en-US',
+                translation: 'How much you expect to pay for the NFT',
+              }),
+            ],
+          }),
+        ],
+      }),
+      FLIX_Generators.arg({
+        tag: 'commissionRecipient',
+        type: 'Address?',
+        index: 3,
+        messages: [
+          FLIX_Generators.message({
+            tag: 'title',
+            translations: [
+              FLIX_Generators.messageTranslation({
+                bcp47tag: 'en-US',
+                translation:
+                  'Optional recipient for transaction commission if comission exists',
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
   },
 };
