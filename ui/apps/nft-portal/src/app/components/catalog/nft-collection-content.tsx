@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getCollections } from "../../../flow/utils"
+import { getAllCollections } from "../../../flow/utils"
 import { Spinner } from "../shared/spinner"
 import { EmptyContent } from "./empty-content"
 import { CollectionDataView } from "../shared/views/collection-data-view"
@@ -14,7 +14,7 @@ export function NftCollectionContent({collectionIdentifier}: {collectionIdentifi
     setError(null)
     if (!collectionIdentifier) { return }
     const setup = async () => {
-      const res = await getCollections();
+      const res = await getAllCollections();
       const collection = res[collectionIdentifier]
       if (res) {
         setCollectionData(collection)
