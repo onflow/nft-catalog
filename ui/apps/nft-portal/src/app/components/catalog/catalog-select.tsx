@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { getAllNFTsInAccountFromCatalog, getCollections, getProposals, getSupportedGeneratedTransactions, getSupportedGeneratedScripts, getProposalsCount } from "../../../flow/utils"
+import { getAllNFTsInAccountFromCatalog, getSupportedGeneratedTransactions, getSupportedGeneratedScripts, getAllCollections, getAllProposals } from "../../../flow/utils"
 import { Network } from "./network-dropdown";
 import { changeFCLEnvironment } from "../../../flow/setup";
 import { Badge } from "../shared/badge";
-
-const CHUNK = 50;
 
 export function CatalogSelect({
   type,
@@ -31,24 +29,7 @@ export function CatalogSelect({
       changeFCLEnvironment(network);
       // retrieve list of proposals or 
       if (type === 'Proposals') {
-        const proposalCount = await getProposalsCount();
-        const proposalBatches: [string, string][] = []
-        for (let i = 0; i < proposalCount; i += CHUNK) {
-          if (i + CHUNK > proposalCount) {
-            proposalBatches.push([String(i), String(proposalCount)])
-          } else {
-            proposalBatches.push([String(i), String(i + CHUNK)])
-          }
-        }
-        let proposals: any = {};
-        for (const proposalBatch of proposalBatches) {
-          const currentBatch = await getProposals(proposalBatch) || []
-          proposals = {
-            ...currentBatch,
-            ...proposals
-          }
-
-        }
+        const proposals = await getAllProposals();
         const items = Object.keys(proposals).map((proposalID) => {
           const proposal = proposals[proposalID]
           return {
@@ -60,7 +41,7 @@ export function CatalogSelect({
         })
         setItems(items)
       } else if (type === 'Catalog') {
-        const catalogCollections = await getCollections() || []
+        const catalogCollections = await getAllCollections() || []
         const items = Object.keys(catalogCollections).map((catalogKey) => {
           const catalog = catalogCollections[catalogKey]
           return {
