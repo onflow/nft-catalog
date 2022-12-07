@@ -97,22 +97,19 @@ pub struct NFT {
     
         if collectionCap.check() {
             let collectionRef = collectionCap.borrow()!
-            for id in collectionRef.getIDs() {
-                if id != tokenID {
-                    continue
-                }
-                let nftResolver = collectionRef.borrowViewResolver(id: id)
-                let supportedNftViewTypes = nftResolver.getViews()
-                for supportedViewType in supportedNftViewTypes {
-                    if let view = nftResolver.resolveView(supportedViewType) {
-                        if !hasMultipleCollections {
-                            items.insert(key : supportedViewType.identifier, view)
-                        } else if MetadataViews.getDisplay(nftResolver)!.name == value.collectionDisplay.name {
-                            items.insert(key : supportedViewType.identifier, view)
-                        }
+
+            let nftResolver = collectionRef.borrowViewResolver(id: tokenID)
+            let supportedNftViewTypes = nftResolver.getViews()
+            for supportedViewType in supportedNftViewTypes {
+                if let view = nftResolver.resolveView(supportedViewType) {
+                    if !hasMultipleCollections {
+                        items.insert(key : supportedViewType.identifier, view)
+                    } else if MetadataViews.getDisplay(nftResolver)!.name == value.collectionDisplay.name {
+                        items.insert(key : supportedViewType.identifier, view)
                     }
                 }
             }
+        
         }
         return items
     }
