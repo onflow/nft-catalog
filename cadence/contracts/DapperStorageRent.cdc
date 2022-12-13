@@ -1,6 +1,6 @@
-import FungibleToken from "./FungibleToken.cdc"
-import FlowToken from "./FlowToken.cdc"
-import PrivateReceiverForwarder from "./PrivateReceiverForwarder.cdc"
+import FungibleToken from "./shared/FungibleToken.cdc"
+import FlowToken from "./shared/FlowToken.cdc"
+import PrivateReceiverForwarder from "./shared/PrivateReceiverForwarder.cdc"
 
 /// DapperStorageRent
 /// Provide a means for accounts storage TopUps. To be used during transaction execution.
@@ -8,6 +8,8 @@ pub contract DapperStorageRent {
 
   pub let DapperStorageRentAdminStoragePath: StoragePath
 
+  /// Amount of FLOW deposited for refill
+  access(contract) var RefuelAmount: UFix64
   /// Threshold of storage required to trigger a refill
   access(contract) var StorageRentRefillThreshold: UInt64
   /// List of all refilledAccounts
@@ -71,21 +73,19 @@ pub contract DapperStorageRent {
   ///
   /// @param address: Address to attempt a storage refill on
   pub fun tryRefill(_ address: Address) {
-    let REFUEL_AMOUNT = 0.06;
-
     self.cleanExpiredRefilledAccounts(10)
 
     // Get the Flow Token reciever of the address
     let recipient = getAccount(address)
     let receiverRef = recipient.getCapability<&PrivateReceiverForwarder.Forwarder>(PrivateReceiverForwarder.PrivateReceiverPublicPath).borrow()
 
-    // Sliently fail if the receiverRef is nill
+    // Silently fail if the `receiverRef` is `nill`
     if receiverRef == nil || receiverRef!.owner == nil {
       emit RefilledFailed(address: address, reason: "Couldn't borrow the Accounts flowTokenVault")
       return
     }
 
-    // Sliently fail if the account has already be refueled within the block allowance
+    // Silently fail if the account has already be refueled within the block allowance
     if self.RefilledAccountInfos[address] != nil && getCurrentBlock().height - self.RefilledAccountInfos[address]!.atBlock < self.RefillRequiredBlocks {
       emit RefilledFailed(address: address, reason: "RefillRequiredBlocks")
       return
@@ -99,7 +99,7 @@ pub contract DapperStorageRent {
       high <-> low
     }
 
-    // Sliently fail if the account has been blocked from receiving refills
+    // Silently fail if the account has been blocked from receiving refills
     if DapperStorageRent.getBlockedAccounts().contains(address) {
       emit RefilledFailed(address: address, reason: "Address is Blocked")
       return
@@ -121,7 +121,7 @@ pub contract DapperStorageRent {
 
       // Check to make sure the payment vault has sufficient funds
       if let vaultBalanceRef = self.account.getCapability(/public/flowTokenBalance).borrow<&FlowToken.Vault{FungibleToken.Balance}>() {
-        if vaultBalanceRef.balance <= REFUEL_AMOUNT {
+        if vaultBalanceRef.balance <= self.RefuelAmount {
           emit RefilledFailed(address: address, reason: "Insufficient balance to refuel")
           return
         }
@@ -131,7 +131,7 @@ pub contract DapperStorageRent {
       }
 
       // 0.06 = 6MB of storage, or ~20k NBA TS moments
-      privateForwardingSenderRef!.sendPrivateTokens(address,tokens:<-vaultRef!.withdraw(amount: REFUEL_AMOUNT))
+      privateForwardingSenderRef!.sendPrivateTokens(address,tokens:<-vaultRef!.withdraw(amount: self.RefuelAmount))
       self.addRefilledAccount(address)
       emit Refuelled(address)
     } else {
@@ -179,15 +179,21 @@ pub contract DapperStorageRent {
   /// @param batchSize: Int to set the batch size of the cleanup
   pub fun cleanExpiredRefilledAccounts(_ batchSize: Int) {
     var index = 0
-    while index < batchSize && self.RefilledAccounts.length > index {
-      if self.RefilledAccountInfos[self.RefilledAccounts[index]] != nil &&
-        getCurrentBlock().height - self.RefilledAccountInfos[self.RefilledAccounts[index]]!.atBlock < self.RefillRequiredBlocks {
-        break
+    var refilledAccountsToCleanup: [Address] = [];
+    var refilledAccountsLength = self.RefilledAccounts.length
+    while index < batchSize && index < refilledAccountsLength {
+      let accountDetails = self.RefilledAccountInfos[self.RefilledAccounts[index]]
+      if accountDetails != nil && getCurrentBlock().height - accountDetails!.atBlock > self.RefillRequiredBlocks {
+        refilledAccountsToCleanup.append(self.RefilledAccounts[index])
       }
-
-      self.RefilledAccountInfos.remove(key: self.RefilledAccounts[index])
-      self.RefilledAccounts.remove(at: index)
       index = index + 1
+    }
+
+    for account in refilledAccountsToCleanup {
+        if let idx = self.RefilledAccounts.firstIndex(of: account) {
+          self.RefilledAccounts.remove(at: idx)
+          self.RefilledAccountInfos.remove(key: account)
+        }
     }
   }
 
@@ -206,6 +212,10 @@ pub contract DapperStorageRent {
   /// Admin resource
   /// Used to set different configuration levers such as StorageRentRefillThreshold, RefillRequiredBlocks, and BlockedAccounts
   pub resource Admin {
+    pub fun setRefuelAmount(_ amount: UFix64) {
+      DapperStorageRent.RefuelAmount = amount
+    }
+
     pub fun setStorageRentRefillThreshold(_ threshold: UInt64) {
       DapperStorageRent.StorageRentRefillThreshold = threshold
     }
@@ -240,6 +250,7 @@ pub contract DapperStorageRent {
     self.RefilledAccountInfos = {}
     self.RefillRequiredBlocks = 86400
     self.BlockedAccounts = []
+    self.RefuelAmount = 0.06
 
     let admin <- create Admin()
     self.account.save(<-admin, to: self.DapperStorageRentAdminStoragePath)
