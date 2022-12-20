@@ -1,8 +1,8 @@
 import { executeScript } from 'flow-js-testing'
 
-export const createTx = async (tx, collectionIdentifier, vaultIdentifier) => {
+export const createTx = async (tx, collectionIdentifier, vaultIdentifier, merchantAddress) => {
     const name = "gen_tx";
-    const args = [tx, collectionIdentifier, vaultIdentifier]
+    const args = [tx, collectionIdentifier, vaultIdentifier, merchantAddress || ""]
 
     return executeScript({ name, args })
 }
@@ -17,6 +17,6 @@ export const createScript = async (tx, collectionIdentifier, vaultIdentifier) =>
 }
 
 export const createInitTx = async (collectionIdentifier) => {
-    return createTx("CollectionInitialization", collectionIdentifier, "flow")
+    return createTx("CollectionInitialization", collectionIdentifier, "flow", "")
 }
 

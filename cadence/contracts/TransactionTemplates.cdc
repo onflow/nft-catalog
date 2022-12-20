@@ -21,7 +21,7 @@ pub contract TransactionTemplates {
   The following functions are available:
   NFTInitTemplate, StorefrontListItemTemplate, StorefrontBuyItemTemplate, DapperBuyNFTMarketplaceTemplate, StorefrontRemoveItemTemplate, DapperCreateListingTemplate, DapperBuyNFTDirectTemplate, DapperGetPrimaryListingMetadataTemplate, DapperGetSecondaryListingMetadataTemplate
 */
-pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun NFTInitTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?, params: {String: String}?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -66,7 +66,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun StorefrontListItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun StorefrontListItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?, params: {String: String}?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -203,7 +203,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun StorefrontBuyItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun StorefrontBuyItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?, params: {String: String}?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -311,7 +311,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperBuyNFTMarketplaceTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun DapperBuyNFTMarketplaceTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?, params: {String: String}?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -434,7 +434,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun StorefrontRemoveItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun StorefrontRemoveItemTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?, params: {String: String}?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -480,7 +480,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperCreateListingTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun DapperCreateListingTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?, params: {String: String}?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -637,7 +637,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperBuyNFTDirectTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun DapperBuyNFTDirectTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?, params: {String: String}?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -741,6 +741,7 @@ let lines: [[String]] = [
 ["    // Check that the price is right"],
 ["    pre {"],
 ["        self.salePrice == expectedPrice: \"unexpected price\""],
+["        merchantAccountAddress == ", params!["merchantAddress"]!, ""],
 ["    }"],
 [""],
 ["    execute {"],
@@ -757,6 +758,7 @@ let lines: [[String]] = [
 ["        self.mainUtilityCoinVault.balance == self.balanceBeforeTransfer: \"UtilityCoin leakage\""],
 ["    }"],
 ["}"],
+[""],
 [""]]
 var combinedLines: [String] = []
 for line in lines {
@@ -764,7 +766,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperGetPrimaryListingMetadataTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun DapperGetPrimaryListingMetadataTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?, params: {String: String}?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""
@@ -858,7 +860,7 @@ combinedLines.append(StringUtils.join(line, ""))
 }
 return StringUtils.join(combinedLines, "\n")
 }
-pub fun DapperGetSecondaryListingMetadataTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
+pub fun DapperGetSecondaryListingMetadataTemplate(nftSchema: TransactionGenerationUtils.NFTSchema?, ftSchema: TransactionGenerationUtils.FTSchemaV2?, params: {String: String}?): String {
 
     var nftPublicLink = ""
     var nftPrivateLink = ""

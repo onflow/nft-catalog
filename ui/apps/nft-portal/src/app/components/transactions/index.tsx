@@ -20,6 +20,7 @@ export default function Layout() {
 
     const [collectionIdentifier, setCollectionIdentifier] = useState<string>(identifier ?? "")
     const [ftVault, setFTVault] = useState<string>(vault ?? "flow")
+    const [merchantAddress, setMerchantAddress] = useState<string>('0x9999999999999999')
 
     const navigate = useNavigate()
 
@@ -40,22 +41,34 @@ export default function Layout() {
                     <div className="flex w-full items-center">
                         <div className="grow">
                             <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
-                            <TransactionForm collectionIdentifier={collectionIdentifier} setCollectionIdentifier={setCollectionIdentifier} ftVault={ftVault} setFTVault={setFTVault} />
+                            <TransactionForm collectionIdentifier={collectionIdentifier}
+                                             setCollectionIdentifier={setCollectionIdentifier}
+                                             ftVault={ftVault}
+                                             setFTVault={setFTVault}
+                                             merchantAddress={merchantAddress}
+                                             setMerchantAddress={setMerchantAddress}
+                            />
                         </div>
                     </div>
                     <CatalogSelect type="Transactions" network={network} selected={transaction} collectionIdentifier={collectionIdentifier} ftVault={ftVault} />
-                    <TransactionContent network={network} identifier={identifier} vault={vault ?? "flow"} transaction={transaction} />
+                    <TransactionContent network={network} identifier={identifier} vault={vault ?? "flow"} transaction={transaction} merchantAddress={merchantAddress} />
                 </div>
                 <div className="lg:flex hidden overflow-hidden">
                     <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen w-full md:max-w-xs lg:max-w-sm">
                         <div className="flex-col">
                             <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
-                            <TransactionForm collectionIdentifier={collectionIdentifier} setCollectionIdentifier={setCollectionIdentifier} ftVault={ftVault} setFTVault={setFTVault} />
+                            <TransactionForm collectionIdentifier={collectionIdentifier}
+                                             setCollectionIdentifier={setCollectionIdentifier}
+                                             ftVault={ftVault}
+                                             setFTVault={setFTVault}
+                                             merchantAddress={merchantAddress}
+                                             setMerchantAddress={setMerchantAddress}
+                            />
                             <CatalogSelect type="Transactions" network={network} selected={transaction} collectionIdentifier={collectionIdentifier} ftVault={ftVault} />
                         </div>
                     </div>
                     <div className="px-10 w-3/4 self-start py-10 justify-self-start text-left">
-                        <TransactionContent network={network} identifier={identifier} vault={vault ?? "flow"} transaction={transaction} />
+                        <TransactionContent network={network} identifier={identifier} vault={vault ?? "flow"} transaction={transaction} merchantAddress={merchantAddress} />
                     </div>
                 </div>
             </div>
@@ -68,9 +81,11 @@ type TransactionFormParams = {
     setCollectionIdentifier: (collectionIdentifier: string) => void,
     setFTVault: (vault: string) => void;
     ftVault: string;
+    merchantAddress: string;
+    setMerchantAddress: (merchantAddress: string) => void;
 }
 
-function TransactionForm({ collectionIdentifier, setCollectionIdentifier, setFTVault, ftVault }: TransactionFormParams) {
+function TransactionForm({ collectionIdentifier, setCollectionIdentifier, setFTVault, ftVault, merchantAddress, setMerchantAddress }: TransactionFormParams) {
     return <><div className="md:flex md:items-center my-6">
         <div className="md:w-1/3">
             <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
@@ -97,5 +112,21 @@ function TransactionForm({ collectionIdentifier, setCollectionIdentifier, setFTV
                 onChange={setFTVault}
             />
 
-        </div></>
+        </div>
+
+    <div className="md:flex md:items-center my-6">
+        <div className="md:w-1/3">
+            <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+                Merchant Address (Dapper only)
+            </label>
+        </div>
+        <div className="md:w-2/3 px-2">
+            <TextInput
+                value={merchantAddress ?? ""}
+                placeholder="0x9999999999999999"
+                updateValue={setMerchantAddress}
+            />
+        </div>
+    </div>
+  </>
 }
