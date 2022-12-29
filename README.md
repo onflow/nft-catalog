@@ -181,62 +181,78 @@ All of the below examples use the catalog in mainnet, you may replace the import
 
 **Example 1 - Retrieve all NFT collections on the catalog**
 
-```swift
+```cadence
 import NFTCatalog from 0x49a7cda3a1eecc29
 
 /*
-	The catalog is returned as a `String: NFTCatalogMetadata`
-	The key string is intended to be a unique identifier for a specific collection.
-	The NFTCatalogMetadata contains collection-level views corresponding to each
-	collection identifier.
+    The catalog is returned as a `String: NFTCatalogMetadata`
+    The key string is intended to be a unique identifier for a specific collection.
+    The NFTCatalogMetadata contains collection-level views corresponding to each
+    collection identifier.
+    Due to the large size of the response, only the first 10 entries are returned.
 */
-pub fun main(): {String : NFTCatalog.NFTCatalogMetadata} {
-    return NFTCatalog.getCatalog()
+pub fun main(): {String: NFTCatalog.NFTCatalogMetadata} {
+    let catalog = NFTCatalog.getCatalog()
+    let keys = catalog.keys.slice(from: 0, upTo: 10)
+    let collections: {String: NFTCatalog.NFTCatalogMetadata} = {}
 
+    for key in keys {
+        collections[key] = catalog[key]
+    }
+
+    return collections
 }
 ```
 
 **Example 2 - Retrieve all collection names in the catalog**
 
-```swift
+```cadence
 import NFTCatalog from 0x49a7cda3a1eecc29
 
 pub fun main(): [String] {
-		let catalog: {String : NFTCatalog.NFTCatalogMetadata} = NFTCatalog.getCatalog()
-		let catalogNames: [String] = []
-		for collectionIdentifier in catalog.keys {
-			catalogNames.append(catalog[collectionIdentifier]!.collectionDisplay.name)
+    let catalog: {String: NFTCatalog.NFTCatalogMetadata} = NFTCatalog.getCatalog()
+    let catalogNames: [String] = []
+
+    for collectionIdentifier in catalog.keys {
+        catalogNames.append(catalog[collectionIdentifier]!.collectionDisplay.name)
     }
+
     return catalogNames
 }
 ```
 
 **Example 3 - Retrieve NFT collections and counts owned by an account**
 
-```swift
+```cadence
 import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
-pub fun main(ownerAddress: Address) : {String : Number} {
+pub fun main(ownerAddress: Address): {String: Number} {
     let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
-    let items : {String : Number} = {}
+    let items: {String: Number} = {}
 
     for key in catalog.keys {
         let value = catalog[key]!
-        let tempPathStr = "catalog".concat(key)
+        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
+        let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
+
         account.link<&{MetadataViews.ResolverCollection}>(
             tempPublicPath,
             target: value.collectionData.storagePath
         )
+
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+
         if !collectionCap.check() {
             continue
         }
-        let count = NFTRetrieval.getNFTCountFromCap(collectionIdentifier : key, collectionCap : collectionCap)
-        if count != 0 {
+
+        let count = NFTRetrieval.getNFTCountFromCap(collectionIdentifier: key, collectionCap: collectionCap)
+
+        if count > 0 {
             items[key] = count
         }
     }
@@ -255,45 +271,46 @@ pub fun main(ownerAddress: Address) : {String : Number} {
 
 **Example 4 - Retrieve all NFTs including metadata owned by an account**
 
-```swift
+```cadence
 import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
 pub struct NFT {
-    pub let id : UInt64
-    pub let name : String
-    pub let description : String
-    pub let thumbnail : String
-    pub let externalURL : String
-    pub let storagePath : StoragePath
-    pub let publicPath : PublicPath
+    pub let id: UInt64
+    pub let name: String
+    pub let description: String
+    pub let thumbnail: String
+    pub let externalURL: String
+    pub let storagePath: StoragePath
+    pub let publicPath: PublicPath
     pub let privatePath: PrivatePath
     pub let publicLinkedType: Type
     pub let privateLinkedType: Type
-    pub let collectionName : String
+    pub let collectionIdentifier: String
+    pub let collectionName: String
     pub let collectionDescription: String
-    pub let collectionSquareImage : String
-    pub let collectionBannerImage : String
+    pub let collectionSquareImage: String
+    pub let collectionBannerImage: String
     pub let royalties: [MetadataViews.Royalty]
 
     init(
-            id: UInt64,
-            name : String,
-            description : String,
-            thumbnail : String,
-            externalURL : String,
-            storagePath : StoragePath,
-            publicPath : PublicPath,
-            privatePath : PrivatePath,
-            publicLinkedType : Type,
-            privateLinkedType : Type,
-						collectionIdentifier: String,
-            collectionName : String,
-            collectionDescription : String,
-            collectionSquareImage : String,
-            collectionBannerImage : String,
-            royalties : [MetadataViews.Royalty]
+        id: UInt64,
+        name: String,
+        description: String,
+        thumbnail: String,
+        externalURL: String,
+        storagePath: StoragePath,
+        publicPath: PublicPath,
+        privatePath: PrivatePath,
+        publicLinkedType: Type,
+        privateLinkedType: Type,
+        collectionIdentifier: String,
+        collectionName: String,
+        collectionDescription: String,
+        collectionSquareImage: String,
+        collectionBannerImage: String,
+        royalties: [MetadataViews.Royalty]
     ) {
         self.id = id
         self.name = name
@@ -305,7 +322,7 @@ pub struct NFT {
         self.privatePath = privatePath
         self.publicLinkedType = publicLinkedType
         self.privateLinkedType = privateLinkedType
-				self.collectionIdentifier = collectionIdentifier
+        self.collectionIdentifier = collectionIdentifier
         self.collectionName = collectionName
         self.collectionDescription = collectionDescription
         self.collectionSquareImage = collectionSquareImage
@@ -314,34 +331,40 @@ pub struct NFT {
     }
 }
 
-pub fun main(ownerAddress: Address) : { String : [NFT] } {
+pub fun main(ownerAddress: Address): {String: [NFT]} {
     let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
-    let items : [NFTRetrieval.BaseNFTViewsV1] = []
-
-    let data : {String : [NFT] } = {}
+    let items: [NFTRetrieval.BaseNFTViewsV1] = []
+    let data: {String: [NFT]} = {}
 
     for key in catalog.keys {
         let value = catalog[key]!
-        let tempPathStr = "catalog".concat(key)
+        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
+        let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
+
         account.link<&{MetadataViews.ResolverCollection}>(
             tempPublicPath,
             target: value.collectionData.storagePath
         )
+
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+
         if !collectionCap.check() {
             continue
         }
-        let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
 
-        let items : [NFT] = []
+        let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier: key, collectionCap: collectionCap)
+
+        let items: [NFT] = []
+
         for view in views {
             let displayView = view.display
             let externalURLView = view.externalURL
             let collectionDataView = view.collectionData
             let collectionDisplayView = view.collectionDisplay
             let royaltyView = view.royalties
+
             if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
                 // This NFT does not have the proper views implemented. Skipping....
                 continue
@@ -350,26 +373,28 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
             items.append(
                 NFT(
                     id: view.id,
-                    name : displayView!.name,
-                    description : displayView!.description,
-                    thumbnail : displayView!.thumbnail.uri(),
-                    externalURL : externalURLView!.url,
-                    storagePath : collectionDataView!.storagePath,
-                    publicPath : collectionDataView!.publicPath,
-                    privatePath : collectionDataView!.providerPath,
-                    publicLinkedType : collectionDataView!.publicLinkedType,
-                    privateLinkedType : collectionDataView!.providerLinkedType,
-										collectionIdentifier: key,
-                    collectionName : collectionDisplayView!.name,
-                    collectionDescription : collectionDisplayView!.description,
-                    collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
-                    collectionBannerImage : collectionDisplayView!.bannerImage.file.uri(),
-                    royalties : royaltyView!.getRoyalties()
+                    name: displayView!.name,
+                    description: displayView!.description,
+                    thumbnail: displayView!.thumbnail.uri(),
+                    externalURL: externalURLView!.url,
+                    storagePath: collectionDataView!.storagePath,
+                    publicPath: collectionDataView!.publicPath,
+                    privatePath: collectionDataView!.providerPath,
+                    publicLinkedType: collectionDataView!.publicLinkedType,
+                    privateLinkedType: collectionDataView!.providerLinkedType,
+                    collectionIdentifier: key,
+                    collectionName: collectionDisplayView!.name,
+                    collectionDescription: collectionDisplayView!.description,
+                    collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
+                    collectionBannerImage: collectionDisplayView!.bannerImage.file.uri(),
+                    royalties: royaltyView!.getRoyalties()
                 )
             )
         }
+
         data[key] = items
     }
+
     return data
 }
 ```
@@ -406,7 +431,7 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
 
 For Wallets that have a lot of NFTs you may run into memory issues. The common pattern to get around this for now is to retrieve just the ID's in a wallet by calling the following script
 
-```swift
+```cadence
 import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
@@ -444,44 +469,44 @@ pub fun main(ownerAddress: Address) : {String : [UInt64]} {
 
 and then use the ids to retrieve the full metadata for only those ids by calling the following script and passing in a map of collectlionIdentifer -> [ids]
 
-```swift
+```cadence
 import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
 pub struct NFT {
-    pub let id : UInt64
-    pub let name : String
-    pub let description : String
-    pub let thumbnail : String
-    pub let externalURL : String
-    pub let storagePath : StoragePath
-    pub let publicPath : PublicPath
+    pub let id: UInt64
+    pub let name: String
+    pub let description: String
+    pub let thumbnail: String
+    pub let externalURL: String
+    pub let storagePath: StoragePath
+    pub let publicPath: PublicPath
     pub let privatePath: PrivatePath
     pub let publicLinkedType: Type
     pub let privateLinkedType: Type
-    pub let collectionName : String
+    pub let collectionName: String
     pub let collectionDescription: String
-    pub let collectionSquareImage : String
-    pub let collectionBannerImage : String
+    pub let collectionSquareImage: String
+    pub let collectionBannerImage: String
     pub let royalties: [MetadataViews.Royalty]
 
     init(
-            id: UInt64,
-            name : String,
-            description : String,
-            thumbnail : String,
-            externalURL : String,
-            storagePath : StoragePath,
-            publicPath : PublicPath,
-            privatePath : PrivatePath,
-            publicLinkedType : Type,
-            privateLinkedType : Type,
-            collectionName : String,
-            collectionDescription : String,
-            collectionSquareImage : String,
-            collectionBannerImage : String,
-            royalties : [MetadataViews.Royalty]
+        id: UInt64,
+        name: String,
+        description: String,
+        thumbnail: String,
+        externalURL: String,
+        storagePath: StoragePath,
+        publicPath: PublicPath,
+        privatePath: PrivatePath,
+        publicLinkedType: Type,
+        privateLinkedType: Type,
+        collectionName: String,
+        collectionDescription: String,
+        collectionSquareImage: String,
+        collectionBannerImage: String,
+        royalties: [MetadataViews.Royalty]
     ) {
         self.id = id
         self.name = name
@@ -501,16 +526,18 @@ pub struct NFT {
     }
 }
 
-pub fun main(ownerAddress: Address, collections: {String : [UInt64]}) : {String : [NFT] } {
-    let data : {String : [NFT] } = {}
-
+pub fun main(ownerAddress: Address, collections: {String: [UInt64]}): {String: [NFT]} {
     let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
+    let data: {String: [NFT]} = {}
+
     for collectionIdentifier in collections.keys {
         if catalog.containsKey(collectionIdentifier) {
             let value = catalog[collectionIdentifier]!
-            let tempPathStr = "catalog".concat(collectionIdentifier)
+            let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
+            let tempPathStr = "catalog".concat(keyHash)
             let tempPublicPath = PublicPath(identifier: tempPathStr)!
+
             account.link<&{MetadataViews.ResolverCollection}>(
                 tempPublicPath,
                 target: value.collectionData.storagePath
@@ -522,46 +549,46 @@ pub fun main(ownerAddress: Address, collections: {String : [UInt64]}) : {String 
                 return data
             }
 
-            let views = NFTRetrieval.getNFTViewsFromIDs(collectionIdentifier : collectionIdentifier, ids: collections[collectionIdentifier]!, collectionCap : collectionCap)
+            let views = NFTRetrieval.getNFTViewsFromIDs(collectionIdentifier: collectionIdentifier, ids: collections[collectionIdentifier]!, collectionCap : collectionCap)
 
-            let items : [NFT] = []
+            let items: [NFT] = []
 
             for view in views {
-                    let displayView = view.display
-                    let externalURLView = view.externalURL
-                    let collectionDataView = view.collectionData
-                    let collectionDisplayView = view.collectionDisplay
-                    let royaltyView = view.royalties
-                    if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
-                        // Bad NFT. Skipping....
-                        continue
-                    }
+                let displayView = view.display
+                let externalURLView = view.externalURL
+                let collectionDataView = view.collectionData
+                let collectionDisplayView = view.collectionDisplay
+                let royaltyView = view.royalties
 
-                    items.append(
-                        NFT(
-                            id: view.id,
-                            name : displayView!.name,
-                            description : displayView!.description,
-                            thumbnail : displayView!.thumbnail.uri(),
-                            externalURL : externalURLView!.url,
-                            storagePath : collectionDataView!.storagePath,
-                            publicPath : collectionDataView!.publicPath,
-                            privatePath : collectionDataView!.providerPath,
-                            publicLinkedType : collectionDataView!.publicLinkedType,
-                            privateLinkedType : collectionDataView!.providerLinkedType,
-                            collectionName : collectionDisplayView!.name,
-                            collectionDescription : collectionDisplayView!.description,
-                            collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
-                            collectionBannerImage : collectionDisplayView!.bannerImage.file.uri(),
-                            royalties : royaltyView!.getRoyalties()
-                        )
-                    )
+                if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
+                    // Bad NFT. Skipping....
+                    continue
                 }
 
-                data[collectionIdentifier] = items
+                items.append(
+                    NFT(
+                        id: view.id,
+                        name: displayView!.name,
+                        description: displayView!.description,
+                        thumbnail: displayView!.thumbnail.uri(),
+                        externalURL: externalURLView!.url,
+                        storagePath: collectionDataView!.storagePath,
+                        publicPath: collectionDataView!.publicPath,
+                        privatePath: collectionDataView!.providerPath,
+                        publicLinkedType: collectionDataView!.publicLinkedType,
+                        privateLinkedType: collectionDataView!.providerLinkedType,
+                        collectionName: collectionDisplayView!.name,
+                        collectionDescription: collectionDisplayView!.description,
+                        collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
+                        collectionBannerImage: collectionDisplayView!.bannerImage.file.uri(),
+                        royalties: royaltyView!.getRoyalties()
+                    )
+                )
+            }
+
+            data[collectionIdentifier] = items
         }
     }
-
 
     return data
 }
@@ -571,24 +598,24 @@ pub fun main(ownerAddress: Address, collections: {String : [UInt64]}) : {String 
 
 If you're looking for some MetadataViews that aren't in the [core view list](https://github.com/onflow/flow-nft/blob/master/contracts/MetadataViews.cdc#L36) you can leverage this script to grab all the views each NFT supports. Note: You lose some typing here but get more data.
 
-```swift
+```cadence
 import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
 pub struct NFTCollectionData {
-    pub let storagePath : StoragePath
-    pub let publicPath : PublicPath
+    pub let storagePath: StoragePath
+    pub let publicPath: PublicPath
     pub let privatePath: PrivatePath
     pub let publicLinkedType: Type
     pub let privateLinkedType: Type
 
     init(
-            storagePath : StoragePath,
-            publicPath : PublicPath,
-            privatePath : PrivatePath,
-            publicLinkedType : Type,
-            privateLinkedType : Type,
+        storagePath: StoragePath,
+        publicPath: PublicPath,
+        privatePath: PrivatePath,
+        publicLinkedType: Type,
+        privateLinkedType: Type,
     ) {
         self.storagePath = storagePath
         self.publicPath = publicPath
@@ -598,43 +625,47 @@ pub struct NFTCollectionData {
     }
 }
 
-pub fun main(ownerAddress: Address) : { String : {String : AnyStruct} }  {
+pub fun main(ownerAddress: Address): {String: {String: AnyStruct}}  {
     let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
-    let items : [MetadataViews.NFTView] = []
-    
-    let data : { String : {String : AnyStruct} } = {}
+    let items: [MetadataViews.NFTView] = []
+    let data: {String: {String: AnyStruct}} = {}
 
     for key in catalog.keys {
         let value = catalog[key]!
-        let tempPathStr = "catalog".concat(key)
+        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
+        let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
+
         account.link<&{MetadataViews.ResolverCollection}>(
             tempPublicPath,
             target: value.collectionData.storagePath
         )
+
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+
         if !collectionCap.check() {
             continue
         }
-        
-        var views = NFTRetrieval.getAllMetadataViewsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
+
+        var views = NFTRetrieval.getAllMetadataViewsFromCap(collectionIdentifier: key, collectionCap: collectionCap)
 
         if views.keys.length == 0 {
             continue
         }
-        
+
         // Cadence doesn't support function return types, lets manually get rid of it
         let nftCollectionDisplayView = views[Type<MetadataViews.NFTCollectionData>().identifier] as! MetadataViews.NFTCollectionData?
         let collectionDataView = NFTCollectionData(
-                    storagePath : nftCollectionDisplayView!.storagePath,
-                    publicPath : nftCollectionDisplayView!.publicPath,
-                    privatePath : nftCollectionDisplayView!.providerPath,
-                    publicLinkedType : nftCollectionDisplayView!.publicLinkedType,
-                    privateLinkedType : nftCollectionDisplayView!.providerLinkedType,
+            storagePath : nftCollectionDisplayView!.storagePath,
+            publicPath : nftCollectionDisplayView!.publicPath,
+            privatePath : nftCollectionDisplayView!.providerPath,
+            publicLinkedType : nftCollectionDisplayView!.publicLinkedType,
+            privateLinkedType : nftCollectionDisplayView!.providerLinkedType,
         )
+
         views.insert(key: Type<MetadataViews.NFTCollectionData>().identifier, collectionDataView)
-        
+
         data[key] = views
     }
 
@@ -646,33 +677,40 @@ pub fun main(ownerAddress: Address) : { String : {String : AnyStruct} }  {
 
 1. Run the following script to retrieve some collection-level information for an NFT collection identifier from the catalog
 
-```swift
+```cadence
+// Assuming file name is `get_nft_collection_data.cdc`
 import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
 pub struct NFTCollection {
-    pub let storagePath : StoragePath
-    pub let publicPath : PublicPath
+    pub let contractName: String
+    pub let contractAddress: String
+    pub let storagePath: StoragePath
+    pub let publicPath: PublicPath
     pub let privatePath: PrivatePath
     pub let publicLinkedType: Type
     pub let privateLinkedType: Type
-    pub let collectionName : String
+    pub let collectionName: String
     pub let collectionDescription: String
-    pub let collectionSquareImage : String
-    pub let collectionBannerImage : String
+    pub let collectionSquareImage: String
+    pub let collectionBannerImage: String
 
     init(
-            storagePath : StoragePath,
-            publicPath : PublicPath,
-            privatePath : PrivatePath,
-            publicLinkedType : Type,
-            privateLinkedType : Type,
-            collectionName : String,
-            collectionDescription : String,
-            collectionSquareImage : String,
-            collectionBannerImage : String
+        contractName: String,
+        contractAddress: String,
+        storagePath: StoragePath,
+        publicPath: PublicPath,
+        privatePath: PrivatePath,
+        publicLinkedType: Type,
+        privateLinkedType: Type,
+        collectionName: String,
+        collectionDescription: String,
+        collectionSquareImage: String,
+        collectionBannerImage: String
     ) {
+        self.contractName = contractName
+        self.contractAddress = contractAddress
         self.storagePath = storagePath
         self.publicPath = publicPath
         self.privatePath = privatePath
@@ -685,34 +723,38 @@ pub struct NFTCollection {
     }
 }
 
-pub fun main(collectionIdentifier : String) : NFT? {
-        let catalog = NFTCatalog.getCatalog()
+pub fun main(collectionIdentifier : String) : NFTCollection? {
+    let catalog = NFTCatalog.getCatalog()
 
-        assert(catalog.containsKey(collectionIdentifier), message: "Invalid Collection")
+    assert(catalog.containsKey(collectionIdentifier), message: "Invalid Collection")
 
-              return NFTCollection(
-                  storagePath : collectionDataView!.storagePath,
-                  publicPath : collectionDataView!.publicPath,
-                  privatePath : collectionDataView!.providerPath,
-                  publicLinkedType : collectionDataView!.publicLinkedType,
-                  privateLinkedType : collectionDataView!.providerLinkedType,
-                  collectionName : collectionDisplayView!.name,
-                  collectionDescription : collectionDisplayView!.description,
-                  collectionSquareImage : collectionDisplayView!.squareImage.file.uri(),
-                  collectionBannerImage : collectionDisplayView!.bannerImage.file.uri()
-              )
-          }
+    let contractView = catalog[collectionIdentifier]!
+    let collectionDataView = catalog[collectionIdentifier]!.collectionData
+    let collectionDisplayView = catalog[collectionIdentifier]!.collectionDisplay
 
-        panic("Invalid Token ID")
+    return NFTCollection(
+        contractName: contractView.contractName,
+        contractAddress: contractView.contractAddress.toString(),
+        storagePath: collectionDataView!.storagePath,
+        publicPath: collectionDataView!.publicPath,
+        privatePath: collectionDataView!.privatePath,
+        publicLinkedType: collectionDataView!.publicLinkedType,
+        privateLinkedType: collectionDataView!.privateLinkedType,
+        collectionName: collectionDisplayView!.name,
+        collectionDescription: collectionDisplayView!.description,
+        collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
+        collectionBannerImage: collectionDisplayView!.bannerImage.file.uri()
+    )
 }
 ```
 
 2. This script result can then be used to form a transaction by inserting the relevant variables from above into a transaction template like the following:
 
-```swift
+```cadence
+// Assuming file name is `setup_collection_template.cdc`
 import NonFungibleToken from 0x1d7e57aa55817448
 import MetadataViews from 0x1d7e57aa55817448
-{ADDITIONAL_IMPORTS}
+import {CONTRACT_NAME} from {CONTRACT_ADDRESS}
 
 transaction {
 
@@ -729,10 +771,117 @@ transaction {
             target: {STORAGE_PATH}
         )
 
-				// create a private capability for the collection
+        // create a private capability for the collection
         signer.link<&{PRIVATE_LINKED_TYPE}>(
             {PRIVATE_PATH},
             target: {STORAGE_PATH}
+        )
+    }
+}
+```
+
+We can achieve this with JavaScript, for example:
+
+```javascript
+import { readFileSync, writeFileSync } from 'fs';
+import * as fcl from "@onflow/fcl";
+
+fcl.config()
+  .put("accessNode.api", "https://rest-mainnet.onflow.org")
+  .put("flow.network", "mainnet")
+
+const args = process.argv.slice(2);
+
+const collectionIdentifier = args[0];
+if (collectionIdentifier === undefined) {
+  console.error('You need to pass the Collection identifier as an argument.');
+  process.exit(1);
+}
+
+try {
+  const scriptPath = new URL('get_nft_collection_data.cdc', import.meta.url);
+  const scriptCode = readFileSync(scriptPath, { encoding: 'utf8' });
+
+  const nftCollection = await fcl.query({
+    cadence: scriptCode,
+    args: (arg, t) => [
+      arg(collectionIdentifier, t.String)
+    ],
+  });
+
+  console.log(nftCollection);
+
+  const filePath = new URL('setup_collection_template.cdc', import.meta.url);
+  const transactionTemplate = readFileSync(filePath, { encoding: 'utf8' });
+
+  const transaction = transactionTemplate.replaceAll(
+    '{CONTRACT_NAME}',
+    nftCollection.contractName
+  )
+  .replaceAll(
+    '{CONTRACT_ADDRESS}',
+    nftCollection.contractAddress
+  ).replaceAll(
+    '{STORAGE_PATH}',
+    `/${nftCollection.storagePath.domain}/${nftCollection.storagePath.identifier}`
+  ).replaceAll(
+    '{PUBLIC_PATH}',
+    `/${nftCollection.publicPath.domain}/${nftCollection.publicPath.identifier}`
+  ).replaceAll(
+    '{PRIVATE_PATH}',
+    `/${nftCollection.privatePath.domain}/${nftCollection.privatePath.identifier}`
+  ).replaceAll(
+    '{PUBLIC_LINKED_TYPE}',
+    nftCollection.publicLinkedType.typeID.replace(/A\.\w{16}\./g, '')
+  ).replaceAll(
+    '{PRIVATE_LINKED_TYPE}',
+    nftCollection.privateLinkedType.typeID.replace(/A\.\w{16}\./g, '')
+  );
+
+  const transactionPath = `setup_${nftCollection.contractName}_collection.cdc`;
+  writeFileSync(
+    transactionPath,
+    transaction
+  );
+
+  console.log(transaction);
+} catch (err) {
+  console.error(err.message);
+}
+```
+
+Running the above with:
+
+```bash
+node setupCollection.mjs "ChainmonstersRewards"
+```
+
+will generate a file called `setup_ChainmonstersRewards_collection.cdc`, containing:
+
+```cadence
+import NonFungibleToken from 0x1d7e57aa55817448
+import MetadataViews from 0x1d7e57aa55817448
+import ChainmonstersRewards from 0x93615d25d14fa337
+
+transaction {
+
+    prepare(signer: AuthAccount) {
+        // Create a new empty collection
+        let collection <- ChainmonstersRewards.createEmptyCollection()
+
+        // save it to the account
+        signer.save(<-collection, to: /storage/ChainmonstersRewardCollection)
+
+        // create a public capability for the collection
+        signer.link<&ChainmonstersRewards.Collection{ChainmonstersRewards.ChainmonstersRewardCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(
+            /public/ChainmonstersRewardCollection,
+            target: /storage/ChainmonstersRewardCollection
+        )
+
+        // create a private capability for the collection
+        signer.link<&ChainmonstersRewards.Collection{ChainmonstersRewards.ChainmonstersRewardCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>(
+            /private/ChainmonstersRewardsCollectionProvider,
+            target: /storage/ChainmonstersRewardCollection
         )
     }
 }
