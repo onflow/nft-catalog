@@ -6,7 +6,7 @@ import { getGeneratedTransaction } from "apps/nft-portal/src/flow/utils";
 import CodeMirror from '@uiw/react-codemirror';
 import { Button } from "../shared/button";
 
-export function TransactionContent({ identifier, transaction, network, vault }: { identifier: string | undefined, transaction: string | undefined, network: Network, vault: string | undefined }) {
+export function TransactionContent({ identifier, transaction, network, vault, merchantAddress }: { identifier: string | undefined, transaction: string | undefined, network: Network, vault: string | undefined, merchantAddress: string }) {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
     const [transactionData, setTransactionData] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export function TransactionContent({ identifier, transaction, network, vault }: 
         const setup = async () => {
             setLoading(true)
             if (identifier != null && identifier !== '' && transaction != null && transaction !== '') {
-                const res = await getGeneratedTransaction(transaction, identifier, vault ?? "flow")
+                const res = await getGeneratedTransaction(transaction, identifier, vault ?? "flow", merchantAddress)
                 if (res) {
                     setTransactionData(res);
                 } else {

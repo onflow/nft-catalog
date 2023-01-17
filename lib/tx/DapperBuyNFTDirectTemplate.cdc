@@ -86,6 +86,7 @@ transaction(merchantAccountAddress: Address, storefrontAddress: Address, listing
     // Check that the price is right
     pre {
         self.salePrice == expectedPrice: "unexpected price"
+        merchantAccountAddress == ${p.merchantAddress}
     }
 
     execute {

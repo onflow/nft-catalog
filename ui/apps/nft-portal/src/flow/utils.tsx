@@ -116,14 +116,15 @@ export async function getSupportedGeneratedTransactions(): Promise<any> {
   }
 }
 
-export async function getGeneratedTransaction(tx: string, collectionIdentifer: string, vaultIdentifier: string): Promise<any> {
+export async function getGeneratedTransaction(tx: string, collectionIdentifer: string, vaultIdentifier: string, merchantAddress: string): Promise<any> {
   try {
     const scriptResult = await fcl.send([
       fcl.script(catalogJson.scripts.gen_tx),
       fcl.args([
         fcl.arg(tx, t.String),
         fcl.arg(collectionIdentifer, t.String),
-        fcl.arg(vaultIdentifier, t.String)
+        fcl.arg(vaultIdentifier, t.String),
+        fcl.arg(merchantAddress, t.String)
       ])
     ]).then(fcl.decode)
     return scriptResult
