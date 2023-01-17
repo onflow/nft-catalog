@@ -7,6 +7,8 @@
 // Version: ${version}
 
 transaction(listingResourceID: UInt64) {
+    /// `listingResourceID` - ID of the Storefront listing resource
+    
     let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontManager}
 
     prepare(acct: AuthAccount) {

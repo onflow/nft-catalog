@@ -90,6 +90,19 @@ export async function retrieveMetadataInformation(sampleAddress: string, storage
   }
 }
 
+export async function getSupportedGeneratedScripts(): Promise<any> {
+  try {
+    const scriptResult = await fcl.send([
+      fcl.script(catalogJson.scripts.get_supported_generated_scripts),
+      fcl.args([])
+    ]).then(fcl.decode)
+    return scriptResult
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}
+
 export async function getSupportedGeneratedTransactions(): Promise<any> {
   try {
     const scriptResult = await fcl.send([
@@ -103,14 +116,15 @@ export async function getSupportedGeneratedTransactions(): Promise<any> {
   }
 }
 
-export async function getGeneratedTransaction(tx: string, collectionIdentifer: string, vaultIdentifier: string): Promise<any> {
+export async function getGeneratedTransaction(tx: string, collectionIdentifer: string, vaultIdentifier: string, merchantAddress: string): Promise<any> {
   try {
     const scriptResult = await fcl.send([
       fcl.script(catalogJson.scripts.gen_tx),
       fcl.args([
         fcl.arg(tx, t.String),
         fcl.arg(collectionIdentifer, t.String),
-        fcl.arg(vaultIdentifier, t.String)
+        fcl.arg(vaultIdentifier, t.String),
+        fcl.arg(merchantAddress, t.String)
       ])
     ]).then(fcl.decode)
     return scriptResult
@@ -120,11 +134,37 @@ export async function getGeneratedTransaction(tx: string, collectionIdentifer: s
   }
 }
 
-export async function getCollections(): Promise<any> {
+
+export async function getAllCollections(): Promise<any> {
+  const CHUNK = 50
+  const collectionCount = await getCollectionsCount();
+  const catalogBatches: [string, string][] = []
+  for (let i = 0; i < collectionCount; i += CHUNK) {
+    if (i + CHUNK > collectionCount) {
+      catalogBatches.push([String(i), String(collectionCount)])
+    } else {
+      catalogBatches.push([String(i), String(i + CHUNK)])
+    }
+  }
+  let collections: any = {};
+  for (const catalogBatch of catalogBatches) {
+    const currentBatch = await getCollections(catalogBatch) || []
+    collections = {
+      ...currentBatch,
+      ...collections
+    }
+
+  }
+  return collections;
+}
+
+export async function getCollections(batch: [string, string] | null): Promise<any> {
   try {
     const scriptResult = await fcl.send([
       fcl.script(catalogJson.scripts.get_nft_catalog),
-      fcl.args([])
+      fcl.args([
+        fcl.arg(batch, t.Optional(t.Array(t.UInt64)))
+      ])
     ]).then(fcl.decode)
     return scriptResult
   } catch (e) {
@@ -133,11 +173,64 @@ export async function getCollections(): Promise<any> {
   }
 }
 
-export async function getProposals(): Promise<any> {
+export async function getCollectionsCount(): Promise<any> {
+  try {
+    const scriptResult = await fcl.send([
+      fcl.script(catalogJson.scripts.get_nft_catalog_count),
+      fcl.args([
+      ])
+    ]).then(fcl.decode)
+    return scriptResult
+  } catch (e) {
+    console.error(e)
+    return null;
+  }
+}
+
+export async function getAllProposals(): Promise<any> {
+  const CHUNK = 50
+  const proposalCount = await getProposalsCount();
+  const proposalBatches: [string, string][] = []
+  for (let i = 0; i < proposalCount; i += CHUNK) {
+    if (i + CHUNK > proposalCount) {
+      proposalBatches.push([String(i), String(proposalCount)])
+    } else {
+      proposalBatches.push([String(i), String(i + CHUNK)])
+    }
+  }
+  let proposals: any = {};
+  for (const proposalBatch of proposalBatches) {
+    const currentBatch = await getProposals(proposalBatch) || []
+    proposals = {
+      ...currentBatch,
+      ...proposals
+    }
+
+  }
+  return proposals;
+}
+
+export async function getProposals(batch: [string, string] | null): Promise<any> {
   try {
     const scriptResult = await fcl.send([
       fcl.script(catalogJson.scripts.get_nft_catalog_proposals),
-      fcl.args([])
+      fcl.args([
+        fcl.arg(batch, t.Optional(t.Array(t.UInt64)))
+      ])
+    ]).then(fcl.decode)
+    return scriptResult
+  } catch (e) {
+    console.error(e)
+    return null;
+  }
+}
+
+export async function getProposalsCount(): Promise<any> {
+  try {
+    const scriptResult = await fcl.send([
+      fcl.script(catalogJson.scripts.get_nft_catalog_proposals_count),
+      fcl.args([
+      ])
     ]).then(fcl.decode)
     return scriptResult
   } catch (e) {
@@ -453,7 +546,7 @@ export async function proposeNFTToCatalog(
 }
 
 async function validateCatalogProposal(collectionIdentifier: string, contractAddress: string, contractName: string, sampleNFTView: any) {
-  let collections = await getCollections();
+  let collections = await getAllCollections();
   let displayName = sampleNFTView.NFTCollectionDisplay.collectionName;
   let storagePathIdentifier = sampleNFTView.NFTCollectionData.storagePath.identifier;
 

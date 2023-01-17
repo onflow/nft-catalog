@@ -81,6 +81,36 @@ pub contract NFTRetrieval {
         return 0 
     }
 
+    pub fun getAllMetadataViewsFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : {String: AnyStruct} {
+        pre {
+            NFTCatalog.getCatalog()[collectionIdentifier] != nil : "Invalid collection identifier"
+        }
+        let catalog = NFTCatalog.getCatalog()
+        let items : {String: AnyStruct} = {}
+        let value = catalog[collectionIdentifier]!
+
+        // Check if we have multiple collections for the NFT type...
+        let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
+    
+        if collectionCap.check() {
+            let collectionRef = collectionCap.borrow()!
+            for id in collectionRef.getIDs() {
+                let nftResolver = collectionRef.borrowViewResolver(id: id)
+                let supportedNftViewTypes = nftResolver.getViews()
+                for supportedViewType in supportedNftViewTypes {
+                    if let view = nftResolver.resolveView(supportedViewType) {
+                        if !hasMultipleCollections {
+                            items.insert(key : supportedViewType.identifier, view)
+                        } else if MetadataViews.getDisplay(nftResolver)!.name == value.collectionDisplay.name {
+                            items.insert(key : supportedViewType.identifier, view)
+                        }
+                    }
+                }
+            }
+        }
+        return items
+    }
+
     pub fun getNFTViewsFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : [MetadataViews.NFTView] {
         pre {
             NFTCatalog.getCatalog()[collectionIdentifier] != nil : "Invalid collection identifier"
@@ -156,6 +186,8 @@ pub contract NFTRetrieval {
         }
         return false
     }
+
+
 
     //LEGACY - DO NOT USE
     pub struct BaseNFTViewsV1 {

@@ -7,20 +7,27 @@
 //
 // Version: ${version}
 
-transaction(storefrontAddress: Address, listingResourceID: UInt64, expectedPrice: UFix64, commissionRecipient: Address?) {
+transaction(merchantAccountAddress: Address, storefrontAddress: Address, listingResourceID: UInt64, expectedPrice: UFix64, commissionRecipient: Address?) {
+    /* This transaction purchases an NFT from a dapp directly (i.e. **not** on a peer-to-peer marketplace). */
+    
+    /// `merchantAccountAddress` - The merchant account address provided by Dapper Labs
+    /// `storefrontAddress` - The address that owns the storefront listing
+    /// `listingResourceID` - ID of the Storefront listing resource
+    /// `expectedPrice: UFix64` - How much you expect to pay for the NFT
+    /// `commissionRecipient` - Optional recipient for transaction commission if comission exists.
+
+
     let paymentVault: @FungibleToken.Vault
     let nftCollection: &${cI.publicLinkedType}
     let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}
     let listing: &NFTStorefrontV2.Listing{NFTStorefrontV2.ListingPublic}
-    let dappAddress: Address
     let salePrice: UFix64
     let balanceBeforeTransfer: UFix64
     let mainUtilityCoinVault: &${vI.contractName}.Vault
     var commissionRecipientCap: Capability<&{FungibleToken.Receiver}>?
 
-    prepare(dapp: AuthAccount, dapper: AuthAccount, buyer: AuthAccount) {
+    prepare(dapper: AuthAccount, buyer: AuthAccount) {
         self.commissionRecipientCap = nil
-        self.dappAddress = dapp.address
         
         // Initialize the buyer's collection if they do not already have one
         if buyer.borrow<&${cI.contractName}.Collection>(from: ${cI.storagePath}) == nil {
@@ -38,7 +45,7 @@ transaction(storefrontAddress: Address, listingResourceID: UInt64, expectedPrice
             buyer.link<&${cI.privateLinkedType}>(${cI.privatePath}, target: ${cI.storagePath})
         }
 
-        self.storefront = dapp
+        self.storefront = getAccount(storefrontAddress)
             .getCapability<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(
                 NFTStorefrontV2.StorefrontPublicPath
             )!
@@ -79,7 +86,7 @@ transaction(storefrontAddress: Address, listingResourceID: UInt64, expectedPrice
     // Check that the price is right
     pre {
         self.salePrice == expectedPrice: "unexpected price"
-        self.dappAddress == storefrontAddress: "Requires valid authorizing signature"
+        merchantAccountAddress == ${p.merchantAddress}
     }
 
     execute {

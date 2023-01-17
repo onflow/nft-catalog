@@ -1,8 +1,9 @@
 import TransactionGeneration from "../contracts/TransactionGeneration.cdc"
 
-pub fun main(tx: String, collectionIdentifier: String, vaultIdentifier: String) : String {
+pub fun main(tx: String, collectionIdentifier: String, vaultIdentifier: String, merchantAddress: String) : String {
     return TransactionGeneration.getTx(tx: tx, params: {
         "collectionIdentifier": collectionIdentifier,
-        "vaultIdentifier": vaultIdentifier
+        "vaultIdentifier": vaultIdentifier,
+        "merchantAddress": merchantAddress
     })!
 }

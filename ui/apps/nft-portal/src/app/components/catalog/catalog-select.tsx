@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { getAllNFTsInAccountFromCatalog, getCollections, getProposals, getSupportedGeneratedTransactions } from "../../../flow/utils"
+import { getAllNFTsInAccountFromCatalog, getSupportedGeneratedTransactions, getSupportedGeneratedScripts, getAllCollections, getAllProposals } from "../../../flow/utils"
 import { Network } from "./network-dropdown";
 import { changeFCLEnvironment } from "../../../flow/setup";
 import { Badge } from "../shared/badge";
-import { Hamburger } from "../shared/hamburger";
 
 export function CatalogSelect({
   type,
@@ -30,7 +29,7 @@ export function CatalogSelect({
       changeFCLEnvironment(network);
       // retrieve list of proposals or 
       if (type === 'Proposals') {
-        const proposals = await getProposals() || []
+        const proposals = await getAllProposals();
         const items = Object.keys(proposals).map((proposalID) => {
           const proposal = proposals[proposalID]
           return {
@@ -42,7 +41,7 @@ export function CatalogSelect({
         })
         setItems(items)
       } else if (type === 'Catalog') {
-        const catalogCollections = await getCollections() || []
+        const catalogCollections = await getAllCollections() || []
         const items = Object.keys(catalogCollections).map((catalogKey) => {
           const catalog = catalogCollections[catalogKey]
           return {
@@ -77,11 +76,13 @@ export function CatalogSelect({
       }
       else if (type == "Transactions") {
         const supportedTransactions = await getSupportedGeneratedTransactions()
-        if (supportedTransactions == null) {
+        const supportedScripts = await getSupportedGeneratedScripts()
+        const combined = supportedTransactions.concat(supportedScripts)
+        if (combined == null) {
           setItems([])
           return
         }
-        const items = supportedTransactions.map((tx: string) => {
+        const items = combined.map((tx: string) => {
           return {
             name: tx,
             subtext: '',

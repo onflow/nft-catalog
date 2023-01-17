@@ -57,6 +57,13 @@
                 "mainnet": "0x4eb8a10cb9f87357"
             }
         },
+        "TokenForwarding": {
+            "source": "./cadence/contracts/TokenForwarding.cdc",
+            "aliases": {
+                "testnet": "0x51ea0e37c27a1f1a",
+                "mainnet": "0xe544175ee0461c4b"
+            }
+        },
         "ExampleNFT": "./cadence/contracts/ExampleNFT.cdc",
         "NonStandardNFT": "./cadence/contracts/NonStandardNFT.cdc",
         "NFTCatalog": "./cadence/contracts/NFTCatalog.cdc",
@@ -80,19 +87,19 @@
         },
         "catalog-testnet-account": {
             "address": "0x324c34e1c517e4db",
-            "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
+            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
         },
         "transaction-generation-testnet-account": {
             "address": "0x44051d81c4720882",
-            "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
+            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
         },
         "examplenft-testnet-account": {
             "address": "0xa60cf32e8369f919",
-            "key": "$EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY"
+            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
         },
         "examplenft-testnet-holder-account": {
             "address": "0x5f151d59c7128d8e",
-            "key": "$EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY"
+            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
         },
         "mainnet-nft-catalog-account": {
             "address": "0x49a7cda3a1eecc29",
@@ -141,7 +148,9 @@
                 "ArrayUtils",
                 "StringUtils",
                 "DapperUtilityCoin",
+                "FlowUtilityToken",
                 "NFTStorefrontV2",
+                "TokenForwarding",
                 "TransactionGenerationUtils",
                 "TransactionTemplates",
                 "TransactionGeneration"

@@ -8,6 +8,12 @@
 // Version: ${version}
 
 transaction(saleItemID: UInt64, saleItemPrice: UFix64, customID: String?, commissionAmount: UFix64, expiry: UInt64, marketplacesAddress: [Address]) {
+    /// `saleItemID` - ID of the NFT that is put on sale by the seller.
+    /// `saleItemPrice` - Amount of tokens (FT) buyer needs to pay for the purchase of listed NFT.
+    /// `customID` - Optional string to represent identifier of the dapp.
+    /// `commissionAmount` - Commission amount that will be taken away by the purchase facilitator.
+    /// `expiry` - Unix timestamp at which created listing become expired.
+    /// `marketplacesAddress` - List of addresses that are allowed to get the commission.
     let ftReceiver: Capability<&AnyResource{FungibleToken.Receiver}>
     let nftProvider: Capability<&AnyResource{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
     let storefront: &NFTStorefrontV2.Storefront
