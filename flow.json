@@ -87,11 +87,11 @@
         },
         "catalog-testnet-account": {
             "address": "0x324c34e1c517e4db",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
+            "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
         },
         "transaction-generation-testnet-account": {
             "address": "0x44051d81c4720882",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
+            "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
         },
         "examplenft-testnet-account": {
             "address": "0xa60cf32e8369f919",
