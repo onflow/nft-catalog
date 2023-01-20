@@ -7,6 +7,7 @@ import {
 import '../flow/setup';
 import ContractInputs from './components/verifier';
 import Catalog from './components/catalog';
+import Proposals from './components/catalog/proposals';
 import { HeaderLayout } from "./components/home/header-layout";
 import { CardLayout } from "./components/home/card-layout";
 import { Navbar } from "./components/shared/navbar";
@@ -41,8 +42,8 @@ export function App() {
             </Route>
             <Route path="proposals">
               <Route index={true} element={<Navigate to="/proposals/mainnet" />} />
-              <Route path=":network" element={<Catalog type="Proposals" />} />
-              <Route path=":network/:identifier" element={<Catalog type="Proposals"></Catalog>} />
+              <Route path=":network" element={<Proposals type="Proposals" />} />
+              <Route path=":network/:identifier" element={<Proposals type="Proposals"></Proposals>} />
             </Route>
             <Route path="catalog">
               <Route index={true} element={<Navigate to="/catalog/mainnet" />} />
