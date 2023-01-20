@@ -10,6 +10,7 @@ import { DisplayView } from "../shared/views/display-view";
 import { CollectionDataView } from "../shared/views/collection-data-view";
 import { SubmitButton } from "../shared/submit-button";
 import { RoyaltiesView } from "../shared/views/royalties-view";
+import { VerifierInfoBox } from "./verifier-info-box";
 
 export function SampleNFTView({
   sampleAddress,
@@ -21,7 +22,7 @@ export function SampleNFTView({
   nftID: string | null
 }) {
   const navigate = useNavigate()
-  const { selectedContract } = useParams<any>()
+  const { selectedNetwork, selectedAddress, selectedContract } = useParams<any>()
   const [ownedNFTs, setOwnedNFTs] = useState<any>(null)
   const [viewsImplemented, setViewsImplemented] = useState<any>([]);
   const [uniqueCollections, setUniqueCollections] = useState<any>(null)
@@ -145,7 +146,7 @@ export function SampleNFTView({
 
   return (
     <>
-      <div className="text-h1 mb-6 max-w-full overflow-hidden text-ellipsis !text-2xl md:!text-4xl">Review Metadata</div>
+      <div className="text-h1 mb-4 w-1/2 overflow-hidden text-ellipsis !text-xl md:!text-2xl font-display font-bold">Review Metadata</div>
       {loading && <Spinner />}
       {
         error &&
@@ -189,7 +190,7 @@ export function SampleNFTView({
       {
         !error && !uniqueCollections &&
         <>
-          <Accordian items={accordianItems} />
+          <Accordian items={accordianItems} backHref={`/v/${selectedNetwork}/${selectedAddress}/${selectedContract}`} />
           {
             invalidViews.length > 0 && (
               <div className="mt-8">
@@ -224,7 +225,7 @@ export function SampleNFTView({
           <br />
 
           {
-            !loading && invalidViews.length === 0 && (
+            !loading &&  (
               <>
                 <p>This NFT contract, <b>{selectedContract}</b>, is implementing all of the recommended views!</p>
                 <p>Review the metadata details above. If they look good, click continue to add or update this collection in the NFT Catalog.</p>
@@ -232,11 +233,12 @@ export function SampleNFTView({
                 <form
                   onSubmit={() => { navigate(`${window.location.pathname}${window.location.search}&confirmed=true`) }}
                 >
-                  <SubmitButton value="Continue" />
+                  <SubmitButton disabled={invalidViews.length > 0} className="cursor-pointer disabled:cursor-default disabled:bg-gray-400 mt-2 bg-black hover:bg-gray-100 text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow" value="Next step" />
                 </form>
               </>
             )
           }
+          <VerifierInfoBox />
         </>
       }
     </>

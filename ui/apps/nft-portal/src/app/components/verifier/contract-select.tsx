@@ -15,35 +15,35 @@ export function ContractSelect({
 
   return (
     <>
-      <div className="text-h1 mb-6 max-w-full overflow-hidden text-ellipsis !text-2xl md:!text-4xl">Select NFT Contract</div>
-      <div className="text-l">
-        This tool will assist you in verifying the metadata on your NFTs and allow your collection to be added to the <b>Flow NFT Catalog</b>.
-        <br />
-        <br />
-        The <b>Flow NFT Catalog</b> will provide the needed context to applications and marketplaces to utilize your NFT collection and unlock interoperability throughout the Flow ecosystem.
+      <div className="text-h1 mb-6 w-1/2 overflow-hidden text-ellipsis !text-xl md:!text-2xl font-display font-bold">Select NFT Contract</div>
+      <div className="text-l w-7/12 text-stone-500">
+        This tool will assist you in verifying the metadata on your NFTs and allow your collection to be added to the Flow NFT Catalog.
+        The Flow NFT Catalog will provide the needed context to applications and marketplaces to utilize your NFT collection and unlock interoperability throughout the Flow ecosystem.
         <br />
       </div>
-      <hr className="my-6" />
-      <b>Enter Address containing your NFT Contract</b>
-      <br />
-      <SearchBar
-        onSubmit={(address) => {
-          if (!address) { return }
-          const retrieveAccount = async () => {
-            setError(null)
-            const res = await getAccounts(String(address))
-            if (res) {
-              setAccounts(res)
-              setContractAddress(address)
-              setError(null)
-            } else {
-              setAccounts({})
-              setError("Failed to retrieve address")
-            }
-          }
-          retrieveAccount()
-        }}
-      />
+      <div className="my-12 w-7/12">
+        <b className="w-1/2">Flow account address</b>
+        <div className="my-4 w-full">
+          <SearchBar
+            onSubmit={(address) => {
+              if (!address) { return }
+              const retrieveAccount = async () => {
+                setError(null)
+                const res = await getAccounts(String(address))
+                if (res) {
+                  setAccounts(res)
+                  setContractAddress(address)
+                  setError(null)
+                } else {
+                  setAccounts({})
+                  setError("Failed to retrieve address")
+                }
+              }
+              retrieveAccount()
+            }}
+          />
+        </div>
+      </div>
 
       {
         accounts && Object.keys(accounts).length > 0 &&
@@ -55,7 +55,7 @@ export function ContractSelect({
               if (account != null) {
                 return Object.keys(account.contracts).map((contractName: string) => {
                   return (
-                    <div key={contractName} className="mt-1">
+                    <div key={contractName} className="mt-2">
                       <a
                         className="no-underline hover:underline cursor-pointer text-blue-600"
                         onClick={() => { selectContract(contractAddress, contractName, network) }}
