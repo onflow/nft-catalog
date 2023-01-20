@@ -23,6 +23,7 @@ export async function getAccounts(address: string): Promise<AccountsMap | null> 
 }
 
 export async function getAccount(address: string, network: Network): Promise<any> {
+  console.log(network);
   changeFCLEnvironment(network)
   try {
     const account = await fcl.account(address);

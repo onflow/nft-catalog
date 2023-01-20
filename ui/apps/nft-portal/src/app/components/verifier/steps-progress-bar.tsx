@@ -12,7 +12,7 @@ export function StepsProgressBar({
 }) {
 
   return (
-    <nav className="mx-auto w-full max-w-7xl bg-transparent" aria-label="Progress Steps">
+    <nav className="max-w-7xl bg-transparent" aria-label="Progress Steps">
       <ol className="grid grid-flow-col pl-0">
         {steps.map((step, index) => (
           <div key={step.id} className="col-span-full sm:col-auto border-solid border-y-2">

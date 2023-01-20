@@ -7,6 +7,7 @@ import { proposeNFTToCatalog, getNFTMetadataForCollectionIdentifier } from "../.
 import { useDebounce } from '../../../app/hooks/use-debounce';
 import { getNFTsInAccount } from "../../../flow/utils"
 import * as fcl from "@onflow/fcl";
+import { VerifierInfoBox } from './verifier-info-box';
 
 type CatalogProps = {
   sampleAddress: string | null
@@ -19,6 +20,7 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
   const [collectionIdentifier, setCollectionIdentifier] = useState<string>("")
   const debouncedCollectionIdentifier: string = useDebounce<string>(collectionIdentifier, 500);
   const [message, setMessage] = useState<string>("")
+  const [emailAddress, setEmailAddress] = useState<string>("")
   const { selectedNetwork, selectedAddress, selectedContract } = useParams<any>()
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
@@ -37,7 +39,7 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
         })
         if (selectedNft && selectedNft.NFTCollectionDisplay) {
           // Get rid of spaces if they exist..
-          setCollectionIdentifier(selectedNft.NFTCollectionDisplay.collectionName.replace(/\s+/g,''))
+          setCollectionIdentifier(selectedNft.NFTCollectionDisplay.collectionName.replace(/\s+/g, ''))
         }
       }
     }
@@ -67,7 +69,7 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
     <>
       {warning && <><Alert status="warning" title={warning} body="" /><br /></>}
       {error && <><Alert status="error" title={error} body="" /><br /></>}
-      <form onSubmit={async (e) => {
+      <form className="my-12 w-7/12" onSubmit={async (e) => {
         e.preventDefault();
         setError(null);
         setWarning(null);
@@ -87,36 +89,44 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
           await fcl.logIn()
         }
         setLoading(true);
-        let proposalMessage = message + " ( This proposal was made via: " + window.location.href + " )"
+        const proposalMessage = message + " ( This proposal was made via: " + window.location.href + " )"
         try {
           await proposeNFTToCatalog(collectionIdentifier, sampleAddress, nftID, storagePath, selectedContract, selectedAddress, proposalMessage);
           setError(null);
           navigate(`/proposals/${selectedNetwork}`);
-        } catch (e : any) {
+        } catch (e: any) {
           setError(e.toString());
         }
         setLoading(false);
       }}>
-        <b>Enter a unique identifier to describe this collection</b>
+        <b>Enter a unique identifier (title) to describe this collection</b>
         <TextInput
           value={collectionIdentifier}
           updateValue={setCollectionIdentifier}
           placeholder="e.g. ExampleNFT"
         />
         <br />
-        <b>Enter a message with any additional information</b>
+        <b>Add a description</b>
         <TextInput
           value={message}
           updateValue={setMessage}
-          placeholder="e.g. Adding Example NFT to the catalog. For any questions, you can reach me at..."
+          placeholder=""
+        />
+        <br />
+        <b>Enter an email address to be notified when your submission has been reviewed</b>
+        <TextInput
+          value={emailAddress}
+          updateValue={setEmailAddress}
+          placeholder=""
         />
         <br />
         {loading ? <Spinner /> : <input
           type="submit"
-          value={"Propose"}
-          className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+          value={"Submit for review"}
+          className="cursor-pointer disabled:cursor-default disabled:bg-gray-400 mt-2 bg-black hover:bg-gray-100 text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow"
         />}
       </form>
+      <VerifierInfoBox />
     </>
   )
 }
