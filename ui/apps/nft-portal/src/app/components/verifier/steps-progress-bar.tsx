@@ -13,34 +13,35 @@ export function StepsProgressBar({
 
   return (
     <nav className="max-w-7xl bg-transparent" aria-label="Progress Steps">
-      <ol className="grid grid-flow-col pl-0">
+      <div className="flex flex-row w-100">
+      <ol className="w-fit grid grid-cols-4 gap-0 items-end">
         {steps.map((step, index) => (
-          <div key={step.id} className="col-span-full sm:col-auto border-solid border-y-2">
+          <div key={step.id} className="grid-span-1">
 
             {step.isComplete &&
-              <a href={step.href} onClick={step.onClick} className="group p-4 flex flex-col items-start border-l-4 sm:border-l-0 sm:border-t-4 sm:border-b-2 border-primary-purple hover:border-primary-purple">
+              <a href={step.href} onClick={step.onClick} className="group p-4 px-8 flex flex-col border-b-2 hover:border-primary-purple text-center">
                 {/* ::Step number */}
-                <p className="mb-1 font-bold font-display text-primary-gray-300 dark:text-primary-gray-200">{`STEP ${index + 1}`}</p>
+                <p className="mb-1 text-primary-gray-300 dark:text-primary-gray-200">{`Step ${index + 1}`}</p>
                 {/* ::Step title */}
-                <span className="text-base text-gray-700 font-semibold">{step.title}</span>
+                <span className="text-sm text-stone-500">{step.title}</span>
               </a>
             }
 
             {step.isActive && !step.isComplete &&
-              <a className="group p-4 flex flex-col items-start border-l-4 sm:border-l-0 sm:border-t-4 sm:border-b-2 border-primary-purple">
+              <a className="group p-4 px-8 flex flex-col border-b-4 border-primary-purple text-center">
                 {/* ::Step number */}
-                <p className="mb-1 font-bold font-display text-primary-purple-300 dark:text-primary-purple-200">{`STEP ${index + 1}`}</p>
+                <p className="mb-1 text-primary-purple-300 dark:text-primary-purple-200 text-center">{`Step ${index + 1}`}</p>
                 {/* ::Step title */}
-                <span className="text-base text-gray-700 font-semibold">{step.title}</span>
+                <span className="text-sm text-stone-500">{step.title}</span>
               </a>
             }
 
             {!step.isActive && !step.isComplete  &&
-              <a className="group p-4 flex flex-col items-start border-l-4 sm:border-l-0 sm:border-t-4 sm:border-b-2 border-gray-300 hover:border-gray-500">
+              <a className="group p-4 px-8 flex flex-col border-b-2 border-gray-300 hover:border-gray-500 text-center">
                 {/* ::Step number */}
-                <p className="mb-1 font-bold font-display text-primary-gray-300 dark:text-primary-gray-200">{`STEP ${index + 1}`}</p>
+                <p className="mb-1 text-primary-gray-300 dark:text-primary-gray-200">{`Step ${index + 1}`}</p>
                 {/* ::Step title */}
-                <span className="text-base text-gray-700 font-semibold">{step.title}</span>
+                <span className="text-sm text-stone-500">{step.title}</span>
               </a>
             }
 
@@ -48,6 +49,8 @@ export function StepsProgressBar({
         ))
         }
       </ol>
+      <div className="border-b-2 border-gray-300 grow"></div>
+      </div>
     </nav>
   )
 }
