@@ -22,7 +22,7 @@ export function App() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-primary-gray-50">
         <div className="pb-16">
           <Routes>
             <Route path="/">

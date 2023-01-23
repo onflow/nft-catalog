@@ -52,24 +52,26 @@ export function CatalogExplore({
       </div>
 
       {
-        items && items.map((item, i) => {
-          const selectedStyle = selected && item.id === selected ? 'border-x-primary-purple border-l-4' : ''
-          return (
-            <div key={i} className={`flex-col p-8 hover:bg-gray-300 cursor-pointer border-t-2 text-left ${selectedStyle}`} onClick={
-              () => {
-                navigate(`/catalog/${network}/${item.id}`)
-              }
-            }>
-              <div className="font-semibold">{item.name}</div>
-              {
-                item.status && (
-                  <Badge color={item.status === 'IN_REVIEW' ? 'blue' : item.status === 'APPROVED' ? 'green' : 'yellow'} text={item.status} />
-                )
-              }
-              <div className="whitespace-pre text-xs">{item.subtext}</div>
-            </div>
-          )
-        })
+        /*
+          items && items.map((item, i) => {
+            const selectedStyle = selected && item.id === selected ? 'border-x-primary-purple border-l-4' : ''
+            return (
+              <div key={i} className={`flex-col p-8 hover:bg-gray-300 cursor-pointer border-t-2 text-left ${selectedStyle}`} onClick={
+                () => {
+                  navigate(`/catalog/${network}/${item.id}`)
+                }
+              }>
+                <div className="font-semibold">{item.name}</div>
+                {
+                  item.status && (
+                    <Badge color={item.status === 'IN_REVIEW' ? 'blue' : item.status === 'APPROVED' ? 'green' : 'yellow'} text={item.status} />
+                  )
+                }
+                <div className="whitespace-pre text-xs">{item.subtext}</div>
+              </div>
+            )
+          })
+        */
       }
 
       {
@@ -100,8 +102,8 @@ function CatalogItem(props: any) {
   const item = props.item
   const network = props.network
   return (
-    <div className="w-full h-full border-2 rounded-2xl p-6 flex flex-col">
-      <header className="font-display font-semibold text-xl">{item.name}</header>
+    <div className="w-full h-full border-2 rounded-2xl p-6 flex flex-col bg-white">
+      <header className="font-display font-semibold text-xl truncate hover:text-clip">{item.name}</header>
       <div className="whitespace-pre text-xs h-16 pt-3.5">{item.subtext}</div>
       <div className="grow"></div>
       <div className="font-semibold text-sm">
