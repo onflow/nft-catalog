@@ -50,12 +50,6 @@ export default function Layout({
         </div>
       </div>
 
-      <div className="flex flex-wrap">
-        {
-
-        }
-      </div>
-
       <CatalogExplore search={search} type={type} selected={identifier} network={network} />
     </div>
   )
