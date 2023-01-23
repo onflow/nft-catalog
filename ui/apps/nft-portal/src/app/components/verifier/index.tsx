@@ -27,14 +27,14 @@ export default function ({
   const steps = [
     {
       id: "S1",
-      title: "Select Contract",
+      title: "Select contract",
       href: `/v`,
       isActive: !selectedNetwork || !selectedAddress || !selectedContract,
       isComplete: selectedNetwork && selectedAddress && selectedContract
     },
     {
       id: "S2",
-      title: "Additional Info",
+      title: "Additional info",
       href: `/v/${selectedNetwork}/${selectedAddress}/${selectedContract}`,
       isActive: selectedNetwork && selectedAddress && selectedContract,
       isComplete: selectedNetwork && selectedAddress && selectedContract &&
@@ -51,8 +51,8 @@ export default function ({
     },
     {
       id: "S4",
-      title: "Add to Catalog",
-      onClick: () => { },
+      title: "Submit for review",
+      onClick: () => {},
       isActive: selectedNetwork && selectedAddress && selectedContract &&
         sampleAddress && storagePath && confirmed,
       isComplete: false
@@ -61,6 +61,7 @@ export default function ({
 
   return (
     <div className="py-16 ml-24">
+            <div className="mb-6 w-1/2 overflow-hidden text-ellipsis !text-2xl md:!text-3xl font-display font-bold">Add your NFT Collection</div>
       <StepsProgressBar
         steps={steps}
       />
