@@ -60,11 +60,11 @@ export default function ({
   ]
 
   return (
-    <div className="mx-auto px-0 md:px-16 lg:px-64 py-16">
+    <div className="py-16 ml-24">
       <StepsProgressBar
         steps={steps}
       />
-      <div className="mx-auto px-4 sm:px-8 md:px-16 lg:px-48 mt-8 max-w-7xl">
+      <div className="mt-8 max-w-7xl">
         {
           steps[0].isActive && !steps[0].isComplete && (
             <ContractSelect
@@ -83,7 +83,7 @@ export default function ({
         }
         {
           steps[2].isActive && !steps[2].isComplete && (
-            <SampleNFTView sampleAddress={sampleAddress} storagePath={storagePath} nftID={nftID} />
+            <SampleNFTView sampleAddress={sampleAddress} storagePath={storagePath} nftID={nftID}  />
           )
         }
 
