@@ -1,4 +1,4 @@
-import OnFlowIcon from "../../../assets/flow-icon-bw-light.svg"
+import OnFlowIcon from "../../../assets/flow-icon-bw-green.svg"
 import GithubIcon from "../../../assets/github-light.svg"
 
 // reduce repetition of the section layout in Footer component
@@ -15,12 +15,16 @@ const footerSections = [
         text: "Catalog",
       },
       {
-        link: "/v",
-        text: "Metadata Verifier",
+        link: "/proposals",
+        text: "Proposals",
       },
       {
-        link: "/proposals",
-        text: "Catalog Proposals",
+        link: "/transactions",
+        text: "Generate Transactions",
+      },
+      {
+        link: "/nfts",
+        text: "View NFTs",
       },
     ],
   },
@@ -44,8 +48,12 @@ export const Footer = ({ sections = footerSections }) => {
     <footer className="bg-black px-6 text-white">
       <div className="container mx-auto">
         <div className="block items-center justify-between px-2 pt-8 pb-6 md:flex md:px-4 md:pt-16">
-          <a href="/" className="py-2 hover:opacity-75 text-xl font-display font-bold">
-            Flow NFT Catalog
+          <a
+            className="flex items-center font-display text-xl cursor-pointer"
+            href="/"
+          >
+            <img className="mr-4" alt="flow_logo" width="50" height="50" src={OnFlowIcon} />
+            <header><b>flow</b> catalog</header>
           </a>
           <div className="flex items-center gap-6 pt-8 md:pt-0">
             <a href="https://github.com/dapperlabs/nft-catalog" className="hover:opacity-75">
@@ -56,7 +64,7 @@ export const Footer = ({ sections = footerSections }) => {
             </a>
           </div>
         </div>
-        <div className="grid auto-cols-min gap-y-4 border-y border-y-primary-gray-400 px-2 pb-6 pt-9 xs:grid-cols-1 sm:grid-cols-2 sm:gap-x-12 md:gap-x-20 md:px-4 lg:grid-cols-[fit-content(25%)_fit-content(25%)_fit-content(25%)_fit-content(25%)]">
+        <div className="grid auto-cols-min gap-y-4 border-y border-y-primary-gray-300 px-2 pb-6 pt-9 xs:grid-cols-1 sm:grid-cols-2 sm:gap-x-12 md:gap-x-20 md:px-4 lg:grid-cols-[fit-content(25%)_fit-content(25%)_fit-content(25%)_fit-content(25%)]">
           {sections.map((section, i) => (
             <section key={i} className="w-fit pb-12 md:pb-0">
               <div className="pb-3">
@@ -79,6 +87,7 @@ export const Footer = ({ sections = footerSections }) => {
             </section>
           ))}
         </div>
+        <p className="pt-4 pb-8 text-sm">@2023 Flow</p>
       </div>
     </footer>
   )

@@ -233,7 +233,7 @@ export function SampleNFTView({
                 <form
                   onSubmit={() => { navigate(`${window.location.pathname}${window.location.search}&confirmed=true`) }}
                 >
-                  <SubmitButton disabled={invalidViews.length > 0} className="cursor-pointer disabled:cursor-default disabled:bg-gray-400 mt-2 bg-black hover:bg-gray-100 text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow" value="Next step" />
+                  <SubmitButton disabled={invalidViews.length > 0} className="cursor-pointer disabled:cursor-default disabled:bg-gray-400 mt-2 bg-black hover:bg-gray-100 hover:text-black text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow" value="Next step" />
                 </form>
               </>
             )
