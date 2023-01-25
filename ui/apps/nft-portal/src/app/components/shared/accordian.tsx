@@ -3,15 +3,15 @@
 */
 
 import React, { useState } from "react"
+import { Alert } from "./alert"
 
-function Collapsible({ item, index, containsInvalids, backHref }: { item: any, index: number, containsInvalids: boolean, backHref : string }) {
+function Collapsible({ item, index, containsInvalids, backHref }: { item: any, index: number, containsInvalids: boolean, backHref: string }) {
   const [expand, setExpand] = useState(false)
   const shouldNotExpand = containsInvalids && item.isValid
   const statusColor = item.isValid ? "green" : "red"
-  const borderClass = index > 0 ? 'border-t' : ''
   return (
-    <div className={`accordion-item bg-white border-gray-300 ${borderClass}`}>
-      <h2 className="accordion-header mb-0" id="headingOne">
+    <div>
+      <h2 className="bg-white accordion-header mb-0 rounded-lg" id="headingOne">
         <button className="
             relative
             flex
@@ -20,9 +20,6 @@ function Collapsible({ item, index, containsInvalids, backHref }: { item: any, i
             py-4
             px-5
             text-base text-gray-800 text-left
-            bg-white
-            border-0
-            rounded-md
             transition
             focus:outline-none
           " type="button"
@@ -38,41 +35,41 @@ function Collapsible({ item, index, containsInvalids, backHref }: { item: any, i
           }
           {item.isValid ? <span className="ml-4 font-bold">
             {item.title}
-          </span> : <span className="ml-4 font-bold text-red-500">
+          </span> : <span className="ml-4 font-bold">
             {item.title}
           </span>}
-          <span className="ml-auto blue underline text-sm">
+          <span className="ml-auto text-blue-500 underline text-sm">
             {shouldNotExpand ? '' : !expand ? 'Show Details' : 'Hide Details'}
           </span>
         </button>
       </h2>
       {
         expand && (
-          <>
+          <div className="bg-white">
             <div className="py-4 px-5">
               {item.content}
             </div>
             {!item.isValid && <div className="py-4 px-5">
-              <p className="text-red-500">There's been an error with your {item.title}'s metadata view.</p> Please go <a href={backHref}><u><b>back to the previous step</b></u></a> and review your info.
+              <Alert status="error" title="Error with you collection's metadata" body={<>Please go <a href={backHref}><u><b>back to the previous step</b></u></a> and review your info.</>} />
             </div>}
-          </>
+          </div>
         )
       }
     </div>
   )
 }
 
-export function Accordian({ items, backHref }: { items: Array<any>, backHref : string }) {
+export function Accordian({ items, backHref }: { items: Array<any>, backHref: string }) {
   const containsInvalids = items.filter((i) => {
     return !i.isValid
   }).length > 0
   return (
-    <div className="accordion border border-gray-300 rounded-sm" id="accordionExample">
+    <div className="grid grid-cols-1 gap-4 rounded-sm" id="accordionExample">
       {
         items && items.map((item, i) => {
           return (
             <React.Fragment key={i}>
-              <Collapsible key={i} item={item} index={i} containsInvalids={containsInvalids} backHref={backHref}/>
+              <Collapsible key={i} item={item} index={i} containsInvalids={containsInvalids} backHref={backHref} />
             </React.Fragment>
           )
         })

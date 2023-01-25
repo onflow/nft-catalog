@@ -14,6 +14,7 @@ import { AdminSetup } from './components/admin/setup';
 import NFTs from './components/nft';
 import Transactions from './components/transactions';
 import { ToolsLayout } from './components/tools/tools-layout';
+import { Submitted } from './components/verifier/submitted';
 
 export function App() {
   return (
@@ -94,6 +95,7 @@ export function App() {
             <Route path="terms" element={<Terms />} />
             <Route path="privacy" element={<Privacy />} />
             <Route path="tools" element={<ToolsLayout />} />
+            <Route path="submitted" element={<Submitted />} />
           </Routes>
         </div>
       </div>

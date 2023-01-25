@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { TextInput } from "./text-input"
-import { Button } from "./button"
+import { Button } from "./button-v2"
 
 export function SearchBar({
   onSubmit
@@ -29,9 +29,8 @@ export function SearchBar({
             />
           </div>
           <Button
-            type="submit"
-            className="whitespace-nowrap bg-black text-white hover:bg-gray-100 hover:text-black text-gray-800 font-semibold font-medium border border-gray-400 rounded-lg shadow text-sm px-4 py-2">
-            Enter and continue
+            type="submit">
+            Enter
           </Button>
         </div>
       </div>

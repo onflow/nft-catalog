@@ -93,37 +93,39 @@ export function CatalogForm({ sampleAddress, storagePath, nftID }: CatalogProps)
         try {
           await proposeNFTToCatalog(collectionIdentifier, sampleAddress, nftID, storagePath, selectedContract, selectedAddress, proposalMessage);
           setError(null);
-          navigate(`/proposals/${selectedNetwork}`);
+          navigate(`/submitted`);
         } catch (e: any) {
           setError(e.toString());
         }
         setLoading(false);
       }}>
-        <b>Enter a unique identifier (title) to describe this collection</b>
+        <p className='text-sm mb-4 font-bold'>Enter a unique identifier (title) to describe this collection</p>
         <TextInput
           value={collectionIdentifier}
           updateValue={setCollectionIdentifier}
           placeholder="e.g. ExampleNFT"
         />
         <br />
-        <b>Add a description</b>
+        <br />
+        <p className='text-sm mb-4 font-bold'>Add a description</p>
         <TextInput
           value={message}
           updateValue={setMessage}
-          placeholder=""
+          placeholder="Description"
         />
         <br />
-        <b>Enter an email address to be notified when your submission has been reviewed</b>
+        <br />
+        {/*<p className='text-sm mb-4 font-bold'>Enter an email address to be notified when your submission has been reviewed</p>
         <TextInput
           value={emailAddress}
           updateValue={setEmailAddress}
           placeholder=""
         />
-        <br />
+    <br />*/}
         {loading ? <Spinner /> : <input
           type="submit"
           value={"Submit for review"}
-          className="cursor-pointer disabled:cursor-default disabled:bg-gray-400 mt-2 bg-black hover:bg-gray-100 hover:text-black text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+          className="cursor-pointer bg-black hover:bg-gray-100 text-white text-sm hover:text-black py-4 px-6 rounded-md"
         />}
       </form>
       <VerifierInfoBox />

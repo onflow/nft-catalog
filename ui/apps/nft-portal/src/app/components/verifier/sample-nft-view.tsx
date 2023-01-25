@@ -146,7 +146,7 @@ export function SampleNFTView({
 
   return (
     <>
-      <div className="text-h1 mb-4 w-1/2 overflow-hidden text-ellipsis !text-xl md:!text-2xl font-display font-bold">Review Metadata</div>
+      <div className="text-h1 mb-4 w-1/2 overflow-hidden text-ellipsis !text-xl md:!text-2xl font-bold">Review Metadata</div>
       {loading && <Spinner />}
       {
         error &&
@@ -233,7 +233,7 @@ export function SampleNFTView({
                 <form
                   onSubmit={() => { navigate(`${window.location.pathname}${window.location.search}&confirmed=true`) }}
                 >
-                  <SubmitButton disabled={invalidViews.length > 0} className="cursor-pointer disabled:cursor-default disabled:bg-gray-400 mt-2 bg-black hover:bg-gray-100 hover:text-black text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow" value="Next step" />
+                  <SubmitButton disabled={invalidViews.length > 0} className="cursor-pointer bg-black hover:bg-gray-400 disabled:cursor-default disabled:bg-neutral-400 disabled:text-white text-white text-sm hover:text-black py-4 px-6 rounded-md" value="Next step" />
                 </form>
               </>
             )

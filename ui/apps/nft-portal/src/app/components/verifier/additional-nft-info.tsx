@@ -62,14 +62,14 @@ export function AdditionalNftInfo({
 
   return (
     <div className="w-full">
-      <div className="text-h1 mb-4 w-1/2 overflow-hidden text-ellipsis !text-xl md:!text-2xl font-display font-bold">Enter additional contract information</div>
+      <div className="text-h1 mb-4 w-1/2 overflow-hidden text-ellipsis !text-xl md:!text-2xl font-bold">Enter additional contract information</div>
       {loading && <Spinner />}
       {error && <><Alert status="error" title={error} body="" /><br /></>}
       <NFTValidity selectedContract={selectedContract} contractInfo={contractInfo} />
       {
         isContractValid && selectedContract &&
         <>
-          <div className="text-l w-7/12 text-stone-500">
+          <div className="text-l w-7/12 text-stone-600">
             We need a bit more information about {selectedContract}
           </div>
           <br />

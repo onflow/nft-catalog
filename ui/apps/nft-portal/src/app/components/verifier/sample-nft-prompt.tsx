@@ -52,19 +52,18 @@ export function SampleNFTPrompt({
       {
         possibleStoragePahts.length > 0 &&
         <>
-          <p className="mt-4 mb-2 text-l w-7/12 text-stone-500">We found some possible paths from your contract:</p>
+          <p className="mt-4 mb-2 text-sm w-7/12 text-stone-600 italic">We found some possible paths from your contract:</p>
           {
             possibleStoragePahts.map((path) => {
               return (
-                <a className="py-1 px-3 shadow-md no-underline cursor-pointer border border-black rounded-full text-xs bg-blue-100 text-black text-center inline-flex items-center hover:bg-blue-200 focus:outline-none active:shadow-none mr-2" key={path}
+                <a className="py-2 px-6 shadow-md no-underline cursor-pointer border border-black rounded-full font-bold text-sm text-black text-center inline-flex items-center hover:bg-gray-100 focus:outline-none active:shadow-none mr-2" key={path}
                   onClick={() => setStoragePath(path)}>{path}
-                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
                   </svg></a>
               )
             })
           }
-          <p className="mt-4 text-l w-7/12 text-stone-500">Click to add one, or enter the path manually.</p>
         </>
       }
       <br />
@@ -73,7 +72,7 @@ export function SampleNFTPrompt({
         showLogIn && (
           <>
             <b>Log In to an account that holds this NFT</b><br />
-            <p className="text-xs mb-4">
+            <p className="mt-4 text-sm w-7/12 text-stone-600 mb-4">
               <a className="cursor-pointer hover:underline" onClick={() => { setShowLogIn(!showLogIn) }}>Click here </a>
               to enter a different account that holds this NFT.
             </p>
@@ -113,12 +112,12 @@ export function SampleNFTPrompt({
 
       {
         !showLogIn && (
-          <div className='mt-2'>
+          <div className='mt-8'>
             <b>
               Enter an account address that holds this NFT
             </b>
             <br />
-            <p className="text-l w-7/12 text-stone-500">
+            <p className="mt-2 text-sm w-7/12 text-stone-600">
               <a className="cursor-pointer hover:underline" onClick={() => { setShowLogIn(!showLogIn) }}>Click here </a>
               to log in to an account that holds this NFT.
             </p>
@@ -140,7 +139,7 @@ export function SampleNFTPrompt({
             <input
               type="submit"
               value={"Next step"}
-              className="cursor-pointer mt-2 bg-black hover:bg-gray-100 hover:text-black text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+              className="cursor-pointer bg-black hover:bg-gray-100 text-white text-sm hover:text-black py-4 px-6 rounded-md"
             />
           </>
         )
