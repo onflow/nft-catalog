@@ -1,21 +1,37 @@
+import { useNavigate } from 'react-router-dom';
 import OnFlowIcon from '../../../assets/flow-icon-bw-light.svg';
+import { Button } from '../shared/button';
 
 export function CatalogLandingCard({}: {}) {
+  const navigate = useNavigate();
   const classes =
     'flex flex-col items-start items-center px-4 py-6 md:flex-row md:px-15 md:py-12';
   return (
-    <div className="container">
-      <div className={classes}>
-        <div className="flex flex-1 flex-col items-start md:mr-10">
-          <header className="text-5xl font-display font-bold my-2 md:mb-3">
-            Explore the Flow Catalog
-          </header>
-          <p className="md:max-w-sm overflow-hidden text-ellipsis text-gray-500">
-            Build your next idea using Flow NFT collections.
-          </p>
-        </div>
-        <div className="flex w-full flex-1 flex-col items-stretch">
-          <img src={OnFlowIcon} />
+    <div className="bg-gradient-home-br">
+      <div className="container">
+        <div className={classes}>
+          <div className="flex flex-1 flex-col items-start md:mr-10">
+            <span className="mr-2 rounded px-1 py-1 font-display font-bold text-m text-gray-500">
+              #onFlow
+            </span>
+            <header className="text-5xl font-display font-bold my-2 md:mb-3">
+              Explore the Flow Catalog
+            </header>
+            <p className="md:max-w-sm overflow-hidden text-ellipsis text-gray-600 mb-2">
+              Build your next idea using Flow NFT collections.
+            </p>
+            <Button
+              onClick={() => navigate('/catalog')}
+              bgColor="bg-black"
+              textColor="text-white"
+              hoverColor="hover:bg-black/50"
+            >
+              Explore NFT Catalog
+            </Button>
+          </div>
+          <div className="flex w-full flex-1 flex-col items-stretch">
+            <img src={OnFlowIcon} />
+          </div>
         </div>
       </div>
     </div>
