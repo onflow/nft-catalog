@@ -1,10 +1,15 @@
 import { useNavigate } from 'react-router-dom';
+import { CatalogItem } from '../catalog/catalog-explore';
 import { Button } from '../shared/button';
+
+const staticDisplayItems = [
+  { name: 'NFL All Day', subtext: 'A.e4cf4bdc1751c65d.AllDay.NFT' },
+  { name: 'Flunks', subtext: 'A.807c3d470888cc48.Flunks.NFT' },
+  { name: 'UFC Strike', subtext: 'A.329feb3ab062d289.UFC_NFT.NFT' },
+];
 
 export function NFTCatalogCard() {
   const navigate = useNavigate();
-  const classes =
-    'flex flex-col items-start items-center px-4 py-6 md:flex-row md:px-15 md:py-12';
   return (
     <div className="container">
       <div className="float-right">
@@ -19,8 +24,20 @@ export function NFTCatalogCard() {
         Browse NFT collections on the catalog and view their collection-level
         data
       </p>
-      <div className={classes}>
-        <div className="flex flex-1 flex-col items-start md:mr-10"></div>
+      <div className="mt-4">
+        <CatalogItem
+          item={{
+            name: 'NBA Top Shot',
+            subtext: 'A.0b2a3299cc857e29.TopShot.NFT',
+            image: 'https://nbatopshot.com/static/img/og/og.png',
+          }}
+          network="mainnet"
+        />
+      </div>
+      <div className="flex flex-1 flex-row space-x-4 mt-4">
+        {staticDisplayItems.map((item, i) => (
+          <CatalogItem key={i} item={item} network="mainnet" />
+        ))}
       </div>
     </div>
   );
