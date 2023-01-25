@@ -140,7 +140,7 @@ export function SampleNFTPrompt({
             <input
               type="submit"
               value={"Next step"}
-              className="cursor-pointer mt-2 bg-black hover:bg-gray-100 text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+              className="cursor-pointer mt-2 bg-black hover:bg-gray-100 hover:text-black text-white font-semibold py-2 px-4 border border-gray-400 rounded shadow"
             />
           </>
         )
