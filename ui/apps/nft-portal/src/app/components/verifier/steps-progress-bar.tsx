@@ -28,11 +28,11 @@ export function StepsProgressBar({
             }
 
             {step.isActive && !step.isComplete &&
-              <a className="group p-4 px-8 flex flex-col border-b-4 border-primary-purple text-center">
+              <a className="group p-4 px-8 flex flex-col border-b-4 border-black text-center">
                 {/* ::Step number */}
-                <p className="mb-1 text-primary-purple-300 dark:text-primary-purple-200 text-center">{`Step ${index + 1}`}</p>
+                <p className="mb-1 text-black font-bold dark:text-primary-gray-400 text-center">{`Step ${index + 1}`}</p>
                 {/* ::Step title */}
-                <span className="text-sm text-stone-500">{step.title}</span>
+                <span className="text-sm text-black">{step.title}</span>
               </a>
             }
 
