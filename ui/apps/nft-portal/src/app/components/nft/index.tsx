@@ -45,13 +45,6 @@ export default function Layout() {
           </p>
           <div className="flex flex-row w-full items-center space-x-4">
             <div className="flex flex-col w-full">
-              <span className="px-1 py-1 text-s text-white">Flow network</span>
-              <NetworkDropDown
-                network={network}
-                onNetworkChange={onNetworkChange}
-              />
-            </div>
-            <div className="flex flex-col w-full">
               <span className="px-1 py-1 text-s text-white">
                 Flow account address
               </span>
@@ -59,6 +52,13 @@ export default function Layout() {
                 value={addressProvided ?? ''}
                 placeholder="0xabcdefghijklmnop"
                 updateValue={setAddressProvided}
+              />
+            </div>
+            <div className="flex flex-col w-full">
+              <span className="px-1 py-1 text-s text-white">Flow network</span>
+              <NetworkDropDown
+                network={network}
+                onNetworkChange={onNetworkChange}
               />
             </div>
           </div>

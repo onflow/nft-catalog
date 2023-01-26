@@ -15,10 +15,10 @@
   "dependencies": {
     "@onflow/fcl": "^1.0.0",
     "@onflow/types": "^1.0.1",
-    "@uiw/react-codemirror": "^4.12.1",
     "add": "^2.0.6",
     "core-js": "^3.6.5",
     "react": "18.2.0",
+    "react-code-blocks": "^0.0.9-0",
     "react-dom": "18.2.0",
     "react-router-dom": "^6.3.0",
     "react-social-icons": "^5.14.0",

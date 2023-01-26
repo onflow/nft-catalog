@@ -109,7 +109,7 @@ export function CatalogSelect({
     <a className="border-t-1 my-4">
       <div className="py-4">
         <span className="mr-2 rounded px-1 py-1 text-m text-gray-500">
-          Select NFT
+          Select {type}
         </span>
         <div className="flex-grow pt-4 px-4">
           <input
