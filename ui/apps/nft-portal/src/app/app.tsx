@@ -15,6 +15,7 @@ import NFTs from './components/nft';
 import Transactions from './components/transactions';
 import { ToolsLayout } from './components/tools/tools-layout';
 import { Submitted } from './components/verifier/submitted';
+import { CatalogDetails } from './components/catalog/catalog-details';
 
 export function App() {
   return (
@@ -53,18 +54,9 @@ export function App() {
               />
             </Route>
             <Route path="catalog">
-              <Route
-                index={true}
-                element={<Navigate to="/catalog/mainnet" />}
-              />
-              <Route
-                path=":network/"
-                element={<Catalog type="Catalog"></Catalog>}
-              />
-              <Route
-                path=":network/:identifier"
-                element={<Catalog type="Catalog"></Catalog>}
-              />
+              <Route index={true} element={<Navigate to="/catalog/mainnet" />} />
+              <Route path=":network/" element={<Catalog type="Catalog"></Catalog>} />
+              <Route path=":network/:collectionIdentifier" element={<CatalogDetails></CatalogDetails>} />
             </Route>
             <Route path="nfts">
               <Route index={true} element={<Navigate to="/nfts/mainnet" />} />

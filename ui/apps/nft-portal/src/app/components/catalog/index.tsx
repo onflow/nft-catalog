@@ -1,11 +1,8 @@
 import { useCallback, useState } from "react"
 import { useParams } from "react-router-dom";
-import { NetworkDropDown, Network } from "./network-dropdown";
+import { Network } from "./network-dropdown";
 import { CatalogExplore } from "./catalog-explore";
-import { NftCollectionContent } from "./nft-collection-content";
-import { ProposalContent } from "./proposal-content";
 import { useNavigate } from "react-router-dom"
-import { Hamburger } from "../shared/hamburger";
 
 type CatalogParams = {
   network: Network;
@@ -26,6 +23,9 @@ export default function Layout({
     navigate(type === 'Proposals' ? `/proposals/${network}` : `/catalog/${network}`)
   }, [])
 
+  const tabSelectedStyle = "font-bold text-black border-b-4 border-black rounded dark:text-gray-500 dark:border-gray-500"
+  const tabUnselectedStyle = "text-gray-400 border-transparent dark:text-gray-400 dark:border-transparent"
+
   return (
     <div className="mx-auto px-0 md:px-4 lg:px-32 pt-8">
       <header className="font-display font-bold text-xl">Explore the catalog</header>
@@ -44,12 +44,18 @@ export default function Layout({
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <div className="w-72 pl-4">
-            <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
-          </div>
         </div>
       </div>
-
+      <div style={{borderBottomWidth:"1px", borderColor: 'rgba(0,0,0,.11)'}} className="text-sm mt-6 font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
+        <ul className="flex flex-wrap -mb-px">
+            <li className="mr-2">
+                <a href="/catalog/mainnet" className={`inline-block p-4 rounded-t-lg ${network === 'mainnet' ? tabSelectedStyle : tabUnselectedStyle}`}>Mainnet</a>
+            </li>
+            <li className="mr-2">
+                <a href="/catalog/testnet" className={`inline-block p-4 rounded-t-lg ${network === 'testnet' ? tabSelectedStyle : tabUnselectedStyle}`} aria-current="page">Testnet</a>
+            </li>
+        </ul>
+    </div>
       <CatalogExplore search={search} type={type} selected={identifier} network={network} />
     </div>
   )

@@ -1,20 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  getAllNFTsInAccountFromCatalog,
-  getSupportedGeneratedTransactions,
-  getSupportedGeneratedScripts,
   getAllCollections,
-  getAllProposals,
 } from '../../../flow/utils';
 import { Network } from './network-dropdown';
 import { changeFCLEnvironment } from '../../../flow/setup';
 import { Badge } from '../shared/badge';
 
 export function CatalogExplore({
-  search,
   network,
-  selected,
   userAddress = null,
 }: {
   search: string;
@@ -101,47 +95,18 @@ export function CatalogItem(props: any) {
   const item = props.item;
   const network = props.network;
   return (
-    <div className="flex flex-1 flex-row bg-white w-full h-full border-2 rounded-2xl h-50 justify-between">
-      <div className="flex flex-col p-6">
-        <header className="font-display font-semibold text-xl truncate hover:text-clip">
-          {item.name}
-        </header>
-        <div className="whitespace-pre text-xs h-16 pt-3.5">{item.subtext}</div>
-        <div className="grow"></div>
-        <div className="font-semibold text-sm">
-          <a
-            target="_blank"
-            href={`https://${
-              network === 'testnet' ? 'testnet.' : ''
-            }flowscan.org/contract/${item.subtext.replace(/.NFT$/, '')}`}
-            className="flex flex-row rounded bg-primary-gray-50 px-2 py-1"
-            style={{ width: 'fit-content' }}
-            rel="noreferrer"
-          >
-            <svg
-              width="12"
-              height="14"
-              className="mt-1 mr-2"
-              viewBox="0 0 12 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M9.05798 5.63057L12 3.84713L5.61546 0L0 3.3758V10.1401L6.38454 14V10.7771L12 7.38853L9.05798 5.63057ZM4.84639 11.1847L1.55035 9.19745V4.30573L5.61546 1.85987L8.89929 3.83439L4.84639 6.28026V11.1847ZM6.39674 7.23567L7.50763 6.56051L8.89929 7.38853L6.39674 8.9172V7.23567Z"
-                fill="black"
-              />
-            </svg>
-            View Contract
-          </a>
-        </div>
+    <a className="w-full h-full border-2 rounded-2xl p-6 flex flex-col bg-white cursor-pointer" href={`/catalog/${network}/${item.name}`}>
+      <header className="font-display font-semibold text-xl truncate hover:text-clip">{item.name}</header>
+      <div className="whitespace-pre text-xs h-16 pt-3.5">{item.subtext}</div>
+      <div className="grow"></div>
+      <div className="font-semibold text-sm">
+        <a target="_blank" href={`https://${network === "testnet" ? 'testnet.' : ''}flowscan.org/contract/${item.subtext.replace(/.NFT$/, '')}`} className="flex flex-row rounded bg-primary-gray-50 px-2 py-1" style={{width: 'fit-content'}}>
+          <svg width="12" height="14" className="mt-1 mr-2" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.05798 5.63057L12 3.84713L5.61546 0L0 3.3758V10.1401L6.38454 14V10.7771L12 7.38853L9.05798 5.63057ZM4.84639 11.1847L1.55035 9.19745V4.30573L5.61546 1.85987L8.89929 3.83439L4.84639 6.28026V11.1847ZM6.39674 7.23567L7.50763 6.56051L8.89929 7.38853L6.39674 8.9172V7.23567Z" fill="black"/>
+          </svg>
+          View Contract
+        </a>
       </div>
-      {item.image && (
-        <img
-          className="max-w-md"
-          src={item.image}
-          alt="NBA Top Show Banner"
-        ></img>
-      )}
-    </div>
-  );
+    </a>
+  )
 }
