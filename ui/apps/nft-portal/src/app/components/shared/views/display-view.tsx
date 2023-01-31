@@ -10,28 +10,26 @@ export function DisplayView({ view }: GenericViewProps) {
   if (thumbnail.startsWith('ipfs://')) {
     thumbnail = 'https://ipfs.io/ipfs/' + thumbnail.substring(7);
   }
-  const classes = 'flex flex-col items-start';
+  const classes = 'flex flex-col';
   return (
-    <>
+    <div className={classes}>
       {thumbnail && (
-        <div className="float-right">
+        <div className="float-right self-end">
           <img src={thumbnail} width="400" alt="NFT Thumbnail"></img>
         </div>
       )}
-      <div className={classes}>
-        <div>
-          <span className="text-3xl font-bold">
-            {'NFT | '}
-            {name}
-          </span>
-        </div>
-        <div className="pt-2">
-          <span className="text-m">{description || 'No description set'}</span>
-        </div>
-        <div className="pt-2">
-          <GenericViewToggle view={view} />
-        </div>
+      <div>
+        <span className="text-3xl font-bold">
+          {'NFT | '}
+          {name}
+        </span>
       </div>
-    </>
+      <div className="pt-2">
+        <span className="text-m">{description || 'No description set'}</span>
+      </div>
+      <div className="pt-2">
+        <GenericViewToggle view={view} />
+      </div>
+    </div>
   );
 }
