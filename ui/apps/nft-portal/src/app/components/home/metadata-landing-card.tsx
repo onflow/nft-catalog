@@ -16,7 +16,7 @@ export function MetadataLandingCard({
           <p className="md:max-w-sm overflow-hidden text-ellipsis text-primary-gray-400">
             Conform to the Flow NFT Metadata standard to unlock interoperability for your NFT across the Flow ecosystem.
             <div className="pt-2"/>
-            Implement the <a className="text-blue-600 hover:underline cursor-pointer" href="https://github.com/onflow/flow-nft/pull/103/files#diff-a7af41cf43e29d0e6028827c3d5f305326677661bf65d79539d59ed1056c0a84R38" target="_blank">Core NFT Views</a> in your NFT as a pre-requisite to being added to the NFT Catalog.
+            Implement the <a className="text-blue-600 hover:underline cursor-pointer" href="https://github.com/onflow/flow-nft#core-views" target="_blank">Core NFT Views</a> in your NFT as a pre-requisite to being added to the NFT Catalog.
             <div className="pt-2"/>
             Use the example contract to help guide your implementation.
           </p>
