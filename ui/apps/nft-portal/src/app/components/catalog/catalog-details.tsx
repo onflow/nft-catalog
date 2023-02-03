@@ -32,6 +32,7 @@ export function CatalogDetails({
       let res;
       if (type === 'Proposals') {
         res = await getProposal(collectionIdentifier)
+        console.log()
         res = { ...res, ...res.metadata }
       } else {
         res = await getNFTMetadataForCollectionIdentifier(collectionIdentifier)

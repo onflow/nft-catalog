@@ -15,48 +15,49 @@ export default function Layout({
   type: "Catalog" | "Proposals",
 }) {
   const { network = 'testnet', identifier } = useParams<CatalogParams>()
-  const navigate = useNavigate()
 
   const [search, setSearch] = useState('')
-
-  const onNetworkChange = useCallback((network: Network) => {
-    navigate(type === 'Proposals' ? `/proposals/${network}` : `/catalog/${network}`)
-  }, [])
 
   const tabSelectedStyle = "font-bold text-black border-b-4 border-black rounded dark:text-gray-500 dark:border-gray-500"
   const tabUnselectedStyle = "text-gray-400 border-transparent dark:text-gray-400 dark:border-transparent"
 
   return (
-    <div className="mx-auto px-0 md:px-4 lg:px-32 pt-8">
-      <header className="font-display font-bold text-xl">Explore the catalog</header>
-      
-      <div className="flex flex-col lg:flex-row pt-4">
-        <div className="flex flex-1">
-          <div className="flex-grow">
-            
-            <input
-              style={{
-                borderWidth: 1
-              }}
-              className="w-full h-12 px-4 border-primary-gray-dark rounded-lg focus:outline-none"
-              placeholder="Search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+    <>
+      <div className="absolute max-h-60 bg-gradient-catalog-1"></div>
+      <div className="absolute max-h-60 bg-gradient-catalog-2"></div>
+      <div className="mx-auto px-0 md:px-4 lg:px-32 pt-16">
+        <header className="font-display font-bold text-2xl relative z-20">
+          Explore {type === 'Catalog' ? 'the catalog' : 'NFT Catalog Proposals'}
+        </header>
+        
+        <div className="flex flex-col lg:flex-row pt-4">
+          <div className="flex flex-1">
+            <div className="flex-grow">
+              
+              <input
+                style={{
+                  borderWidth: 1
+                }}
+                className="w-full h-12 px-4 border-primary-gray-dark rounded-lg focus:outline-none relative z-20"
+                placeholder="Search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
         </div>
+        <div style={{borderBottomWidth:"1px", borderColor: 'rgba(0,0,0,.11)'}} className="text-sm mt-10 font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
+          <ul className="flex flex-wrap -mb-px">
+              <li className="mr-2">
+                  <a href={type === 'Catalog' ? "/catalog/mainnet" : "/proposals/mainnet"} className={`inline-block p-4 rounded-t-lg ${network === 'mainnet' ? tabSelectedStyle : tabUnselectedStyle}`}>Mainnet</a>
+              </li>
+              <li className="mr-2">
+                  <a href={type === 'Catalog' ? "/catalog/testnet" : "/proposals/testnet"} className={`inline-block p-4 rounded-t-lg ${network === 'testnet' ? tabSelectedStyle : tabUnselectedStyle}`} aria-current="page">Testnet</a>
+              </li>
+          </ul>
+        </div>
+        <CatalogExplore search={search} type={type} selected={identifier} network={network} />
       </div>
-      <div style={{borderBottomWidth:"1px", borderColor: 'rgba(0,0,0,.11)'}} className="text-sm mt-6 font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
-        <ul className="flex flex-wrap -mb-px">
-            <li className="mr-2">
-                <a href={type === 'Catalog' ? "/catalog/mainnet" : "/proposals/mainnet"} className={`inline-block p-4 rounded-t-lg ${network === 'mainnet' ? tabSelectedStyle : tabUnselectedStyle}`}>Mainnet</a>
-            </li>
-            <li className="mr-2">
-                <a href={type === 'Catalog' ? "/catalog/testnet" : "/proposals/testnet"} className={`inline-block p-4 rounded-t-lg ${network === 'testnet' ? tabSelectedStyle : tabUnselectedStyle}`} aria-current="page">Testnet</a>
-            </li>
-        </ul>
-    </div>
-      <CatalogExplore search={search} type={type} selected={identifier} network={network} />
-    </div>
+    </>
   )
 }

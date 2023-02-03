@@ -19,6 +19,35 @@
   background-position: right bottom;
 }
 
+.bg-gradient-catalog-1 {
+  position: absolute;
+  top: 100px;
+  left: 10%;
+  right: -39.76%;
+  bottom: -70.09%;
+  
+  background: #F77D65;
+  filter: blur(33px);
+  transform: matrix(-1, -0.03, 0.58, -0.81, 0, 0);
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.bg-gradient-catalog-2 {
+  position: absolute;
+  left: 50%;
+  right: 8%;
+  top: 100px;
+  bottom: -70.09%;
+  
+  background: #3B3CFF;
+  filter: blur(42px);
+  opacity: 0.1;
+  transform: matrix(-1, -0.03, 0.58, -0.81, 0, 0);
+  z-index: 0;
+}
+
+
 @font-face {
   font-family: 'Acumin Pro';
   src: local('Acumin Pro'),
@@ -67,4 +96,28 @@
 
 .font-display {
   font-family: Termina;
+}
+
+.loader {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #FF3D00;
+  position: relative;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  inset: 0;
+  background: #fff;
+  transform: rotate(0deg) translate(30px);
+  animation: rotate 1s ease infinite;
+}
+.loader:after {
+  animation-delay: 0.5s
+}
+@keyframes rotate {
+  100% {transform: rotate(360deg) translate(30px)
 }

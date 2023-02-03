@@ -9,6 +9,7 @@ import { changeFCLEnvironment } from '../../../flow/setup';
 import { Badge } from '../shared/badge';
 
 export function CatalogExplore({
+  search,
   network,
   type,
   userAddress = null,
@@ -23,8 +24,26 @@ export function CatalogExplore({
 }) {
   const navigate = useNavigate();
   const searchParams = useSearchParams();
+  const [unfilteredItems, setUnfilteredItems] = useState<null | Array<any>>(null);
   const [items, setItems] = useState<null | Array<any>>(null);
   const loading = !items;
+
+  useEffect(() => {
+    console.log('items is', unfilteredItems)
+    if (unfilteredItems && unfilteredItems.length > 0 && search.length >= 2) {
+      const searchFilter = search.toLowerCase()
+      // filter the items based on the search field
+      const filteredItems = unfilteredItems.filter((item) => {
+        return (
+          item.name.toLowerCase().includes(searchFilter || '') ||
+          item.subtext.toLowerCase().includes(searchFilter || '')
+        );
+      });
+      setItems(filteredItems)
+    } else {
+      setItems(unfilteredItems)
+    }
+  }, [search, unfilteredItems])
 
   useEffect(() => {
     const setup = async () => {
@@ -35,16 +54,20 @@ export function CatalogExplore({
       } else if (type === 'Proposals') {
         collections = (await getAllProposals()) || [];
       }
-      const items = Object.keys(collections).map((catalogKey: any) => {
-        const catalog = collections[catalogKey];
-        return {
-          name: `${catalog.metadata ? catalog.collectionIdentifier : catalogKey}`,
-          subtext: `${catalog.metadata ? catalog.metadata.nftType.typeID : catalog.nftType.typeID}`,
-          id: catalogKey,
-          status: catalog.status,
-        };
-      });
-      setItems(items);
+      let items = Object.keys(collections)
+        .map((catalogKey: any) => {
+          const catalog = collections[catalogKey];
+          return {
+            name: `${catalog.metadata ? catalog.collectionIdentifier : catalogKey}`,
+            subtext: `${catalog.metadata ? catalog.metadata.nftType.typeID : catalog.nftType.typeID}`,
+            id: catalogKey,
+            status: catalog.status,
+          };
+        })
+      if (type === 'Proposals') {
+        items = items.reverse()        
+      }
+      setUnfilteredItems(items);
     };
     setup();
   }, [network, userAddress]);
@@ -59,15 +82,15 @@ export function CatalogExplore({
           })}
       </div>
 
-      {loading &&
-        [0, 0, 0, 0, 0, 0, 0, 0, 0].map((item, i) => {
-          return (
-            <div key={i} className={`flex-col p-8 cursor-pointer border-t-2`}>
-              <div className="font-semibold"> </div>
-              <div className=""> </div>
+      {
+        loading &&
+          (
+            <div className="p-8 w-full h-full">
+              <div className="loader"></div>
+              Loading...
             </div>
-          );
-        })}
+          )
+      }
       {items != null && items.length === 0 && (
         <div className={`flex-col p-8 cursor-pointer border-t-2`}>
           <div className="font-semibold">No Items</div>
@@ -83,7 +106,7 @@ export function CatalogItem(props: any) {
   const network = props.network;
   const readableStatus = item.status === 'IN_REVIEW' ? 'In Review' : item.status === 'APPROVED' ? 'Approved' : 'Rejected'
   return (
-    <a className="w-full h-full border-2 rounded-2xl p-6 flex flex-col bg-white cursor-pointer" href={network === 'Catalog' ? `/catalog/${network}/${item.name}` : `/proposals/${network}/${item.id}`}>
+    <a className="w-full h-full border-2 rounded-2xl p-6 flex flex-col bg-white cursor-pointer" href={!item.status ? `/catalog/${network}/${item.name}` : `/proposals/${network}/${item.id}`}>
       <header className="font-display font-semibold text-xl truncate hover:text-clip">{item.name}</header>
       <div className="whitespace-pre text-xs h-16 pt-3.5">{item.subtext}</div>
       <div className="grow"></div>
