@@ -49,10 +49,10 @@ export default function Layout({
       <div style={{borderBottomWidth:"1px", borderColor: 'rgba(0,0,0,.11)'}} className="text-sm mt-6 font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
         <ul className="flex flex-wrap -mb-px">
             <li className="mr-2">
-                <a href="/catalog/mainnet" className={`inline-block p-4 rounded-t-lg ${network === 'mainnet' ? tabSelectedStyle : tabUnselectedStyle}`}>Mainnet</a>
+                <a href={type === 'Catalog' ? "/catalog/mainnet" : "/proposals/mainnet"} className={`inline-block p-4 rounded-t-lg ${network === 'mainnet' ? tabSelectedStyle : tabUnselectedStyle}`}>Mainnet</a>
             </li>
             <li className="mr-2">
-                <a href="/catalog/testnet" className={`inline-block p-4 rounded-t-lg ${network === 'testnet' ? tabSelectedStyle : tabUnselectedStyle}`} aria-current="page">Testnet</a>
+                <a href={type === 'Catalog' ? "/catalog/testnet" : "/proposals/testnet"} className={`inline-block p-4 rounded-t-lg ${network === 'testnet' ? tabSelectedStyle : tabUnselectedStyle}`} aria-current="page">Testnet</a>
             </li>
         </ul>
     </div>

@@ -58,7 +58,7 @@ export function ProposalContent({ proposalID }: { proposalID: string | undefined
 
   return (
     <>
-      <div> <span className="text-xl"><b>{proposalData.collectionIdentifier}</b></span> <span className="text-md ml-2"><Badge color={color as any} text={proposalData.status} /></span> {isUpdateProposal && proposalData.status === "IN_REVIEW" && <Badge color="yellow" text="This is an update" />}</div>
+      <div> <span className="text-xl"><b>{proposalData.collectionIdentifier}</b></span> <span className="text-md ml-2"><Badge color={color as any} text={proposalData.status} /></span> {isUpdateProposal && proposalData.status === "IN_REVIEW" && <Badge color="red" text="This is an update" />}</div>
       <br />
       <div className="text-md"><b>Contract: </b>{proposalData.metadata.contractAddress} - {proposalData.metadata.contractName}</div>
       <div className="text-md"><b>Submitted:</b> {proposalData.proposer} on {(new Date(proposalData.createdTime * 1000)).toLocaleDateString("en-US")}</div>

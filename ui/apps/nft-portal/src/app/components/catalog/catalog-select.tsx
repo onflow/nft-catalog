@@ -174,7 +174,7 @@ export function CatalogSelect({
                         ? 'blue'
                         : item.status === 'APPROVED'
                         ? 'green'
-                        : 'yellow'
+                        : 'red'
                     }
                     text={item.status}
                   />

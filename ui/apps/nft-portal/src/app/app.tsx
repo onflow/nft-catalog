@@ -47,16 +47,16 @@ export function App() {
                 index={true}
                 element={<Navigate to="/proposals/mainnet" />}
               />
-              <Route path=":network" element={<Proposals type="Proposals" />} />
+              <Route path=":network" element={<Catalog type="Proposals" />} />
               <Route
-                path=":network/:identifier"
-                element={<Proposals type="Proposals"></Proposals>}
+                path=":network/:collectionIdentifier"
+                element={<CatalogDetails type="Proposals"></CatalogDetails>}
               />
             </Route>
             <Route path="catalog">
               <Route index={true} element={<Navigate to="/catalog/mainnet" />} />
               <Route path=":network/" element={<Catalog type="Catalog"></Catalog>} />
-              <Route path=":network/:collectionIdentifier" element={<CatalogDetails></CatalogDetails>} />
+              <Route path=":network/:collectionIdentifier" element={<CatalogDetails type="Catalog"></CatalogDetails>} />
             </Route>
             <Route path="nfts">
               <Route index={true} element={<Navigate to="/nfts/mainnet" />} />

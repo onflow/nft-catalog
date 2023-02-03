@@ -76,7 +76,7 @@ export function Navbar() {
               x
             </button>
             <NavButton title="Catalog" href="/catalog" withBorder={false} />
-            <NavButton title="Proposals" href="/catalog" withBorder={false} />
+            <NavButton title="Proposals" href="/proposals" withBorder={false} />
             <NavButton title="Tools" href="/tools" withBorder={false} />
             <NavButton title="Generate Transaction" href="/transactions" withBorder={false} />
             <NavButton title="View NFTs" href="/nfts" withBorder={false} />
@@ -90,7 +90,7 @@ export function Navbar() {
       <div className="mt-1 flex flex-1 justify-end lg:flex hidden">
         <ul className="flex items-center">
           <NavButton title="Catalog" href="/catalog" withBorder={false} />
-          <NavButton title="Proposals" href="/catalog" withBorder={false} />
+          <NavButton title="Proposals" href="/proposals" withBorder={false} />
           <NavButton title="Tools" href="/tools" withBorder={false} />
           <NavDropDown />
           <div className="h-1/2 border-l border-primary-gray-100"></div>
