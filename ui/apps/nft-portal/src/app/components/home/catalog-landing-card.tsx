@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import HomeImage from '../../../assets/home.png';
+import HomeBannerImage from '../../../assets/home-banner.png';
 import { Button } from '../shared/button';
 
 export function CatalogLandingCard({}: {}) {
