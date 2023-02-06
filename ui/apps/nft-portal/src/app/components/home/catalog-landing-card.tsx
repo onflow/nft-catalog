@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import OnFlowIcon from '../../../assets/flow-icon-bw-light.svg';
+import HomeImage from '../../../assets/home.png';
 import { Button } from '../shared/button';
 
 export function CatalogLandingCard({}: {}) {
@@ -30,7 +30,7 @@ export function CatalogLandingCard({}: {}) {
             </Button>
           </div>
           <div className="flex w-full flex-1 flex-col items-stretch sm:mt-10 md:mt-0">
-            <img src={OnFlowIcon} />
+            <img src={HomeImage} />
           </div>
         </div>
       </div>
