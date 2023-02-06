@@ -1680,6 +1680,10 @@ select {
   padding-top: 0.5rem;
 }
 
+.pl-24 {
+  padding-left: 6rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -2263,6 +2267,19 @@ select {
     flex-direction: column;
   }
 
+  .xs\:p-4 {
+    padding: 1rem;
+  }
+
+  .xs\:py-16 {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .xs\:pl-4 {
+    padding-left: 1rem;
+  }
+
   .xs\:text-2xl {
     font-size: 1.5rem;
     line-height: 2rem;
@@ -2313,6 +2330,14 @@ select {
 
   .md\:mt-0 {
     margin-top: 0px;
+  }
+
+  .md\:mb-14 {
+    margin-bottom: 3.5rem;
+  }
+
+  .md\:mb-8 {
+    margin-bottom: 2rem;
   }
 
   .md\:flex {
@@ -2393,6 +2418,10 @@ select {
     padding-left: 3rem;
   }
 
+  .md\:pl-24 {
+    padding-left: 6rem;
+  }
+
   .md\:\!text-4xl {
     font-size: 2rem !important;
     line-height: 2.25rem !important;
@@ -2416,6 +2445,11 @@ select {
   .md\:text-5xl {
     font-size: 3.5rem;
     line-height: 1;
+  }
+
+  .md\:text-4xl {
+    font-size: 2rem;
+    line-height: 2.25rem;
   }
 }
 
@@ -2471,5 +2505,10 @@ select {
   .lg\:text-base {
     font-size: 1rem;
     line-height: 1.5rem;
+  }
+
+  .lg\:text-5xl {
+    font-size: 3.5rem;
+    line-height: 1;
   }
 }

@@ -60,8 +60,8 @@ export default function ({
   ]
 
   return (
-    <div className="py-16 ml-24">
-            <div className="mb-14 overflow-hidden text-ellipsis text-5xl font-display font-bold">Add your NFT Collection</div>
+    <div className="xs:p-4 xs:py-16 md:pl-24">
+      <div className="md:mb-8 overflow-hidden text-ellipsis xs:text-2xl md:text-4xl lg:text-5xl font-display font-bold">Add your NFT Collection</div>
       <StepsProgressBar
         steps={steps}
       />
