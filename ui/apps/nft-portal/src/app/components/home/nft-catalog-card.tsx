@@ -3,9 +3,9 @@ import { CatalogItem } from '../catalog/catalog-explore';
 import { Button } from '../shared/button';
 
 const staticDisplayItems = [
-  { name: 'NFL All Day', subtext: 'A.e4cf4bdc1751c65d.AllDay.NFT' },
+  { name: 'NFLAllDay', subtext: 'A.e4cf4bdc1751c65d.AllDay.NFT' },
   { name: 'Flunks', subtext: 'A.807c3d470888cc48.Flunks.NFT' },
-  { name: 'UFC Strike', subtext: 'A.329feb3ab062d289.UFC_NFT.NFT' },
+  { name: 'UFCStrike', subtext: 'A.329feb3ab062d289.UFC_NFT.NFT' },
 ];
 
 export function NFTCatalogCard() {
@@ -27,7 +27,7 @@ export function NFTCatalogCard() {
       <div className="mt-8">
         <CatalogItem
           item={{
-            name: 'NBA Top Shot',
+            name: 'NBATopShot',
             subtext: 'A.0b2a3299cc857e29.TopShot.NFT',
             image: 'https://nbatopshot.com/static/img/og/og.png',
           }}
