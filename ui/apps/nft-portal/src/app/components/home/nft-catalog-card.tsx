@@ -14,7 +14,7 @@ export function NFTCatalogCard() {
     <div className="container">
       <div className="float-right">
         <Button onClick={() => navigate('/catalog')} bgColor="bg-transparent">
-          Explore NFT Catalog
+          Explore catalog
         </Button>
       </div>
       <span className="text-3xl font-display font-bold my-2 md:mb-3">
@@ -24,7 +24,7 @@ export function NFTCatalogCard() {
         Browse NFT collections on the catalog and view their collection-level
         data
       </p>
-      <div className="mt-4">
+      <div className="mt-8">
         <CatalogItem
           item={{
             name: 'NBA Top Shot',

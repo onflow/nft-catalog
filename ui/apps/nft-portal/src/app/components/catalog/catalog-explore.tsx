@@ -27,9 +27,10 @@ export function CatalogExplore({
   const [unfilteredItems, setUnfilteredItems] = useState<null | Array<any>>(null);
   const [items, setItems] = useState<null | Array<any>>(null);
   const loading = !items;
+  const [numToShow, setNumToShow] = useState(18);
+  const [itemsLength, setItemsLength] = useState(0);
 
   useEffect(() => {
-    console.log('items is', unfilteredItems)
     if (unfilteredItems && unfilteredItems.length > 0 && search.length >= 2) {
       const searchFilter = search.toLowerCase()
       // filter the items based on the search field
@@ -39,11 +40,17 @@ export function CatalogExplore({
           item.subtext.toLowerCase().includes(searchFilter || '')
         );
       });
-      setItems(filteredItems)
+      setItemsLength(filteredItems.length)
+      setItems(filteredItems.slice(0, numToShow))
     } else {
-      setItems(unfilteredItems)
+      if (unfilteredItems) {
+        setItemsLength(unfilteredItems.length)
+        setItems(unfilteredItems.slice(0, numToShow))
+      } else {
+        setItems(unfilteredItems)
+      }
     }
-  }, [search, unfilteredItems])
+  }, [search, unfilteredItems, numToShow])
 
   useEffect(() => {
     const setup = async () => {
@@ -81,13 +88,31 @@ export function CatalogExplore({
             return <CatalogItem key={i} item={item} network={network} />;
           })}
       </div>
+      {
+        items && items.length > 0 && (
+          <>
+            <p className="text-center text-gray-400 mt-8">
+              You're viewing {numToShow > itemsLength ? itemsLength : numToShow} of {itemsLength} items
+            </p>
+            {
+              itemsLength > numToShow && (
+                <button
+                  className="border-2 w-full border-blue-700 text-blue-700 py-4 px-4 rounded-lg mt-4"
+                  onClick={() => setNumToShow(numToShow + 18)}
+                >
+                  Load More
+                </button>
+              )
+            }
+          </>
+        )
+      }
 
       {
         loading &&
           (
             <div className="p-8 w-full h-full">
               <div className="loader"></div>
-              Loading...
             </div>
           )
       }

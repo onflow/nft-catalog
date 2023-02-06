@@ -17,7 +17,7 @@ export function CatalogLandingCard({}: {}) {
             <header className="text-5xl font-display font-bold my-2 md:mb-3">
               Explore the Flow Catalog
             </header>
-            <p className="md:max-w-sm overflow-hidden text-ellipsis text-gray-600 mb-2">
+            <p className="md:max-w-sm overflow-hidden text-ellipsis font-semibold text-gray-600 mb-2">
               Build your next idea using Flow NFT collections.
             </p>
             <Button
@@ -26,7 +26,7 @@ export function CatalogLandingCard({}: {}) {
               textColor="text-white"
               hoverColor="hover:bg-black/50"
             >
-              Explore NFT Catalog
+              Explore catalog
             </Button>
           </div>
           <div className="flex w-full flex-1 flex-col items-stretch">
