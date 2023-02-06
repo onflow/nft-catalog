@@ -30,7 +30,7 @@ export function CatalogLandingCard({}: {}) {
             </Button>
           </div>
           <div className="flex w-full flex-1 flex-col items-stretch sm:mt-10 md:mt-0">
-            <img src={HomeBannerImage} referrerPolicy="no-referrer" />
+            <img src={"https://raw.githubusercontent.com/dapperlabs/nft-catalog/v2/ui/apps/nft-portal/src/assets/home-banner.png"} referrerPolicy="no-referrer" />
           </div>
         </div>
       </div>
