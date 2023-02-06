@@ -30,7 +30,7 @@ export function CatalogLandingCard({}: {}) {
             </Button>
           </div>
           <div className="flex w-full flex-1 flex-col items-stretch sm:mt-10 md:mt-0">
-            <img src={HomeImage} referrerPolicy="no-referrer" />
+            <img src={HomeBannerImage} referrerPolicy="no-referrer" />
           </div>
         </div>
       </div>
