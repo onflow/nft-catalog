@@ -6,7 +6,7 @@ type HamburgerProps = {
 }
 
 export function Hamburger({ onClick, isOpen }: HamburgerProps) {
-    return <div className="mt-1 flex flex-1 justify-end lg:hidden p-2 mt-8">
+    return <div className="mt-1 flex flex-1 justify-end lg:hidden p-2">
         <button className="flex items-center px-3 py-2 text-lg border rounded text-primary-black hover:opacity-75" onClick={onClick}>
             {!isOpen ?
                 (
