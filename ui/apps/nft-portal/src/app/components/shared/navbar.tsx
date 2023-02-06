@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Hamburger } from './hamburger';
 import OnFlowIcon from '../../../assets/flow-icon-bw-green.svg';
 import { Button } from './button-v2';
+import { Divider } from './divider';
 
 
 function NavDropDown() {
@@ -57,7 +58,7 @@ function NavButton({
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <nav className="z-40 flex min-h-[96px] items-center bg-white p-4 text-primary-gray-400 lg:px-8 border-2 border-primary-gray-100">
+    <nav className={`${menuOpen && 'fixed left-0 right-0' } z-40 flex min-h-[96px] items-center bg-white p-4 text-primary-gray-400 lg:px-8 border-2 border-primary-gray-100`}>
       <a
         className="flex items-center font-display text-xl cursor-pointer"
         href="/"
@@ -65,25 +66,19 @@ export function Navbar() {
         <img className="mr-4" alt="flow_logo" width="50" height="50" src={OnFlowIcon} />
         <header><b>flow</b> catalog</header>
       </a>
-      <Hamburger onClick={() => setMenuOpen(true)} />
+      <Hamburger onClick={() => setMenuOpen(!menuOpen)} isOpen={menuOpen} />
       {menuOpen && (
-        <div className="mt-1 flex flex-1 justify-end lg:hidden">
-          <ul className="flex flex-col space-y-4 lg:hidden pb-4">
-            <button
-              className="flex flex-1 justify-end rounded text-primary-black hover:opacity-75"
-              onClick={() => setMenuOpen(false)}
-            >
-              x
-            </button>
+        <div style={{top: '86px'}} className="fixed left-0 right-0 bottom-0 bg-white mt-1 flex flex-1 justify-start lg:hidden z-40">
+          <ul className="flex flex-col space-y-4 lg:hidden pb-4 pl-8 pt-8">
+            <a href="/v" className="pl-4">
+              <Button>Add NFT Collection </Button>
+            </a>
             <NavButton title="Catalog" href="/catalog" withBorder={false} />
             <NavButton title="Proposals" href="/proposals" withBorder={false} />
-            <NavButton title="Tools" href="/tools" withBorder={false} />
+            <div className="text-primary-gray-300 text-sm pt-4 px-4">Resources</div>
             <NavButton title="Generate Transaction" href="/transactions" withBorder={false} />
             <NavButton title="View NFTs" href="/nfts" withBorder={false} />
             <NavButton title="Cadence Scripts" href="https://github.com/dapperlabs/nft-catalog#using-the-catalog-for-marketplaces-and-other-nft-applications" withBorder={false} />
-            <a href="/v">
-              <Button>Add NFT Collection </Button>
-            </a>
           </ul>
         </div>
       )}

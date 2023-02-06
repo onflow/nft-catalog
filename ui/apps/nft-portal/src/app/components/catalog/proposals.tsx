@@ -44,12 +44,16 @@ export default function Layout({
               <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
             </div>
             <div>
+              {
+                /*
               <Hamburger onClick={() => {
                 // Item selected
                 if(identifier != null) {
                   navigate(type === 'Proposals' ? `/proposals/${network}` : `/catalog/${network}`)
                 }
               }} />
+              */
+              }
             </div>
           </div>
           {identifier == null && <CatalogSelect type={type} selected={identifier} network={network} />}
