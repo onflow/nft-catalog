@@ -991,6 +991,14 @@ select {
   height: 7rem;
 }
 
+.h-24 {
+  height: 6rem;
+}
+
+.h-10 {
+  height: 2.5rem;
+}
+
 .max-h-60 {
   max-height: 15rem;
 }

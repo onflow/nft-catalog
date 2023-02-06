@@ -19,7 +19,7 @@ export function LandingLinkCard({
       target={!isExternal ? '_self' : '_blank'}
       rel="noreferrer"
     >
-      {image && <img src={image} />}
+      {image && <img className="h-10" src={image} />}
       <div className="text-l text-display font-semibold">{title}</div>
       <div>
         <LinkIcon />
