@@ -43,7 +43,7 @@ export default function Layout() {
     <div className="bg-gradient-to-r from-violet-600 to-blue-500">
       <div className="container">
         <div className={classes}>
-          <header className="flex-1 text-5xl text-center font-display text-white font-bold my-2 md:mb-3">
+          <header className="flex-1 text-2xl md:text-5xl text-center font-display text-white font-bold my-2 md:mb-3">
             Generate Transactions
           </header>
           <p className="md:max-w-sm overflow-hidden text-ellipsis text-white mt-2 mb-8">
@@ -62,7 +62,7 @@ export default function Layout() {
         </div>
       </div>
 
-      <div className="flex w-full h-full items-center text-center bg-white rounded-2xl sm:flex-col md:flex-row">
+      <div className="flex w-full h-full items-center text-center bg-white sm:flex-col md:flex-row">
         <div className="flex-col lg:hidden w-full">
           <CatalogSelect
             type="Transactions"
@@ -124,7 +124,7 @@ function TransactionForm({
   onNetworkChange,
 }: TransactionFormParams) {
   return (
-    <div className="flex flex-row w-full items-start items-center space-x-4">
+    <div className="flex flex-col md:flex-row w-full items-start items-center space-x-4">
       <div className="flex flex-col w-full">
         <span className="px-1 py-1 text-s text-white">Fungible token</span>
         <DropDown

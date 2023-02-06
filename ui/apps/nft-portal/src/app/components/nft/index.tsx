@@ -37,13 +37,13 @@ export default function Layout() {
     <div className="bg-gradient-to-r from-violet-600 to-blue-500">
       <div className="container">
         <div className={classes}>
-          <header className="flex-1 text-5xl text-center font-display text-white font-bold my-2 md:mb-3">
+          <header className="flex-1 text-2xl md:text-5xl text-center font-display text-white font-bold my-2 md:mb-3">
             View NFTs
           </header>
           <p className="md:max-w-sm overflow-hidden text-ellipsis text-white mt-2 mb-8">
             Build your next idea using Flow NFT collections.
           </p>
-          <div className="flex flex-row w-full items-center space-x-4">
+          <div className="flex flex-col md:flex-row w-full items-center space-x-4">
             <div className="flex flex-col w-full">
               <span className="px-1 py-1 text-s text-white">
                 Flow account address
