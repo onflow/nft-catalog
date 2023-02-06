@@ -1056,6 +1056,10 @@ select {
   width: max-content;
 }
 
+.max-w-lg {
+  max-width: 32rem;
+}
+
 .max-w-full {
   max-width: 100%;
 }
@@ -1150,10 +1154,6 @@ select {
 
 .gap-6 {
   gap: 1.5rem;
-}
-
-.gap-2 {
-  gap: 0.5rem;
 }
 
 .gap-4 {
@@ -1274,6 +1274,11 @@ select {
 
 .rounded-\[16px\] {
   border-radius: 16px;
+}
+
+.rounded-r-2xl {
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
 }
 
 .rounded-t-lg {
