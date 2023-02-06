@@ -1,4 +1,7 @@
 import { LandingLinkCard } from './landing-link-card';
+import TxImage from '../../../assets/tx.png';
+import SImage from '../../../assets/script.png';
+import NFTImage from '../../../assets/nft.png';
 
 export function ToolsCard({}: {}) {
   const classes =
@@ -7,16 +10,17 @@ export function ToolsCard({}: {}) {
     <div className="container">
       <span className="text-xl font-display font-bold md:mb-3">Resources</span>
       <div className={classes}>
-        <div className="flex w-full flex-1 flex-row space-x-4 items-start">
+        <div className="flex w-full flex-1 grid grid-cols-2 gap-4 items-start">
           <LandingLinkCard
-            title="Generate Transaction"
-            description={undefined}
+            title="Generate Transactions"
             href="/transactions"
+            image={TxImage}
           />
+          <LandingLinkCard title="View NFT's" href="/nfts" image={NFTImage} />
           <LandingLinkCard
-            title="View NFT's"
-            description={undefined}
-            href="/nfts"
+            title="Cadence Scripts"
+            href="https://github.com/dapperlabs/nft-catalog/tree/main/cadence"
+            image={SImage}
           />
         </div>
       </div>
