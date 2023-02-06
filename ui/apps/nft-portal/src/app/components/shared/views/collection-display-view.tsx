@@ -133,8 +133,8 @@ export function CollectionDisplayView(props: any) {
       <div className="flex xs:flex-col md:flex-row">
         <div className="md:basis-1/2 flex flex-col align-items-center justify-center pt-12">
           {proposal}
-          <div className="text-5xl font-display font-bold py-8">{view.collectionName || view.name}</div>
-          <div className="text-md mt-2 font-semibold text-lg text-gray-600">
+          <div className="xs:text-2xl sm:text-4xl md:text-5xl font-display font-bold py-8 overflow-clip">{view.collectionName || view.name}</div>
+          <div className="text-md mt-2 font-semibold text-lg text-gray-600 overflow-clip">
             {view.collectionDescription || view.description}
           </div>
           <div className="w-full overflow-x-auto text-md py-20 flex flex-row">
@@ -142,7 +142,7 @@ export function CollectionDisplayView(props: any) {
           </div>
         </div>
         <div className="basis-1/2 flex flex-row justify-center">
-          <img className="basis-1/2 py-16 object-contain" src={collectionSquareImage}></img>
+          <img className="basis-1/2 md:pl-12 py-16 object-contain" src={collectionSquareImage}></img>
         </div>
       </div>
     </>
