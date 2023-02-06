@@ -120,18 +120,18 @@ export function CollectionDisplayView(props: any) {
     </div>
   );
 
-  const collectionSquareImage =
+  let collectionSquareImage =
     view.squareImage && view.squareImage.file
       ? view.squareImage.file.url
       : view.collectionSquareImage.file.url;
-  const collectionBannerImage =
-    view.bannerImage && view.bannerImage.file
-      ? view.bannerImage.file.url
-      : view.collectionBannerImage.file.url;
   const externalURL =
     view && view.externalURL && view.externalURL.url
       ? view.externalURL.url
       : view.externalURL;
+  if (collectionSquareImage.startsWith('ipfs://')) {
+    collectionSquareImage =
+      'https://ipfs.io/ipfs/' + collectionSquareImage.substring(7);
+  }
   return (
     <>
       <div className="flex xs:flex-col md:flex-row">
