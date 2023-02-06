@@ -10,7 +10,7 @@ export function ToolsCard({}: {}) {
     <div className="container">
       <span className="text-xl font-display font-bold md:mb-3">Resources</span>
       <div className={classes}>
-        <div className="flex w-full flex-1 grid grid-cols-2 gap-4 items-start">
+        <div className="flex w-full flex-1 grid xs:grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <LandingLinkCard
             title="Generate Transactions"
             href="/transactions"

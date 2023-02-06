@@ -188,7 +188,7 @@ export function CatalogItem(props: any) {
         </div>
       </div>
       {item.image && (
-        <img className="max-w-lg rounded-r-2xl" src={item.image}></img>
+        <img className="xs:hidden md:inline-flex max-w-lg rounded-r-2xl" src={item.image}></img>
       )}
     </a>
   );
