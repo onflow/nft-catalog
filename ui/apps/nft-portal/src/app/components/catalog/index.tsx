@@ -25,7 +25,7 @@ export default function Layout({
     <>
       <div className="absolute max-h-60 bg-gradient-catalog-1"></div>
       <div className="absolute max-h-60 bg-gradient-catalog-2"></div>
-      <div className="mx-auto px-0 md:px-4 lg:px-32 pt-16">
+      <div className="mx-auto px-4 md:px-4 lg:px-32 pt-16">
         <header className="font-display font-bold text-2xl relative z-20">
           Explore {type === 'Catalog' ? 'the catalog' : 'NFT Catalog Proposals'}
         </header>

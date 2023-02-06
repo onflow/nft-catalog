@@ -15,7 +15,7 @@ function ContractAttribute({ attribute, value }: { attribute: string, value: any
     <div className="flex flex-row justify-between h-28 w-full bg-white rounded-[16px] my-4 p-6">
       <div className="flex flex-col">
         <div className="font-bold">{attribute}</div>
-        <div className="text-gray-400 max-w-5xl whitespace-nowrap truncate pt-4">{value}</div>
+        <div className="text-gray-400 xs:max-w-sm md:max-w-2xl lg:max-w-5xl whitespace-nowrap truncate pt-4">{value}</div>
       </div>
       <div className="cursor-pointer" onClick={() => {
         navigator.clipboard.writeText(value)

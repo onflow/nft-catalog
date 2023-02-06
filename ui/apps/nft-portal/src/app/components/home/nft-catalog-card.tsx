@@ -34,7 +34,7 @@ export function NFTCatalogCard() {
           network="mainnet"
         />
       </div>
-      <div className="flex flex-1 flex-row space-x-4 mt-4">
+      <div className="flex flex-1 sm:flex-col sm:space-y-4 md:space-y-0 md:flex-row md:space-x-4 mt-4">
         {staticDisplayItems.map((item, i) => (
           <CatalogItem key={i} item={item} network="mainnet" />
         ))}

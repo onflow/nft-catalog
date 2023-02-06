@@ -29,7 +29,7 @@ export function CatalogLandingCard({}: {}) {
               Explore catalog
             </Button>
           </div>
-          <div className="flex w-full flex-1 flex-col items-stretch">
+          <div className="flex w-full flex-1 flex-col items-stretch sm:mt-10 md:mt-0">
             <img src={OnFlowIcon} />
           </div>
         </div>

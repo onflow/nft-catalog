@@ -16,46 +16,50 @@ function getFormattedDate(date: any) {
   return month + '/' + day + '/' + year;
 }
 
-function Socials(withIcons: boolean, externalURL: string, socials: any) {
-  if (!withIcons) {
-    let formattedSocials: [{social: string, socialLink: string}] = [
-      {
-        social: 'Website',
-        socialLink: externalURL,
-      }
-    ]
-    
-    Object.keys(socials).map((social) => {
-      const socialLink =
-        socials[social] && socials[social].url
-          ? socials[social].url
-          : socials[social];
-      formattedSocials.push({
-        social,
-        socialLink,
-      })
+function Socials(externalURL: string, socials: any) {
+  
+  let formattedSocials: [{social: string, socialLink: string}] = [
+    {
+      social: 'Website',
+      socialLink: externalURL,
+    }
+  ]
+  
+  Object.keys(socials).map((social) => {
+    const socialLink =
+      socials[social] && socials[social].url
+        ? socials[social].url
+        : socials[social];
+    formattedSocials.push({
+      social,
+      socialLink,
     })
+  })
 
-    return (
-      <>
-        {formattedSocials.map((social, i) => {
-          return (
-            <a key={i} href={social.socialLink} target="_blank" className="flex flex-row mr-8">
-              <div className="text-sm mr-2 text-lg">{social.social[0].toUpperCase() + social.social.slice(1)}</div>
-              <LinkIcon />
-            </a>
-          );
-        })}
-      </>
-    )
+  const withoutIcons =  (
+    <>
+      {formattedSocials.map((social, i) => {
+        return (
+          <a key={i} href={social.socialLink} target="_blank" className="flex flex-row mr-8">
+            <div className="text-sm mr-2 text-lg">{social.social[0].toUpperCase() + social.social.slice(1)}</div>
+            <LinkIcon />
+          </a>
+        );
+      })}
+    </>
+  )
     
+  const socialProps = {
+    style:{ height: 44, width: 44, marginRight: 12 },
+    target:"_blank",
+    bgColor:'#DEE2E9',
+    fgColor:'#3B3CFF',
   }
-  return (
+  const withIcons = (
     <>
       {externalURL && (
         <div>
-          <SocialIcon url={externalURL} style={{ height: 25, width: 25 }} />{' '}
-          {externalURL}
+          <SocialIcon url={externalURL} href={externalURL} {...socialProps} />{' '}
         </div>
       )}
       {socials &&
@@ -68,14 +72,22 @@ function Socials(withIcons: boolean, externalURL: string, socials: any) {
             <div key={social}>
               <SocialIcon
                 url={socialLink}
-                style={{ height: 25, width: 25 }}
+                href={socialLink}
+                {...socialProps} 
               />{' '}
-              {socialLink}
             </div>
           );
         })}
     </>
   );
+  return <div>
+    <div className='flex md:hidden'>
+      {withIcons}
+    </div>
+    <div className='hidden md:flex'>
+      {withoutIcons}
+    </div>
+  </div>
 
 }
 
@@ -118,19 +130,19 @@ export function CollectionDisplayView(props: any) {
       : view.externalURL;
   return (
     <>
-      <div className="flex flex-row">
-        <div className="basis-1/2 flex flex-col align-items-center justify-center pt-12">
+      <div className="flex xs:flex-col md:flex-row">
+        <div className="md:basis-1/2 flex flex-col align-items-center justify-center pt-12">
           {proposal}
           <div className="text-5xl font-display font-bold py-8">{view.collectionName || view.name}</div>
           <div className="text-md mt-2 font-semibold text-lg text-gray-600">
             {view.collectionDescription || view.description}
           </div>
           <div className="w-full overflow-x-auto text-md py-20 flex flex-row">
-            {Socials(false, externalURL, view.socials)}
+            {Socials(externalURL, view.socials)}
           </div>
         </div>
         <div className="basis-1/2 flex flex-row justify-center">
-          <img className="basis-1/2 pl-32 py-16 object-contain" src={collectionSquareImage}></img>
+          <img className="basis-1/2 py-16 object-contain" src={collectionSquareImage}></img>
         </div>
       </div>
     </>
