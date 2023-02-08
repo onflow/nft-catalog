@@ -1,10 +1,10 @@
 # NFT Catalog
 
-The NFT Catalog is an on chain registry listing NFT collections that exists on Flow which adhere to the NFT metadata standard. This empowers dApp developers to easily support and discover interoperable NFT collections on Flow.
+The NFT Catalog is an on chain registry listing NFT collections that exists on Flow which adhere to the NFT metadata standard. This empowers dApp developers to easily build on top of and discover interoperable NFT collections on Flow.
 
 ## Live Site
 
-Checkout the catalog [site](https://nft-catalog.vercel.app/) to submit your NFT collection both on testnet and mainnet.
+Checkout the catalog [site](https://www.flow-nft-catalog.com/) to submit your NFT collection both on testnet and mainnet.
 
 ## NPM Module
 
@@ -135,14 +135,16 @@ For example, the result of the method above would look like -
 
 ## Submitting a Collection to the NFT Catalog
 
-1. Visit [here](https://nft-catalog.vercel.app/v)
+1. Visit [here](https://www.flow-nft-catalog.com/v)
 2. Enter the address containing the NFT contract which contains the collection and select the contract
 
-    ![Verifier Step 1](https://user-images.githubusercontent.com/1332984/178290984-570dc87b-c2b7-4036-b0ba-0588ed2bfc96.png)
+    <img width="1509" alt="Screen Shot 2023-02-08 at 9 40 01 AM" src="https://user-images.githubusercontent.com/5430668/217561873-54beb50e-0ea2-46fb-b9f8-8dbe758ee12f.png">
+
 
 3. Enter the storage path where the NFTs are stored and enter an address that holds a sample NFT or log in if you have access to an account that owns the NFT
+<img width="1508" alt="Screen Shot 2023-02-08 at 9 42 54 AM" src="https://user-images.githubusercontent.com/5430668/217562366-e6cbf3cb-38b8-45cb-943e-e20185565743.png">
 
-    ![Verifier Step 2](https://user-images.githubusercontent.com/1332984/178290983-9509cad1-ae53-4ecf-bbb6-e9cb5adb5945.png)
+    
 
 4. The application will verify that your NFT collection implements the required Metadata views.
 
@@ -160,13 +162,15 @@ For example, the result of the method above would look like -
     2. You can find sample implementations of all these views in this example NFT [contract](https://github.com/onflow/flow-nft/blob/master/contracts/ExampleNFT.cdc).
     3. If you are not implementing a view, the app will communicate this and you can update your NFT contract and try resubmitting.
 
-        ![Verifier Step 3](https://user-images.githubusercontent.com/1332984/178290981-90442443-5038-4feb-8721-7858cbfeef84.png)
+        <img width="738" alt="Screen Shot 2023-02-08 at 9 46 56 AM" src="https://user-images.githubusercontent.com/5430668/217563435-86863297-183b-4345-9615-61f9d4212fe9.png">
+
 
 5. Submit proposal transaction to the NFT catalog by entering a unique url safe identifier for the collection and a message including any additional context (like contact information).
 
-    ![Verifier Step 4](https://user-images.githubusercontent.com/1332984/178290980-8168b66a-d575-4c90-b6a5-7d19f36ff567.png)
+    <img width="1503" alt="Screen Shot 2023-02-08 at 9 48 45 AM" src="https://user-images.githubusercontent.com/5430668/217563785-65065f51-37bc-49c7-8b3e-ba5d1dda3b24.png">
 
-6. Once submitted you can view all proposals [here](https://nft-catalog.vercel.app/proposals/mainnet) to track the review of your NFT.
+
+6. Once submitted you can view all proposals [here](https://www.flow-nft-catalog.com/proposals/mainnet) to track the review of your NFT.
 
 If you would like to make a proposal manually, you may submit the following transaction with all parameters filled in: [https://github.com/dapperlabs/nft-catalog/blob/main/cadence/transactions/propose_nft_to_catalog.cdc](https://github.com/dapperlabs/nft-catalog/blob/main/cadence/transactions/propose_nft_to_catalog.cdc)
 
