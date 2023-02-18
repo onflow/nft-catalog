@@ -17,8 +17,8 @@ type NetworkDropDownProps = {
 export function NetworkDropDown({ network, onNetworkChange }: NetworkDropDownProps) {
 
   const networks: NetworkOption[] = [
-    { value: "mainnet", label: "Network:Mainnet" },
-    { value: "testnet", label: "Network:Testnet" },
+    { value: "mainnet", label: "Mainnet" },
+    { value: "testnet", label: "Testnet" },
   ];
   return <DropDown label="" options={networks} value={network} onChange={(e) => {
     fcl.unauthenticate()

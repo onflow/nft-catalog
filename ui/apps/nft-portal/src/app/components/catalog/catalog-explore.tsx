@@ -142,7 +142,7 @@ export function CatalogItem(props: any) {
           : `/proposals/${network}/${item.id}`
       }
     >
-      <div className="flex flex-col p-6">
+      <div className="flex flex-col p-6 w-full">
         <header className="font-display font-semibold text-xl truncate hover:text-clip">
           {item.name}
         </header>
@@ -154,7 +154,7 @@ export function CatalogItem(props: any) {
             href={`https://${
               network === 'testnet' ? 'testnet.' : ''
             }flowscan.org/contract/${item.subtext.replace(/.NFT$/, '')}`}
-            className="flex flex-row rounded bg-primary-gray-50 px-2 py-1"
+            className="flex flex-row rounded bg-primary-gray-50 px-2 py-1 mb-2"
             style={{ width: 'fit-content' }}
             rel="noreferrer"
           >
