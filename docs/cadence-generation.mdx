@@ -1,4 +1,3 @@
-## Cadence generation
 # Cadence Generation
 
 Using the NFT Catalog, you can generate common scripts and transactions to be run against the Flow Blockchain to support your application.
@@ -6,6 +5,7 @@ Using the NFT Catalog, you can generate common scripts and transactions to be ru
 ## How-to generate scripts and transactions
 
 ### From JavaScript
+
 #### Installation
 
 ```
@@ -21,7 +21,8 @@ yarn add flow-catalog
 ```
 
 #### Usage
-*1. Retrieve a list of transactions available for code generation:*
+
+_1. Retrieve a list of transactions available for code generation:_
 NOTE: In order to properly bootstrap the method, you will need to run and `await` on the `getAddressMaps()` method, passing it into all of the methods as shown below.
 
 ```
@@ -36,7 +37,8 @@ const main = async () => {
 main();
 ```
 
-*2. Provide a Catalog collection identifier to generate code*
+_2. Provide a Catalog collection identifier to generate code_
+
 ```
 const getTemplatedTransactionCode = async function() {
   const catalogAddressMap = await getAddressMaps()
@@ -47,7 +49,7 @@ const getTemplatedTransactionCode = async function() {
         'Flunks' is the collection identifier in this case
         'Flow' is a fungible token identifier (if applicable to the transaction being used)
     */
-    
+
     args: ['CollectionInitialization', 'Flunks', 'flow'],
     addressMap: catalogAddressMap
   })
@@ -55,7 +57,8 @@ const getTemplatedTransactionCode = async function() {
 }
 ```
 
-*3. Use the generated code in a transaction*
+_3. Use the generated code in a transaction_
+
 ```
 const txId = await fcl.mutate({
   cadence: await getTemplatedTransactionCode()[0],
@@ -70,11 +73,11 @@ return transaction
 
 Cadence scripts and transactions can be generated directly on-chain via scripts. You will need to be able to run cadence scripts to continue.
 
-*1. Retrieve a list of transactions available for code generation*
+_1. Retrieve a list of transactions available for code generation_
 
 Run the following script to retrieve available code generation methods: https://github.com/dapperlabs/nft-catalog/blob/main/cadence/scripts/get_supported_generated_transactions.cdc
 
-*2. Provide a catalog collection identifier to generate code*
+_2. Provide a catalog collection identifier to generate code_
 
 You may use the following script to generate code: https://github.com/dapperlabs/nft-catalog/blob/main/cadence/scripts/gen_tx.cdc
 

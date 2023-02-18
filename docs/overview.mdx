@@ -6,117 +6,6 @@ The NFT Catalog is an on chain registry listing NFT collections that exists on F
 
 Checkout the catalog [site](https://www.flow-nft-catalog.com/) to submit your NFT collection both on testnet and mainnet.
 
-## NPM Module
-
-We exposed an interface to the catalog via a consumable NPM module. This library will expose a number of methods that can be called to interact with the catalog.
-
-### Methods
-
-Method signatures and their associating parameters/responses can be found in the `cadence/` folder of this repo.
-
-#### Scripts
-
-```
-checkForRecommendedV1Views
-genTx
-getAllNftsInAccount
-getExamplenftCollectionLength
-getExamplenftType
-getNftCatalog
-getNftCatalogProposals
-getNftCollectionsForNftType
-getNftIdsInAccount
-getNftInAccount
-getNftInAccountFromPath
-getNftMetadataForCollectionIdentifier
-getNftProposalForId
-getNftsCountInAccount
-getNftsInAccount
-getNftsInAccountFromIds
-getNftsInAccountFromPath
-getSupportedGeneratedTransactions
-hasAdminProxy
-isCatalogAdmin
-```
-
-#### Transactions
-
-```
-addToNftCatalog
-addToNftCatalogAdmin
-approveNftCatalogProposal
-mintExampleNft
-mintNonstandardNft
-proposeNftToCatalog
-rejectNftCatalogProposal
-removeFromNftCatalog
-removeNftCatalogProposal
-sendAdminCapabilityToProxy
-setupExamplenftCollection
-setupNftCatalogAdminProxy
-setupNonstandardnftCollection
-setupStorefront
-transferExamplenft
-updateNftCatalogEntry
-withdrawNftProposalFromCatalog
-```
-
-### Installation
-
-```
-npm install flow-catalog
-```
-
-or
-
-```
-yarn add flow-catalog
-```
-
-### Usage
-
-Methods can be imported as follows, all nested methods live under the `scripts` or `transactions` variable.
-
-NOTE: In order to properly bootstrap the method, you will need to run and `await` on the `getAddressMaps()` method, passing it into all of the methods as shown below.
-
-```
-import { getAddressMaps, scripts } from "flow-catalog";
-
-const main = async () => {
-    const addressMap = await getAddressMaps();
-    console.log(await scripts.getNftCatalog(addressMap));
-};
-
-main();
-```
-
-The response of any method is a tuple-array, with the first element being the result, and the second being the error (if applicable).
-
-For example, the result of the method above would look like -
-
-```
-[
-  {
-    BILPlayerCollection: {
-      contractName: 'Player',
-      contractAddress: '0x9e6cdb88e34fa1f3',
-      nftType: [Object],
-      collectionData: [Object],
-      collectionDisplay: [Object]
-    },
-    ...
-    SoulMadeComponent: {
-      contractName: 'SoulMadeComponent',
-      contractAddress: '0x421c19b7dc122357',
-      nftType: [Object],
-      collectionData: [Object],
-      collectionDisplay: [Object]
-    }
-  },
-  null
-]
-```
-
 ## Contract Addresses
 
 `NFTCatalog.cdc`: This contract contains the NFT Catalog
@@ -138,13 +27,10 @@ For example, the result of the method above would look like -
 1. Visit [here](https://www.flow-nft-catalog.com/v)
 2. Enter the address containing the NFT contract which contains the collection and select the contract
 
-    <img width="1509" alt="Screen Shot 2023-02-08 at 9 40 01 AM" src="https://user-images.githubusercontent.com/5430668/217561873-54beb50e-0ea2-46fb-b9f8-8dbe758ee12f.png">
-
+ <img width="1509" alt="Screen Shot 2023-02-08 at 9 40 01 AM" src="https://user-images.githubusercontent.com/5430668/217561873-54beb50e-0ea2-46fb-b9f8-8dbe758ee12f.png">
 
 3. Enter the storage path where the NFTs are stored and enter an address that holds a sample NFT or log in if you have access to an account that owns the NFT
-<img width="1508" alt="Screen Shot 2023-02-08 at 9 42 54 AM" src="https://user-images.githubusercontent.com/5430668/217562366-e6cbf3cb-38b8-45cb-943e-e20185565743.png">
-
-    
+   <img width="1508" alt="Screen Shot 2023-02-08 at 9 42 54 AM" src="https://user-images.githubusercontent.com/5430668/217562366-e6cbf3cb-38b8-45cb-943e-e20185565743.png">
 
 4. The application will verify that your NFT collection implements the required Metadata views.
 
@@ -162,13 +48,11 @@ For example, the result of the method above would look like -
     2. You can find sample implementations of all these views in this example NFT [contract](https://github.com/onflow/flow-nft/blob/master/contracts/ExampleNFT.cdc).
     3. If you are not implementing a view, the app will communicate this and you can update your NFT contract and try resubmitting.
 
-        <img width="738" alt="Screen Shot 2023-02-08 at 9 46 56 AM" src="https://user-images.githubusercontent.com/5430668/217563435-86863297-183b-4345-9615-61f9d4212fe9.png">
-
+     <img width="738" alt="Screen Shot 2023-02-08 at 9 46 56 AM" src="https://user-images.githubusercontent.com/5430668/217563435-86863297-183b-4345-9615-61f9d4212fe9.png">
 
 5. Submit proposal transaction to the NFT catalog by entering a unique url safe identifier for the collection and a message including any additional context (like contact information).
 
-    <img width="1503" alt="Screen Shot 2023-02-08 at 9 48 45 AM" src="https://user-images.githubusercontent.com/5430668/217563785-65065f51-37bc-49c7-8b3e-ba5d1dda3b24.png">
-
+ <img width="1503" alt="Screen Shot 2023-02-08 at 9 48 45 AM" src="https://user-images.githubusercontent.com/5430668/217563785-65065f51-37bc-49c7-8b3e-ba5d1dda3b24.png">
 
 6. Once submitted you can view all proposals [here](https://www.flow-nft-catalog.com/proposals/mainnet) to track the review of your NFT.
 
@@ -606,7 +490,7 @@ pub fun main(ownerAddress: Address) : { String : {String : AnyStruct} }  {
     let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let items : [MetadataViews.NFTView] = []
-    
+
     let data : { String : {String : AnyStruct} } = {}
 
     for key in catalog.keys {
@@ -621,13 +505,13 @@ pub fun main(ownerAddress: Address) : { String : {String : AnyStruct} }  {
         if !collectionCap.check() {
             continue
         }
-        
+
         var views = NFTRetrieval.getAllMetadataViewsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
 
         if views.keys.length == 0 {
             continue
         }
-        
+
         // Cadence doesn't support function return types, lets manually get rid of it
         let nftCollectionDisplayView = views[Type<MetadataViews.NFTCollectionData>().identifier] as! MetadataViews.NFTCollectionData?
         let collectionDataView = NFTCollectionData(
@@ -638,7 +522,7 @@ pub fun main(ownerAddress: Address) : { String : {String : AnyStruct} }  {
                     privateLinkedType : nftCollectionDisplayView!.providerLinkedType,
         )
         views.insert(key: Type<MetadataViews.NFTCollectionData>().identifier, collectionDataView)
-        
+
         data[key] = views
     }
 
