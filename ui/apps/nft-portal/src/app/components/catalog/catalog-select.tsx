@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { getAllNFTsInAccountFromCatalog, getSupportedGeneratedTransactions, getSupportedGeneratedScripts, getAllCollections, getAllProposals } from "../../../flow/utils"
-import { Network } from "./network-dropdown";
-import { changeFCLEnvironment } from "../../../flow/setup";
-import { Badge } from "../shared/badge";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  getAllNFTsInAccountFromCatalog,
+  getSupportedGeneratedTransactions,
+  getSupportedGeneratedScripts,
+  getAllCollections,
+  getAllProposals,
+} from '../../../flow/utils';
+import { Network } from './network-dropdown';
+import { changeFCLEnvironment } from '../../../flow/setup';
+import { Badge } from '../shared/badge';
 
 export function CatalogSelect({
   type,
@@ -11,145 +17,188 @@ export function CatalogSelect({
   selected,
   userAddress = null,
   collectionIdentifier = null,
-  ftVault = null
+  ftVault = null,
 }: {
-  type: "Catalog" | "Proposals" | "NFTs" | "Transactions",
-  network: Network
-  selected: string | undefined,
-  userAddress?: string | null,
-  collectionIdentifier?: string | null,
-  ftVault?: string | null
+  type: 'Catalog' | 'Proposals' | 'NFTs' | 'Transactions';
+  network: Network;
+  selected: string | undefined;
+  userAddress?: string | null;
+  collectionIdentifier?: string | null;
+  ftVault?: string | null;
 }) {
-  const navigate = useNavigate()
-  const [items, setItems] = useState<null | Array<any>>(null)
-  const loading = !items
+  const navigate = useNavigate();
+  const [items, setItems] = useState<null | Array<any>>(null);
+  const [search, setSearch] = useState('');
+  const loading = !items;
 
   useEffect(() => {
     const setup = async () => {
       changeFCLEnvironment(network);
-      // retrieve list of proposals or 
+      // retrieve list of proposals or
       if (type === 'Proposals') {
         const proposals = await getAllProposals();
         const items = Object.keys(proposals).map((proposalID) => {
-          const proposal = proposals[proposalID]
+          const proposal = proposals[proposalID];
           return {
             name: `#${proposalID} - ${proposal.collectionIdentifier}`,
-            subtext: `Created ${(new Date(proposal.createdTime * 1000)).toLocaleDateString("en-US")}`,
+            subtext: `Created ${new Date(
+              proposal.createdTime * 1000
+            ).toLocaleDateString('en-US')}`,
             id: proposalID,
-            status: proposal.status
-          }
-        })
-        setItems(items)
+            status: proposal.status,
+          };
+        });
+        setItems(items);
       } else if (type === 'Catalog') {
-        const catalogCollections = await getAllCollections() || []
+        const catalogCollections = (await getAllCollections()) || [];
         const items = Object.keys(catalogCollections).map((catalogKey) => {
-          const catalog = catalogCollections[catalogKey]
+          const catalog = catalogCollections[catalogKey];
           return {
             name: `${catalogKey}`,
             subtext: `${catalog.nftType.typeID}`,
             id: catalogKey,
-          }
-        })
-        setItems(items)
+          };
+        });
+        setItems(items);
       } else if (type == 'NFTs') {
         if (userAddress != null) {
-          const nftTypes = await getAllNFTsInAccountFromCatalog(userAddress)
+          const nftTypes = await getAllNFTsInAccountFromCatalog(userAddress);
           if (nftTypes == null) {
-            setItems([])
-            return
+            setItems([]);
+            return;
           }
-          const items = Object.keys(nftTypes).map((nftKey) => {
-            const nfts = nftTypes[nftKey]
-            return nfts.map((nft: any) => {
-              return {
-                name: `${nft.name}`,
-                subtext: `${nft.collectionName}`,
-                collectionIdentifier: nftKey,
-                id: nft.id,
-              }
+          const items = Object.keys(nftTypes)
+            .map((nftKey) => {
+              const nfts = nftTypes[nftKey];
+              return nfts.map((nft: any) => {
+                return {
+                  name: `${nft.name}`,
+                  subtext: `${nft.collectionName}`,
+                  collectionIdentifier: nftKey,
+                  id: nft.id,
+                };
+              });
             })
-          }).flat()
-          setItems(items)
+            .flat();
+          setItems(items);
         } else {
-          setItems([])
+          setItems([]);
         }
-      }
-      else if (type == "Transactions") {
-        const supportedTransactions = await getSupportedGeneratedTransactions()
-        const supportedScripts = await getSupportedGeneratedScripts()
-        const combined = supportedTransactions.concat(supportedScripts)
+      } else if (type == 'Transactions') {
+        const supportedTransactions = await getSupportedGeneratedTransactions();
+        const supportedScripts = await getSupportedGeneratedScripts();
+        const combined = supportedTransactions.concat(supportedScripts);
         if (combined == null) {
-          setItems([])
-          return
+          setItems([]);
+          return;
         }
         const items = combined.map((tx: string) => {
           return {
             name: tx,
             subtext: '',
             id: tx,
-          }
-        })
-        setItems(items ?? [])
+          };
+        });
+        setItems(items ?? []);
       }
-    }
-    setup()
-  }, [type, network, userAddress])
+    };
+    setup();
+  }, [type, network, userAddress]);
 
   return (
     <a className="border-t-1 my-4">
-      {
-        items && items.map((item, i) => {
-          const selectedStyle = selected && item.id === selected ? 'border-x-primary-purple border-l-4' : ''
-          return (
-            <div key={i} className={`flex-col p-8 hover:bg-gray-300 cursor-pointer border-t-2 text-left ${selectedStyle}`} onClick={
-              () => {
-                if (type === 'NFTs') {
-                  navigate(`/nfts/${network}/${userAddress}/${item.collectionIdentifier}/${item.id}`)
-                } else if (type === 'Proposals') {
-                  navigate(`/proposals/${network}/${item.id}`)
-                } else if (type === 'Transactions') {
-                  if (collectionIdentifier == null || collectionIdentifier === '') {
-                    navigate(`/transactions/${network}/${item.id}/${collectionIdentifier}`)
+      <div className="py-4">
+        <span className="mr-2 rounded px-1 py-1 text-m text-gray-500">
+          Select {type}
+        </span>
+        <div className="flex-grow pt-4 px-4">
+          <input
+            style={{
+              borderWidth: 1,
+            }}
+            className="w-full h-12 px-4 border-primary-gray-dark rounded-lg focus:outline-none"
+            placeholder="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+      {items &&
+        items
+          .filter((item) => {
+            if (search === '') {
+              return true;
+            } else {
+              return item.name.toLowerCase().includes(search.toLowerCase());
+            }
+          })
+          .map((item, i) => {
+            const selectedStyle =
+              selected && item.id === selected
+                ? 'border-x-primary-purple border-l-4'
+                : '';
+            return (
+              <div
+                key={i}
+                className={`flex-col p-8 hover:bg-gray-300 cursor-pointer border-t-2 text-left ${selectedStyle}`}
+                onClick={() => {
+                  if (type === 'NFTs') {
+                    navigate(
+                      `/nfts/${network}/${userAddress}/${item.collectionIdentifier}/${item.id}`
+                    );
+                  } else if (type === 'Proposals') {
+                    navigate(`/proposals/${network}/${item.id}`);
+                  } else if (type === 'Transactions') {
+                    if (
+                      collectionIdentifier == null ||
+                      collectionIdentifier === ''
+                    ) {
+                      navigate(
+                        `/transactions/${network}/${item.id}/${collectionIdentifier}`
+                      );
+                    } else {
+                      navigate(
+                        `/transactions/${network}/${item.id}/${collectionIdentifier}/${ftVault}`
+                      );
+                    }
                   } else {
-                    navigate(`/transactions/${network}/${item.id}/${collectionIdentifier}/${ftVault}`)
+                    navigate(`/catalog/${network}/${item.id}`);
                   }
-                } else {
-                  navigate(`/catalog/${network}/${item.id}`)
-                }
-              }
-            }>
-              <div className="font-semibold">{item.name}</div>
-              {
-                item.status && (
-                  <Badge color={item.status === 'IN_REVIEW' ? 'blue' : item.status === 'APPROVED' ? 'green' : 'yellow'} text={item.status} />
-                )
-              }
-              <div className="whitespace-pre text-xs">{item.subtext}</div>
-            </div>
-          )
-        })
-      }
+                }}
+              >
+                <div className="font-semibold">{item.name}</div>
+                {item.status && (
+                  <Badge
+                    color={
+                      item.status === 'IN_REVIEW'
+                        ? 'blue'
+                        : item.status === 'APPROVED'
+                        ? 'green'
+                        : 'red'
+                    }
+                    text={item.status}
+                  />
+                )}
+                <div className="whitespace-pre text-xs">{item.subtext}</div>
+              </div>
+            );
+          })}
 
-      {
-        loading && [0, 0, 0, 0, 0, 0, 0, 0, 0].map((item, i) => {
+      {loading &&
+        [0, 0, 0, 0, 0, 0, 0, 0, 0].map((item, i) => {
           return (
             <div key={i} className={`flex-col p-8 cursor-pointer border-t-2`}>
-              <div className="font-semibold">{" "}</div>
-              <div className="">{" "}</div>
+              <div className="font-semibold"> </div>
+              <div className=""> </div>
             </div>
-          )
-        })
-      }
-      {
-        items != null && items.length === 0 &&
-        (
-          <div className={`flex-col p-8 cursor-pointer border-t-2`}>
-            <div className="font-semibold">No Items</div>
-            <div className="">{" "}</div>
-          </div>
-        )
-
-      }
+          );
+        })}
+      {items != null && items.length === 0 && (
+        <div className={`flex-col p-8 cursor-pointer border-t-2`}>
+          <div className="font-semibold">No Items</div>
+          <div className=""> </div>
+        </div>
+      )}
     </a>
-  )
+  );
 }

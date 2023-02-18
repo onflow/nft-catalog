@@ -69,7 +69,7 @@ module.exports = {
           400: "#2F353F",
         },
         "accent-light-gray": "#F3F3F3",
-        "primary-gray-dark": "#1A1A1A",
+        "primary-gray-dark": "#979797",
         "secondary-yellow": "#FFC700",
       },
       spacing: {

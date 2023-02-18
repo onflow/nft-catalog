@@ -1,26 +1,22 @@
-import { useState } from "react"
-import { GenericView } from "./generic-view"
+import { useState } from 'react';
+import { GenericView } from './generic-view';
 
 type GenericViewProps = {
-  view: any
-}
+  view: any;
+};
 export function GenericViewToggle({ view }: GenericViewProps) {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(false);
   return (
     <>
+      {expanded && <GenericView view={view} />}
       <span
-        className="ml-auto blue underline text-xs cursor-pointer"
+        className="ml-auto text-blue-600 underline text-s cursor-pointer"
         onClick={() => {
-          setExpanded(!expanded)
+          setExpanded(!expanded);
         }}
       >
-        { !expanded ? 'Show Raw View' : 'Hide Raw View' }
+        {!expanded ? 'Show Raw View ↓' : 'Hide Raw View ↑'}
       </span>
-      { 
-        expanded && (
-          <GenericView view={view} />
-        )
-      }
     </>
-  )
+  );
 }

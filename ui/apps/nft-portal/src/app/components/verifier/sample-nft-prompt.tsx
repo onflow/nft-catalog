@@ -24,7 +24,7 @@ export function SampleNFTPrompt({
   useEffect(() => fcl.currentUser().subscribe(setUser), [])
 
   return (
-    <form onSubmit={(e) => {
+    <form className="w-7/12 mt-2" onSubmit={(e) => {
       e.preventDefault();
       const address = showLogIn ? user.addr : sampleAddress
       if (storagePath.indexOf("/storage/") !== 0) {
@@ -43,38 +43,36 @@ export function SampleNFTPrompt({
     }}>
       <p></p>
       <b>Enter the storage path your NFT collection uses</b>
-      {
-        possibleStoragePahts.length > 0 &&
-          <>
-            <p className="text-xs pb-2">We found some possible paths from your contract, you may click one to autofill</p>
-            {
-              possibleStoragePahts.map((path) => {
-                return (
-                  <a
-                    className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 dark:hover:bg-blue-300 cursor-pointer"
-                    key={path}
-                    onClick={() => setStoragePath(path)}
-                  >
-                    {path}
-                  </a>
-                )
-              })
-            }
-          </>
-      }
       <p className="mt-2"></p>
       <TextInput
         value={storagePath}
         updateValue={setStoragePath}
-        placeholder="e.g. /storage/exampleNFTCollection"
+        placeholder="Enter storage path (e.g. '/storage/exampleNFTCollection')"
       />
+      {
+        possibleStoragePahts.length > 0 &&
+        <>
+          <p className="mt-4 mb-2 text-sm w-7/12 text-stone-600 italic">We found some possible paths from your contract:</p>
+          {
+            possibleStoragePahts.map((path) => {
+              return (
+                <a className="py-2 px-6 shadow-md no-underline cursor-pointer border border-black rounded-full font-bold text-sm text-black text-center inline-flex items-center hover:bg-gray-100 focus:outline-none active:shadow-none mr-2" key={path}
+                  onClick={() => setStoragePath(path)}>{path}
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
+                  </svg></a>
+              )
+            })
+          }
+        </>
+      }
       <br />
-      
+
       {
         showLogIn && (
           <>
-            <b>Log In to an account that holds this NFT</b><br/>
-            <p className="text-xs mb-4">
+            <b>Log In to an account that holds this NFT</b><br />
+            <p className="mt-4 text-sm w-7/12 text-stone-600 mb-4">
               <a className="cursor-pointer hover:underline" onClick={() => { setShowLogIn(!showLogIn) }}>Click here </a>
               to enter a different account that holds this NFT.
             </p>
@@ -94,7 +92,7 @@ export function SampleNFTPrompt({
                   </div>
                 </div>
               )
-              
+
             }
             {
               !user.loggedIn && (
@@ -114,23 +112,23 @@ export function SampleNFTPrompt({
 
       {
         !showLogIn && (
-            <>
-              <b>
-                Enter an account address that holds this NFT
-              </b>
-              <br/>
-              <p className="text-xs">
-                <a className="cursor-pointer hover:underline" onClick={() => { setShowLogIn(!showLogIn) }}>Click here </a>
-                to log in to an account that holds this NFT.
-              </p>
-              <br />
-              <TextInput
-                value={sampleAddress}
-                updateValue={setSampleAddress}
-                placeholder="e.g. 0x123456abcdef"
-              />
-            </>
-          )
+          <div className='mt-8'>
+            <b>
+              Enter an account address that holds this NFT
+            </b>
+            <br />
+            <p className="mt-2 text-sm w-7/12 text-stone-600">
+              <a className="cursor-pointer hover:underline" onClick={() => { setShowLogIn(!showLogIn) }}>Click here </a>
+              to log in to an account that holds this NFT.
+            </p>
+            <br />
+            <TextInput
+              value={sampleAddress}
+              updateValue={setSampleAddress}
+              placeholder="e.g. 0x123456abcdef"
+            />
+          </div>
+        )
       }
 
       <br />
@@ -140,8 +138,8 @@ export function SampleNFTPrompt({
           <>
             <input
               type="submit"
-              value={"Continue"}
-              className="mt-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+              value={"Next step"}
+              className="cursor-pointer bg-black hover:bg-gray-100 text-white text-sm hover:text-black py-4 px-6 rounded-md"
             />
           </>
         )

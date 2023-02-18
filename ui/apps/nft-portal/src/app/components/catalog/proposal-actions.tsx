@@ -111,6 +111,10 @@ export function ProposalActions({ proposal, proposalID }: { proposal: any, propo
 
   return (
     <>
+
+      <div className="text-md"><b>Contract: </b>{proposal.metadata.contractAddress} - {proposal.metadata.contractName}</div>
+      <div className="text-md"><b>Submitted:</b> {proposal.proposer} on {(new Date(proposal.createdTime * 1000)).toLocaleDateString("en-US")}</div>
+      <div className="text-md"><b>Message: </b>{proposal.message}</div>
       {
         buttons.map((b) => {
           return b

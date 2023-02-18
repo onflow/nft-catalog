@@ -6,6 +6,7 @@ import { Alert } from "../shared/alert"
 import { Spinner } from "../shared/spinner"
 import { NFTValidity } from "./nft-validity"
 import { SampleNFTPrompt } from "./sample-nft-prompt"
+import { VerifierInfoBox } from "./verifier-info-box"
 
 export function AdditionalNftInfo({
 }: {
@@ -60,16 +61,16 @@ export function AdditionalNftInfo({
     contractInfo.collectionConformsToMetadata
 
   return (
-    <>
-      <div className="text-h1 mb-6 max-w-full overflow-hidden text-ellipsis !text-2xl md:!text-4xl">Additional Contract Information</div>
+    <div className="w-full">
+      <div className="text-h1 mb-4 w-1/2 overflow-hidden text-ellipsis !text-xl md:!text-2xl font-bold">Enter additional contract information</div>
       {loading && <Spinner />}
       {error && <><Alert status="error" title={error} body="" /><br /></>}
       <NFTValidity selectedContract={selectedContract} contractInfo={contractInfo} />
       {
         isContractValid && selectedContract &&
         <>
-          <div>
-            We need a bit more information about <b>{selectedContract}</b>
+          <div className="text-l w-7/12 text-stone-600">
+            We need a bit more information about {selectedContract}
           </div>
           <br />
           <SampleNFTPrompt
@@ -79,6 +80,7 @@ export function AdditionalNftInfo({
           />
         </>
       }
-    </>
+      <VerifierInfoBox />
+    </div>
   )
 }

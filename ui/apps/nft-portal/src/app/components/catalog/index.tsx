@@ -1,11 +1,8 @@
 import { useCallback, useState } from "react"
 import { useParams } from "react-router-dom";
-import { NetworkDropDown, Network } from "./network-dropdown";
-import { CatalogSelect } from "./catalog-select";
-import { NftCollectionContent } from "./nft-collection-content";
-import { ProposalContent } from "./proposal-content";
+import { Network } from "./network-dropdown";
+import { CatalogExplore } from "./catalog-explore";
 import { useNavigate } from "react-router-dom"
-import { Hamburger } from "../shared/hamburger";
 
 type CatalogParams = {
   network: Network;
@@ -19,60 +16,50 @@ export default function Layout({
 }) {
   const { network = 'testnet', identifier } = useParams<CatalogParams>()
 
-  const navigate = useNavigate()
+  const [search, setSearch] = useState('')
 
-  const onNetworkChange = useCallback((network: Network) => {
-    navigate(type === 'Proposals' ? `/proposals/${network}` : `/catalog/${network}`)
-  }, [])
+  const tabSelectedStyle = "font-bold text-black border-b-4 border-black rounded dark:text-gray-500 dark:border-gray-500"
+  const tabUnselectedStyle = "text-gray-400 border-transparent dark:text-gray-400 dark:border-transparent"
 
   return (
-    <div className="mx-auto px-0 md:px-4 lg:px-32 pt-4">
-      <div className="text-h1 p-2 max-w-full overflow-hidden text-ellipsis !text-2xl md:!text-4xl sm:border-0">
-        {type === 'Proposals' ? 'NFT Catalog Proposals' : 'NFT Catalog'}
+    <>
+      <div className="overflow-hidden">
+        <div className="max-h-60 bg-gradient-catalog-1"></div>
+        <div className="max-h-60 bg-gradient-catalog-2"></div>
       </div>
-      <div className="text-xs px-2">
-        Looking to add your collection to the catalog?
-        <br />
-        Complete the steps <a className="cursor-pointer text-blue-600 hover:underline" href="/v">here</a>
-      </div>
-      <div
-        className="flex w-full h-full items-center text-center bg-white rounded-2xl sm:flex-col md:flex-row"
-      >
-        <div className="flex-col lg:hidden w-full">
-          <div className="flex w-full items-center">
-            <div className="grow">
-              <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
+      <div className="mx-auto px-4 md:px-4 lg:px-32 pt-16">
+        <header className="font-display font-bold text-2xl relative z-20">
+          Explore {type === 'Catalog' ? 'the catalog' : 'NFT Catalog Proposals'}
+        </header>
+        
+        <div className="flex flex-col lg:flex-row pt-4">
+          <div className="flex flex-1">
+            <div className="flex-grow">
+              
+              <input
+                style={{
+                  borderWidth: 1
+                }}
+                className="w-full h-12 px-4 border-primary-gray-dark rounded-lg focus:outline-none relative z-20"
+                placeholder="Search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
-            <div>
-              <Hamburger onClick={() => {
-                // Item selected
-                if(identifier != null) {
-                  navigate(type === 'Proposals' ? `/proposals/${network}` : `/catalog/${network}`)
-                }
-              }} />
-            </div>
-          </div>
-          {identifier == null && <CatalogSelect type={type} selected={identifier} network={network} />}
-          {identifier && type === 'Proposals' && <ProposalContent proposalID={identifier} />}
-          {identifier && type === 'Catalog' && <NftCollectionContent collectionIdentifier={identifier} />}
-        </div>
-        <div className="lg:flex hidden overflow-hidden">
-          <div className="flex-1 border-accent-light-gray sm:border-0 md:border-r-2 self-start min-h-screen md:max-w-xs lg:max-w-sm">
-            <div className="flex-col">
-              <NetworkDropDown network={network} onNetworkChange={onNetworkChange} />
-              <CatalogSelect type={type} selected={identifier} network={network} />
-            </div>
-          </div>
-          <div className="px-10 w-3/4 self-start py-10 justify-self-start text-left">
-            {
-              type === 'Proposals' && <ProposalContent proposalID={identifier} />
-            }
-            {
-              type === 'Catalog' && <NftCollectionContent collectionIdentifier={identifier} />
-            }
           </div>
         </div>
+        <div style={{borderBottomWidth:"1px", borderColor: 'rgba(0,0,0,.11)'}} className="text-sm mt-10 font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
+          <ul className="flex flex-wrap -mb-px">
+              <li className="mr-2">
+                  <a href={type === 'Catalog' ? "/catalog/mainnet" : "/proposals/mainnet"} className={`inline-block p-4 rounded-t-lg ${network === 'mainnet' ? tabSelectedStyle : tabUnselectedStyle}`}>Mainnet</a>
+              </li>
+              <li className="mr-2">
+                  <a href={type === 'Catalog' ? "/catalog/testnet" : "/proposals/testnet"} className={`inline-block p-4 rounded-t-lg ${network === 'testnet' ? tabSelectedStyle : tabUnselectedStyle}`} aria-current="page">Testnet</a>
+              </li>
+          </ul>
+        </div>
+        <CatalogExplore search={search} type={type} selected={identifier} network={network} />
       </div>
-    </div>
+    </>
   )
 }

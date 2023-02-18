@@ -20,7 +20,7 @@ export function NetworkDropDown({ network, onNetworkChange }: NetworkDropDownPro
     { value: "mainnet", label: "Mainnet" },
     { value: "testnet", label: "Testnet" },
   ];
-  return <DropDown label="Network" options={networks} value={network} onChange={(e) => {
+  return <DropDown label="" options={networks} value={network} onChange={(e) => {
     fcl.unauthenticate()
     return onNetworkChange(e)
   }} />

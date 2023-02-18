@@ -27,14 +27,14 @@ export default function ({
   const steps = [
     {
       id: "S1",
-      title: "Select Contract",
+      title: "Select contract",
       href: `/v`,
       isActive: !selectedNetwork || !selectedAddress || !selectedContract,
       isComplete: selectedNetwork && selectedAddress && selectedContract
     },
     {
       id: "S2",
-      title: "Additional Info",
+      title: "Additional info",
       href: `/v/${selectedNetwork}/${selectedAddress}/${selectedContract}`,
       isActive: selectedNetwork && selectedAddress && selectedContract,
       isComplete: selectedNetwork && selectedAddress && selectedContract &&
@@ -51,8 +51,8 @@ export default function ({
     },
     {
       id: "S4",
-      title: "Add to Catalog",
-      onClick: () => { },
+      title: "Submit for review",
+      onClick: () => {},
       isActive: selectedNetwork && selectedAddress && selectedContract &&
         sampleAddress && storagePath && confirmed,
       isComplete: false
@@ -60,11 +60,12 @@ export default function ({
   ]
 
   return (
-    <div className="mx-auto px-0 md:px-16 lg:px-64 py-16">
+    <div className="xs:p-4 xs:py-16 md:pl-24">
+      <div className="md:mb-8 overflow-hidden text-ellipsis xs:text-2xl md:text-4xl lg:text-5xl font-display font-bold">Add your NFT Collection</div>
       <StepsProgressBar
         steps={steps}
       />
-      <div className="mx-auto px-4 sm:px-8 md:px-16 lg:px-48 mt-8 max-w-7xl">
+      <div className="mt-8 max-w-7xl">
         {
           steps[0].isActive && !steps[0].isComplete && (
             <ContractSelect
@@ -83,7 +84,7 @@ export default function ({
         }
         {
           steps[2].isActive && !steps[2].isComplete && (
-            <SampleNFTView sampleAddress={sampleAddress} storagePath={storagePath} nftID={nftID} />
+            <SampleNFTView sampleAddress={sampleAddress} storagePath={storagePath} nftID={nftID}  />
           )
         }
 

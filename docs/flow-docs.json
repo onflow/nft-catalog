@@ -1,0 +1,57 @@
+{
+    "$schema": "https://developers.flow.com/schemas/flow-docs.json",
+    "displayName": "Flow Catalog",
+    "headers": {
+        "": {
+            "icon": "cadence",
+            "title": "Flow Catalog",
+            "description": "The NFT Catalog is an on chain registry listing NFT collections that exists on Flow which adhere to the NFT metadata standard. This empowers dApp developers to easily build on top of and discover interoperable NFT collections on Flow.",
+            "headerCards": [
+                {
+                    "title": "Overview",
+                    "tags": ["setup", "guide"],
+                    "description": "Overview of the Flow Catalog.",
+                    "href": "/tools/docs/overview"
+                },
+                {
+                    "title": "NPM",
+                    "tags": ["setup", "guide"],
+                    "description": "A tutorial that will help get you integrated with the Flow Catalog via an NPM module.",
+                    "href": "/tools/docs/npm"
+                },
+                {
+                    "title": "Cadence Generation",
+                    "tags": ["guide"],
+                    "description": "A guide on leveraging the Flow Catalog to generate Cadence code for your NFT collection.",
+                    "href": "/tools/docs/cadence-generation"
+                }
+            ]
+        }
+    },
+    "sidebars": {
+        "": [
+            {
+                "title": "Flow Catalog",
+                "items": [
+                    {
+                        "title": "Overview",
+                        "href": ""
+                    }
+                ]
+            },
+            {
+                "title": "Reference",
+                "items": [
+                    {
+                        "title": "NPM",
+                        "href": "docs/npm"
+                    },
+                    {
+                        "title": "Cadence Generation",
+                        "href": "docs/cadence-generation"
+                    }
+                ]
+            }
+        ]
+    }
+}
