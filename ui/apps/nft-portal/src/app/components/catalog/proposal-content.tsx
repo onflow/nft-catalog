@@ -76,6 +76,9 @@ export function ProposalContent({ proposalID }: { proposalID: string | undefined
       <br />
       <div className="text-lg">Actions</div>
       <Box>
+        <div className="text-md"><b>Contract: </b>{proposalData.metadata.contractAddress} - {proposalData.metadata.contractName}</div>
+        <div className="text-md"><b>Submitted:</b> {proposalData.proposer} on {(new Date(proposalData.createdTime * 1000)).toLocaleDateString("en-US")}</div>
+        <div className="text-md"><b>Message: </b>{proposalData.message}</div>
         <ProposalActions proposalID={proposalID} proposal={proposalData} />
       </Box>
     </>

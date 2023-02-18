@@ -103,20 +103,22 @@ export function CollectionDisplayView(props: any) {
       : 'Rejected');
 
   let proposal = proposalData && (
-    <div className="flex flex-row">
-      <Badge
-        color={
-          proposalData.status === 'IN_REVIEW'
-            ? 'blue'
-            : proposalData.status === 'APPROVED'
-            ? 'green'
-            : 'red'
-        }
-        text={readableStatus}
-      />
-      <span className="rounded bg-primary-gray-50 border-2 text-sm border-2 text-xs mr-2 px-2.5 py-0.5 rounded pt-1">
-        Created {getFormattedDate(new Date(proposalData.createdTime * 1000))}
-      </span>
+    <div>
+      <div className="flex flex-row">
+        <Badge
+          color={
+            proposalData.status === 'IN_REVIEW'
+              ? 'blue'
+              : proposalData.status === 'APPROVED'
+              ? 'green'
+              : 'red'
+          }
+          text={readableStatus}
+        />
+        <span className="rounded bg-primary-gray-50 border-2 text-sm border-2 text-xs mr-2 px-2.5 py-0.5 rounded pt-1">
+          Created {getFormattedDate(new Date(proposalData.createdTime * 1000))}
+        </span>
+      </div>
     </div>
   );
 
@@ -143,7 +145,7 @@ export function CollectionDisplayView(props: any) {
           <div className="text-md mt-2 font-semibold text-lg text-gray-600 overflow-clip">
             {view.collectionDescription || view.description}
           </div>
-          <div className="w-full overflow-x-auto text-md py-20 flex flex-row">
+          <div className="w-full overflow-x-none text-md py-20 flex flex-row">
             {view.socials && Socials(externalURL, view.socials)}
           </div>
         </div>
