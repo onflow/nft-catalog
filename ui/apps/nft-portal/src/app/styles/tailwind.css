@@ -48,7 +48,6 @@
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
   -webkit-print-color-adjust: exact;
-     color-adjust: exact;
           print-color-adjust: exact;
 }
 
@@ -509,7 +508,6 @@ select {
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
   -webkit-print-color-adjust: exact;
-     color-adjust: exact;
           print-color-adjust: exact;
 }
 
@@ -520,7 +518,6 @@ select {
   background-size: initial;
   padding-right: 0.75rem;
   -webkit-print-color-adjust: unset;
-     color-adjust: unset;
           print-color-adjust: unset;
 }
 
@@ -529,7 +526,6 @@ select {
           appearance: none;
   padding: 0;
   -webkit-print-color-adjust: exact;
-     color-adjust: exact;
           print-color-adjust: exact;
   display: inline-block;
   vertical-align: middle;
@@ -1232,10 +1228,6 @@ select {
   text-overflow: ellipsis;
 }
 
-.text-clip {
-  text-overflow: clip;
-}
-
 .whitespace-nowrap {
   white-space: nowrap;
 }
@@ -1726,14 +1718,14 @@ select {
   line-height: 2rem !important;
 }
 
-.text-5xl {
-  font-size: 3.5rem;
-  line-height: 1;
-}
-
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
+}
+
+.text-5xl {
+  font-size: 3.5rem;
+  line-height: 1;
 }
 
 .text-base {
@@ -1866,13 +1858,11 @@ select {
 }
 
 .underline {
-  -webkit-text-decoration-line: underline;
-          text-decoration-line: underline;
+  text-decoration-line: underline;
 }
 
 .no-underline {
-  -webkit-text-decoration-line: none;
-          text-decoration-line: none;
+  text-decoration-line: none;
 }
 
 .shadow-md {
@@ -1898,9 +1888,9 @@ select {
 }
 
 .transition {
-  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -2042,6 +2032,108 @@ select {
   }
 }
 
+.md h1 {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 56px;
+  color: #000;
+  margin-bottom: 32px;
+  padding-top: 32px;
+}
+
+.md h2 {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 42px;
+  color: #000;
+  padding-top: 32px;
+  padding-bottom: 24px;
+}
+
+.md h3 {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 28px;
+  color: #000;
+  margin-top: 32px;
+  margin-bottom: 24px;
+}
+
+.md p {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: #000;
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.md a {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: blue;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.md pre {
+  background-color: #fff;
+  margin-top: 24px;
+}
+
+.md ol {
+  counter-reset: item;
+  list-style-type: none;
+}
+
+.md ol li {
+  display: block;
+  margin-top: 24px;
+}
+
+.md ol li:before {
+  content: counter(item) ". ";
+  counter-increment: item;
+}
+
+.md ol{
+  margin-left:10px;
+}
+
+.md ol ol{
+  margin-left:15px;
+}
+
+.md ol ol ol{
+  margin-left:20px;
+}
+
+.md li p {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.md code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  line-height: 20px;
+  color: #EB5757;
+  background-color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
 .hover\:text-clip:hover {
   text-overflow: clip;
 }
@@ -2086,8 +2178,7 @@ select {
 }
 
 .hover\:underline:hover {
-  -webkit-text-decoration-line: underline;
-          text-decoration-line: underline;
+  text-decoration-line: underline;
 }
 
 .hover\:opacity-75:hover {

@@ -119,3 +119,105 @@
 @keyframes rotate {
   100% {transform: rotate(360deg) translate(30px)}
 }
+
+.md h1 {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 56px;
+  color: #000;
+  margin-bottom: 32px;
+  padding-top: 32px;
+}
+
+.md h2 {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 42px;
+  color: #000;
+  padding-top: 32px;
+  padding-bottom: 24px;
+}
+
+.md h3 {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 28px;
+  color: #000;
+  margin-top: 32px;
+  margin-bottom: 24px;
+}
+
+.md p {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: #000;
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.md a {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: blue;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.md pre {
+  background-color: #fff;
+  margin-top: 24px;
+}
+
+.md ol {
+  counter-reset: item;
+  list-style-type: none;
+}
+
+.md ol li {
+  display: block;
+  margin-top: 24px;
+}
+
+.md ol li:before {
+  content: counter(item) ". ";
+  counter-increment: item;
+}
+
+.md ol{
+  margin-left:10px;
+}
+
+.md ol ol{
+  margin-left:15px;
+}
+
+.md ol ol ol{
+  margin-left:20px;
+}
+
+.md li p {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.md code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  line-height: 20px;
+  color: #EB5757;
+  background-color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+}

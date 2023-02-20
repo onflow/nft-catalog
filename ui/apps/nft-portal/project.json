@@ -27,7 +27,7 @@
         ],
         "styles": ["apps/nft-portal/src/styles.css"],
         "scripts": [],
-        "webpackConfig": "@nrwl/react/plugins/webpack"
+        "webpackConfig": "apps/nft-portal/webpack.config.js"
       },
       "configurations": {
         "development": {

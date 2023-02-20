@@ -10,13 +10,8 @@ export function CardLayout() {
       <CatalogLandingCard />
       <br />
       <NFTCatalogCard />
-      {
-        /*TODO: Re-add w/ content
-      
-          <Divider space='80px'></Divider>
-          <ContentLinks />
-        */
-      }
+      <Divider space='80px'></Divider>
+      <ContentLinks />
       <Divider space='80px'></Divider>      
       <ToolsCard />
     </section>
