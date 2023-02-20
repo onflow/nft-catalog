@@ -12,15 +12,14 @@ export function ContentLinks({}: {}) {
       <div className={classes}>
         <div className="flex w-full flex-1 grid xs:grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <ContentCard
-            title="Generate Transactions"
-            href="/transactions"
-            image={TxImage}
+            title="Composability Guide"
+            description="Build MyFunNFT: A composable NFT collection"
+            href="/docs/nft-guide"
           />
-          <ContentCard title="View NFT's" href="/nfts" image={NFTImage} />
           <ContentCard
-            title="Cadence Scripts"
-            href="https://github.com/dapperlabs/nft-catalog/tree/main/cadence"
-            image={SImage}
+            title="Composability Guide"
+            description="Build Flowcase: A composable app that uses NFTs"
+            href="/docs/flowcase-guide"
           />
         </div>
       </div>
