@@ -9,10 +9,14 @@
     "e2e-headful": "nx e2e nft-portal-e2e --watch",
     "e2e": "nx e2e nft-portal-e2e",
     "tailwind2": "nx run nft-portal:tailwindcss",
-    "tailwind": "npx tailwindcss -i ./apps/nft-portal/src/styles.css -o ./apps/nft-portal/src/app/styles/tailwind.css --watch "
+    "tailwind": "npx tailwindcss -i ./apps/nft-portal/src/styles.css -o ./apps/nft-portal/src/app/styles/tailwind.css --watch ",
+    "update-docs": "cp ../docs/*.mdx ./apps/nft-portal/src/app/components/docs"
   },
   "private": true,
   "dependencies": {
+    "@mdx-js/loader": "^2.3.0",
+    "@mdx-js/react": "^2.3.0",
+    "@nrwl/webpack": "^15.7.2",
     "@onflow/fcl": "^1.0.0",
     "@onflow/types": "^1.0.1",
     "add": "^2.0.6",
@@ -42,6 +46,7 @@
     "@tailwindcss/typography": "^0.5.2",
     "@testing-library/react": "13.3.0",
     "@types/jest": "27.4.1",
+    "@types/mdx": "^2.0.3",
     "@types/node": "16.11.7",
     "@types/react": "18.0.13",
     "@types/react-dom": "18.0.5",

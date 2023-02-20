@@ -16,6 +16,7 @@ import Transactions from './components/transactions';
 import { ToolsLayout } from './components/tools/tools-layout';
 import { Submitted } from './components/verifier/submitted';
 import { CatalogDetails } from './components/catalog/catalog-details';
+import { Docs } from './components/docs';
 
 export function App() {
   return (
@@ -83,6 +84,7 @@ export function App() {
                 element={<Transactions />}
               />
             </Route>
+            <Route path="docs/:name" element={<Docs />} />
             <Route path="admin" element={<AdminSetup />} />
             <Route path="terms" element={<Terms />} />
             <Route path="privacy" element={<Privacy />} />
