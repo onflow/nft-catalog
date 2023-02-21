@@ -1198,10 +1198,6 @@ select {
   align-self: flex-start;
 }
 
-.self-end {
-  align-self: flex-end;
-}
-
 .justify-self-start {
   justify-self: start;
 }

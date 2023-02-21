@@ -10,6 +10,7 @@ import {
 import { Network } from './network-dropdown';
 import { changeFCLEnvironment } from '../../../flow/setup';
 import { Badge } from '../shared/badge';
+import { Alert } from '../shared/alert';
 
 export function CatalogSelect({
   type,
@@ -30,8 +31,10 @@ export function CatalogSelect({
   const [items, setItems] = useState<null | Array<any>>(null);
   const [search, setSearch] = useState('');
   const loading = !items;
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    setError(null);
     const setup = async () => {
       changeFCLEnvironment(network);
       // retrieve list of proposals or
@@ -61,8 +64,15 @@ export function CatalogSelect({
         });
         setItems(items);
       } else if (type == 'NFTs') {
-        if (userAddress != null) {
-          const nftTypes = await getAllNFTsInAccountFromCatalog(userAddress);
+        console.log(userAddress);
+        if (userAddress != null && userAddress !== '') {
+          let nftTypes: any;
+          try {
+            nftTypes = await getAllNFTsInAccountFromCatalog(userAddress);
+          } catch (e: any) {
+            console.log(e);
+            setError(e.errorMessage);
+          }
           if (nftTypes == null) {
             setItems([]);
             return;
@@ -83,6 +93,7 @@ export function CatalogSelect({
           setItems(items);
         } else {
           setItems([]);
+          setError(null);
         }
       } else if (type == 'Transactions') {
         const supportedTransactions = await getSupportedGeneratedTransactions();
@@ -104,6 +115,16 @@ export function CatalogSelect({
     };
     setup();
   }, [type, network, userAddress]);
+
+  if (error) {
+    return (
+      <Alert
+        status="error"
+        title={`Cannot Read ${type} from Account`}
+        body={''}
+      />
+    );
+  }
 
   return (
     <a className="border-t-1 my-4">

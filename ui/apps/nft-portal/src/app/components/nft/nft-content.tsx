@@ -12,7 +12,6 @@ export function NFTContent({
   nftID,
   identifier,
   walletAddress,
-  network,
 }: {
   nftID: string | undefined;
   identifier: string | undefined;
@@ -28,14 +27,15 @@ export function NFTContent({
     const setup = async () => {
       setLoading(true);
       if (nftID && walletAddress && identifier) {
-        const res = await getNFTInAccountFromCatalog(
-          walletAddress,
-          identifier,
-          nftID
-        );
-        if (res) {
+        try {
+          const res = await getNFTInAccountFromCatalog(
+            walletAddress,
+            identifier,
+            nftID
+          );
           setNFTData(res);
-        } else {
+        } catch (e) {
+          console.log(e);
           setError(
             `Unable to find nft with ID ${nftID} and collection ${identifier}`
           );
