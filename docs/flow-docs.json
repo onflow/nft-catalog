@@ -11,19 +11,19 @@
                     "title": "Overview",
                     "tags": ["setup", "guide"],
                     "description": "Overview of the Flow Catalog.",
-                    "href": "/tools/docs/overview"
+                    "href": "overview"
                 },
                 {
                     "title": "NPM",
                     "tags": ["setup", "guide"],
                     "description": "A tutorial that will help get you integrated with the Flow Catalog via an NPM module.",
-                    "href": "/tools/docs/npm"
+                    "href": "npm"
                 },
                 {
                     "title": "Cadence Generation",
                     "tags": ["guide"],
                     "description": "A guide on leveraging the Flow Catalog to generate Cadence code for your NFT collection.",
-                    "href": "/tools/docs/cadence-generation"
+                    "href": "cadence-generation"
                 }
             ]
         }
@@ -44,11 +44,11 @@
                 "items": [
                     {
                         "title": "NPM",
-                        "href": "docs/npm"
+                        "href": "npm"
                     },
                     {
                         "title": "Cadence Generation",
-                        "href": "docs/cadence-generation"
+                        "href": "cadence-generation"
                     }
                 ]
             }
