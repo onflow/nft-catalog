@@ -827,16 +827,6 @@ select {
   margin-bottom: 3rem;
 }
 
-.mx-2 {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
-
-.mx-4 {
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
 .-mt-16 {
   margin-top: -4rem;
 }
@@ -1208,10 +1198,6 @@ select {
   align-self: flex-start;
 }
 
-.self-end {
-  align-self: flex-end;
-}
-
 .justify-self-start {
   justify-self: start;
 }
@@ -1238,10 +1224,6 @@ select {
   text-overflow: ellipsis;
 }
 
-.text-clip {
-  text-overflow: clip;
-}
-
 .whitespace-nowrap {
   white-space: nowrap;
 }
@@ -1252,10 +1234,6 @@ select {
 
 .whitespace-pre-line {
   white-space: pre-line;
-}
-
-.break-words {
-  overflow-wrap: break-word;
 }
 
 .rounded-lg {

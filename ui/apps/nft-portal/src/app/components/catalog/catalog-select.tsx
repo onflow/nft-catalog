@@ -34,6 +34,7 @@ export function CatalogSelect({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    setError(null);
     const setup = async () => {
       changeFCLEnvironment(network);
       // retrieve list of proposals or
@@ -63,7 +64,8 @@ export function CatalogSelect({
         });
         setItems(items);
       } else if (type == 'NFTs') {
-        if (userAddress != null) {
+        console.log(userAddress);
+        if (userAddress != null && userAddress !== '') {
           let nftTypes: any;
           try {
             nftTypes = await getAllNFTsInAccountFromCatalog(userAddress);
@@ -91,6 +93,7 @@ export function CatalogSelect({
           setItems(items);
         } else {
           setItems([]);
+          setError(null);
         }
       } else if (type == 'Transactions') {
         const supportedTransactions = await getSupportedGeneratedTransactions();
@@ -115,7 +118,11 @@ export function CatalogSelect({
 
   if (error) {
     return (
-      <Alert status="error" title={'Cannot Read NFTs from Account'} body={''} />
+      <Alert
+        status="error"
+        title={`Cannot Read ${type} from Account`}
+        body={''}
+      />
     );
   }
 
