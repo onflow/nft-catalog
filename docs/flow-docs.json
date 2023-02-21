@@ -1,6 +1,9 @@
 {
     "$schema": "https://developers.flow.com/schemas/flow-docs.json",
     "displayName": "Flow Catalog",
+    "redirects": {
+      "": "overview"
+    },
     "headers": {
         "": {
             "icon": "cadence",
@@ -35,7 +38,7 @@
                 "items": [
                     {
                         "title": "Overview",
-                        "href": ""
+                        "href": "overview"
                     }
                 ]
             },
