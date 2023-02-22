@@ -22,8 +22,6 @@ export default function Layout({
   const tabSelectedStyle = "font-bold text-black border-b-4 border-black rounded dark:text-gray-500 dark:border-gray-500"
   const tabUnselectedStyle = "text-gray-400 border-transparent dark:text-gray-400 dark:border-transparent"
 
-  console.log('status filter is', statusFilter)
-
   return (
     <>
       <div className="overflow-hidden">

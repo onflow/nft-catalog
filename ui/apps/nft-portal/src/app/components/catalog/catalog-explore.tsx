@@ -32,9 +32,7 @@ export function CatalogExplore({
   const [itemsLength, setItemsLength] = useState(0);
 
   useEffect(() => {
-    console.log('up here')
     if (unfilteredItems && unfilteredItems.length > 0 && (search.length >= 2 || statusFilter !== 'ALL')) {
-      console.log('running here')
       const searchFilter = search.toLowerCase();
       // filter the items based on the search field
       const filteredItems = unfilteredItems.filter((item) => {
