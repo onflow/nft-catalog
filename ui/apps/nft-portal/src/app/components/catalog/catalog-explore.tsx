@@ -6,11 +6,13 @@ import { changeFCLEnvironment } from '../../../flow/setup';
 import { Badge } from '../shared/badge';
 
 export function CatalogExplore({
+  statusFilter,
   search,
   network,
   type,
   userAddress = null,
 }: {
+  statusFilter: string;
   search: string;
   type: 'Catalog' | 'Proposals' | 'NFTs' | 'Transactions';
   network: Network;
@@ -30,14 +32,16 @@ export function CatalogExplore({
   const [itemsLength, setItemsLength] = useState(0);
 
   useEffect(() => {
-    if (unfilteredItems && unfilteredItems.length > 0 && search.length >= 2) {
+    console.log('up here')
+    if (unfilteredItems && unfilteredItems.length > 0 && (search.length >= 2 || statusFilter !== 'ALL')) {
+      console.log('running here')
       const searchFilter = search.toLowerCase();
       // filter the items based on the search field
       const filteredItems = unfilteredItems.filter((item) => {
         return (
           item.name.toLowerCase().includes(searchFilter || '') ||
           item.subtext.toLowerCase().includes(searchFilter || '')
-        );
+        ) && (statusFilter === 'ALL' || item.status === statusFilter);
       });
       setItemsLength(filteredItems.length);
       setItems(filteredItems.slice(0, numToShow));
@@ -49,7 +53,7 @@ export function CatalogExplore({
         setItems(unfilteredItems);
       }
     }
-  }, [search, unfilteredItems, numToShow]);
+  }, [search, unfilteredItems, numToShow, statusFilter]);
 
   useEffect(() => {
     const setup = async () => {

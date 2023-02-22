@@ -17,9 +17,12 @@ export default function Layout({
   const { network = 'testnet', identifier } = useParams<CatalogParams>()
 
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('ALL')
 
   const tabSelectedStyle = "font-bold text-black border-b-4 border-black rounded dark:text-gray-500 dark:border-gray-500"
   const tabUnselectedStyle = "text-gray-400 border-transparent dark:text-gray-400 dark:border-transparent"
+
+  console.log('status filter is', statusFilter)
 
   return (
     <>
@@ -46,6 +49,21 @@ export default function Layout({
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
+            {
+              type === 'Proposals' && (
+                <select 
+                  multiple={false}
+                  defaultValue="ALL"
+                  className="border-primary-gray-dark rounded-lg focus:outline-none relative z-20"
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                    <option value="ALL">Show All</option>
+                    <option value="IN_REVIEW">Show Pending</option>
+                    <option value="APPROVED">Show Approved</option>
+                    <option value="REJECTED">Show Rejected</option>
+                </select>
+              )
+            }
           </div>
         </div>
         <div style={{borderBottomWidth:"1px", borderColor: 'rgba(0,0,0,.11)'}} className="text-sm mt-10 font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
@@ -58,7 +76,7 @@ export default function Layout({
               </li>
           </ul>
         </div>
-        <CatalogExplore search={search} type={type} selected={identifier} network={network} />
+        <CatalogExplore statusFilter={statusFilter} search={search} type={type} selected={identifier} network={network} />
       </div>
     </>
   )
