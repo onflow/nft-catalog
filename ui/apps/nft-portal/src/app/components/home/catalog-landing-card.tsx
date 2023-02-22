@@ -15,7 +15,7 @@ export function CatalogLandingCard({}: {}) {
               #onFlow
             </span>
             <header className="text-5xl font-display font-bold my-2 md:mb-3">
-              Explore the Flow Catalog
+              Explore the Flow NFT Catalog
             </header>
             <p className="md:max-w-sm overflow-hidden text-ellipsis font-semibold text-gray-600 mb-2">
               Build your next idea using Flow NFT collections.
