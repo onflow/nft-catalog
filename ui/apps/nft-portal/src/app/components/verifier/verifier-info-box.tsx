@@ -3,7 +3,7 @@ export function VerifierInfoBox() {
         <div className="mt-28 p-6 bg-gray-200 rounded-xl border-2">
             <div className="text-h1 mb-6 overflow-hidden text-ellipsis !text-xl md:!text-2xl font-display font-bold">How to add your NFT Collection</div>
             <div className="text-l text-stone-500 mb-6">
-                Follow the prompts above and fill in the information to add your NFT collection to the Flow Catalog. Visit the link below to view detailed instructions with sample inputs.
+                Follow the prompts above and fill in the information to add your NFT collection to the Flow NFT Catalog. Visit the link below to view detailed instructions with sample inputs.
                 <br />
             </div>
             <div className="flex">

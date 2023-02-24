@@ -18,7 +18,7 @@ export function NFTCatalogCard() {
         </Button>
       </div>
       <span className="text-3xl font-display font-bold my-2 md:mb-3">
-        Flow Catalog
+        Flow NFT Catalog
       </span>
       <p className="overflow-hidden text-ellipsis text-gray-500">
         Browse NFT collections on the catalog and view their collection-level

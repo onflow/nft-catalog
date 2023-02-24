@@ -53,7 +53,7 @@ export const Footer = ({ sections = footerSections }) => {
             href="/"
           >
             <img className="mr-4" alt="flow_logo" width="50" height="50" src={OnFlowIcon} />
-            <header><b>flow</b> catalog</header>
+            <header><b>flow</b> nft catalog</header>
           </a>
           <div className="flex items-center gap-6 pt-8 md:pt-0">
             <a href="https://github.com/dapperlabs/nft-catalog" className="hover:opacity-75">
