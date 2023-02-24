@@ -64,7 +64,7 @@ export function Navbar() {
         href="/"
       >
         <img className="mr-4" alt="flow_logo" width="50" height="50" src={OnFlowIcon} />
-        <header><b>flow nft</b> catalog</header>
+        <header><b>flow</b> nft catalog</header>
       </a>
       <Hamburger onClick={() => setMenuOpen(!menuOpen)} isOpen={menuOpen} />
       {menuOpen && (
