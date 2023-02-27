@@ -1,9 +1,6 @@
 {
     "$schema": "https://developers.flow.com/schemas/flow-docs.json",
     "displayName": "Flow NFT Catalog",
-    "redirects": {
-      "": "overview"
-    },
     "headers": {
         "": {
             "icon": "cadence",
@@ -14,7 +11,7 @@
                     "title": "Overview",
                     "tags": ["setup", "guide"],
                     "description": "Overview of the Flow NFT Catalog.",
-                    "href": "overview"
+                    "href": ""
                 },
                 {
                     "title": "NPM",
@@ -38,7 +35,7 @@
                 "items": [
                     {
                         "title": "Overview",
-                        "href": "overview"
+                        "href": ""
                     }
                 ]
             },
