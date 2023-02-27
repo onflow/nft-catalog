@@ -1,6 +1,9 @@
 {
     "$schema": "https://developers.flow.com/schemas/flow-docs.json",
     "displayName": "Flow NFT Catalog",
+    "redirects": {
+      "": "overview"
+    },
     "headers": {
         "": {
             "icon": "cadence",
@@ -11,19 +14,19 @@
                     "title": "Overview",
                     "tags": ["setup", "guide"],
                     "description": "Overview of the Flow NFT Catalog.",
-                    "href": ""
+                    "href": "/tools/nft-catalog/overview"
                 },
                 {
                     "title": "NPM",
                     "tags": ["setup", "guide"],
                     "description": "A tutorial that will help get you integrated with the Flow NFT Catalog via an NPM module.",
-                    "href": "npm"
+                    "href": "/tools/nft-catalog/npm"
                 },
                 {
                     "title": "Cadence Generation",
                     "tags": ["guide"],
                     "description": "A guide on leveraging the Flow NFT Catalog to generate Cadence code for your NFT collection.",
-                    "href": "cadence-generation"
+                    "href": "/tools/nft-catalog/cadence-generation"
                 }
             ]
         }
@@ -35,7 +38,7 @@
                 "items": [
                     {
                         "title": "Overview",
-                        "href": ""
+                        "href": "/tools/nft-catalog/overview"
                     }
                 ]
             },
@@ -44,11 +47,11 @@
                 "items": [
                     {
                         "title": "NPM",
-                        "href": "npm"
+                        "href": "/tools/nft-catalog/npm"
                     },
                     {
                         "title": "Cadence Generation",
-                        "href": "cadence-generation"
+                        "href": "/tools/nft-catalog/cadence-generation"
                     }
                 ]
             }
