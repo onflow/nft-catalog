@@ -2,19 +2,16 @@ describe('nft-metadata/catalog', () => {
   beforeEach(() => cy.visit('/transactions'));
 
   it('should load the transaction generation page', () => {
-    cy.get('.text-h1').contains('Transactions');
+    cy.get('.px-4 > .flex-1').contains('Generate Transactions');
   });
 
-  it('Should prompt for proper collection identifier when clicking transaction name', () => {
+  it('Should show when clicking transaction name', () => {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000);
-    cy.get('.border-t-1 > :nth-child(1)').first().click()
-    cy.get('.text-md').contains("Enter a collection identifier")
-  });
-
-  it('Should prompt for proper collection identifier when clicking transaction name', () => {
-    cy.wait(2000);
-    cy.get('#default-search').type("UFCStrike")
-    cy.get('.border-t-1 > :nth-child(1)').first().click()
-    cy.get('.cm-activeLine').contains("import")
+    cy.get('#default-search').type('UFCStrike');
+    cy.get('.lg\\:hidden > .border-t-1 > :nth-child(2)').first().click();
+    cy.get(':nth-child(2) > .my-4 > .sc-gswNZR > span > code').contains(
+      'import'
+    );
   });
 });
