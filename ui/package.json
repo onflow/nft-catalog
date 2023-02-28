@@ -10,7 +10,7 @@
     "e2e": "nx e2e nft-portal-e2e",
     "tailwind2": "nx run nft-portal:tailwindcss",
     "tailwind": "npx tailwindcss -i ./apps/nft-portal/src/styles.css -o ./apps/nft-portal/src/app/styles/tailwind.css --watch ",
-    "update-docs": "cp ../docs/*.mdx ./apps/nft-portal/src/app/components/docs"
+    "update-docs": "mkdir -p .temp_docs/ && npx copy-github-directory https://github.com/onflow/flow/tree/master/docs/content/nft-catalog .temp_docs/ && cp .temp_docs/*.mdx ./apps/nft-portal/src/app/components/docs && rm -rf .temp_docs"
   },
   "private": true,
   "dependencies": {
