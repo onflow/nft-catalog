@@ -1,7 +1,8 @@
 import { SocialIcon } from 'react-social-icons';
 import { LinkIcon } from '../link-icon';
 import { Badge } from '../badge';
-
+import { useEffect, useState } from "react"
+import { getNFTMetadataForCollectionIdentifier } from 'apps/nft-portal/src/flow/utils';
 type GenericViewProps = {
   proposalData: any;
   view: any;
@@ -91,6 +92,22 @@ function Socials(externalURL: string, socials: any) {
 }
 
 export function CollectionDisplayView(props: any) {
+  const [isUpdateProposal, setIsUpdateProposal] = useState<boolean | null>(null)
+  
+  useEffect(() => {
+    if (!props?.proposalData?.collectionIdentifier) { return }
+    const setup = async () => {
+        const catalogEntry = await getNFTMetadataForCollectionIdentifier(props?.proposalData?.collectionIdentifier)
+        if (catalogEntry != null) {
+          // Proposing an update...
+          setIsUpdateProposal(true)
+        } else {
+          setIsUpdateProposal(false)
+        }
+    }
+    setup()
+  }, [props?.proposalData?.collectionIdentifier])
+
   const proposalData = props.proposalData;
   const view = props.view;
   const withRawView = props.withRawView;
@@ -118,6 +135,7 @@ export function CollectionDisplayView(props: any) {
         <span className="rounded bg-primary-gray-50 border-2 text-sm border-2 text-xs mr-2 px-2.5 py-0.5 rounded pt-1">
           Created {getFormattedDate(new Date(proposalData.createdTime * 1000))}
         </span>
+        {isUpdateProposal && proposalData.status === "IN_REVIEW" && <Badge color="red" text="This is an update" />}
       </div>
     </div>
   );
