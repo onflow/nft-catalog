@@ -47,7 +47,7 @@ pub contract NFTCatalog {
 
     // EntryRemoved
     // An NFT Collection has been removed from the catalog
-    pub event EntryRemoved(collectionIdentifier : String)
+    pub event EntryRemoved(collectionIdentifier : String, nftType: Type)
 
     // ProposalEntryAdded
     // A new proposal to make an addtion to the catalog has been made
@@ -289,10 +289,10 @@ pub contract NFTCatalog {
             self.catalog[collectionIdentifier] != nil : "Invalid collection identifier"
         }
 
-        self.removeCatalogTypeEntry(collectionIdentifier : collectionIdentifier , metadata: self.catalog[collectionIdentifier]!)
+        let removedType = self.removeCatalogTypeEntry(collectionIdentifier : collectionIdentifier , metadata: self.catalog[collectionIdentifier]!)
         self.catalog.remove(key: collectionIdentifier)
 
-        emit EntryRemoved(collectionIdentifier : collectionIdentifier)
+        emit EntryRemoved(collectionIdentifier : collectionIdentifier, nftType: removedType)
     }
 
     access(account) fun updateCatalogProposal(proposalID: UInt64, proposalMetadata : NFTCatalogProposal) {
@@ -320,7 +320,7 @@ pub contract NFTCatalog {
         }
     }
 
-    access(contract) fun removeCatalogTypeEntry(collectionIdentifier : String , metadata: NFTCatalogMetadata) {
+    access(contract) fun removeCatalogTypeEntry(collectionIdentifier : String , metadata: NFTCatalogMetadata): Type {
         let prevMetadata = self.catalog[collectionIdentifier]!
         let prevCollectionsForType = self.catalogTypeData[prevMetadata.nftType.identifier]!
         prevCollectionsForType.remove(key : collectionIdentifier)
@@ -329,6 +329,8 @@ pub contract NFTCatalog {
         } else {
             self.catalogTypeData[prevMetadata.nftType.identifier] = prevCollectionsForType
         }
+
+        return metadata.nftType
     }
 
     init() {
@@ -343,3 +345,4 @@ pub contract NFTCatalog {
     }
 
 }
+ 
