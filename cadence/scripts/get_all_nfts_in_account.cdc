@@ -58,14 +58,13 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address): {String: [NFT]} {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let items: [MetadataViews.NFTView] = []
     let data: {String: [NFT]} = {}
 
-    for key in catalog.keys {
-        let value = catalog[key]!
-        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
+    NFTCatalog.forEachCatalogKey(fun (collectionIdentifier: String):Bool {
+        let value = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: collectionIdentifier)
+        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
         let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
 
@@ -77,10 +76,10 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
 
         if !collectionCap.check() {
-            continue
+            return true
         }
 
-        let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier: key, collectionCap: collectionCap)
+        let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier: collectionIdentifier, collectionCap: collectionCap)
         let items: [NFT] = []
 
         for view in views {
@@ -92,7 +91,7 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
 
             if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
                 // Bad NFT. Skipping....
-                continue
+                return true
             }
 
             items.append(
@@ -117,8 +116,9 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
             )
         }
 
-        data[key] = items
-    }
+        data[collectionIdentifier] = items
+        return true
+    })
 
     return data
 }

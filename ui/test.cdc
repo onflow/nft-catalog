@@ -54,13 +54,12 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address) : { String : [NFT] } {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
 
     let data : {String : [NFT] } = {}
 
-    for key in catalog.keys {
-        let value = catalog[key]!
+    NFTCatalog.forEachCatalogKey(fun (key: String): Bool {
+        let value = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: key)
         let tempPathStr = "catalog".concat(key)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
         account.link<&{MetadataViews.ResolverCollection}>(
@@ -80,7 +79,7 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
             let royaltyView = view.royalties
             if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
                 // Bad NFT. Skipping....
-                continue
+                return true
             }
 
             items.append(
@@ -104,6 +103,7 @@ pub fun main(ownerAddress: Address) : { String : [NFT] } {
             )
         }
         data[key] = items
-    }
+        return true
+    })
     return data
 }

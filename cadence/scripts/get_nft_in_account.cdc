@@ -58,13 +58,9 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address, collectionIdentifier: String, tokenID: UInt64): NFT? {
-    let catalog = NFTCatalog.getCatalog()
-
-    assert(catalog.containsKey(collectionIdentifier), message: "Invalid Collection")
-
     let account = getAuthAccount(ownerAddress)
 
-    let value = catalog[collectionIdentifier]!
+    let value = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: collectionIdentifier)!
     let identifierHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
     let tempPathStr = "catalog".concat(identifierHash)
     let tempPublicPath = PublicPath(identifier: tempPathStr)!
@@ -79,39 +75,39 @@ pub fun main(ownerAddress: Address, collectionIdentifier: String, tokenID: UInt6
 
     let views = NFTRetrieval.getNFTViewsFromIDs(collectionIdentifier : collectionIdentifier, ids: [tokenID], collectionCap : collectionCap)
 
-    for view in views {
-        if view.id == tokenID {
-            let displayView = view.display
-            let externalURLView = view.externalURL
-            let collectionDataView = view.collectionData
-            let collectionDisplayView = view.collectionDisplay
-            let royaltyView = view.royalties
-
-            if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
-                // Bad NFT. Skipping....
-                return nil
-            }
-
-            return NFT(
-                id: view.id,
-                name: displayView!.name,
-                description: displayView!.description,
-                thumbnail: displayView!.thumbnail.uri(),
-                externalURL: externalURLView!.url,
-                storagePath: collectionDataView!.storagePath,
-                publicPath: collectionDataView!.publicPath,
-                privatePath: collectionDataView!.providerPath,
-                publicLinkedType: collectionDataView!.publicLinkedType,
-                privateLinkedType: collectionDataView!.providerLinkedType,
-                collectionName: collectionDisplayView!.name,
-                collectionDescription: collectionDisplayView!.description,
-                collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
-                collectionBannerImage: collectionDisplayView!.bannerImage.file.uri(),
-                collectionExternalURL: collectionDisplayView!.externalURL.url,
-                royalties: royaltyView!.getRoyalties()
-            )
-        }
+    if views.length == 0 {
+        panic("Invalid Token ID")
     }
 
-    panic("Invalid Token ID")
+    let  view = views[0]
+
+    let displayView = view.display
+    let externalURLView = view.externalURL
+    let collectionDataView = view.collectionData
+    let collectionDisplayView = view.collectionDisplay
+    let royaltyView = view.royalties
+
+    if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
+        // Bad NFT. Skipping....
+        return nil
+    }
+
+    return NFT(
+        id: view.id,
+        name: displayView!.name,
+        description: displayView!.description,
+        thumbnail: displayView!.thumbnail.uri(),
+        externalURL: externalURLView!.url,
+        storagePath: collectionDataView!.storagePath,
+        publicPath: collectionDataView!.publicPath,
+        privatePath: collectionDataView!.providerPath,
+        publicLinkedType: collectionDataView!.publicLinkedType,
+        privateLinkedType: collectionDataView!.providerLinkedType,
+        collectionName: collectionDisplayView!.name,
+        collectionDescription: collectionDisplayView!.description,
+        collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
+        collectionBannerImage: collectionDisplayView!.bannerImage.file.uri(),
+        collectionExternalURL: collectionDisplayView!.externalURL.url,
+        royalties: royaltyView!.getRoyalties()
+    )
 }

@@ -84,55 +84,6 @@
         "emulator-account": {
             "address": "0xf8d6e0586b0a20c7",
             "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
-        },
-        "catalog-testnet-account": {
-            "address": "0x324c34e1c517e4db",
-            "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
-        },
-        "transaction-generation-testnet-account": {
-            "address": "0x44051d81c4720882",
-            "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
-        },
-        "examplenft-testnet-account": {
-            "address": "0xa60cf32e8369f919",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
-        },
-        "examplenft-testnet-holder-account": {
-            "address": "0x5f151d59c7128d8e",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
-        },
-        "mainnet-nft-catalog-account": {
-            "address": "0x49a7cda3a1eecc29",
-            "key": {
-                "type": "google-kms",
-                "index": 0,
-                "signatureAlgorithm": "ECDSA_P256",
-                "hashAlgorithm": "SHA2_256",
-                "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog/cryptoKeyVersions/1"
-            },
-            "chain": "flow-mainnet"
-        },
-        "mainnet-transaction-generation-account": {
-            "address": "0xe52522745adf5c34",
-            "key": {
-                "type": "google-kms",
-                "index": 0,
-                "signatureAlgorithm": "ECDSA_P256",
-                "hashAlgorithm": "SHA2_256",
-                "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog-admin/cryptoKeyVersions/1"
-            },
-            "chain": "flow-mainnet"
-        },
-        "mainnet-nft-catalog-admin-account": {
-            "address": "0xf589fc579a72e43d",
-            "key": {
-                "type": "google-kms",
-                "index": 0,
-                "signatureAlgorithm": "ECDSA_P256",
-                "hashAlgorithm": "SHA2_256",
-                "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog-admin/cryptoKeyVersions/1"
-            },
-            "chain": "flow-mainnet"
         }
     },
     "deployments": {
@@ -151,34 +102,6 @@
                 "FlowUtilityToken",
                 "NFTStorefrontV2",
                 "TokenForwarding",
-                "TransactionGenerationUtils",
-                "TransactionTemplates",
-                "TransactionGeneration"
-            ]
-        },
-        "testnet": {
-            "catalog-testnet-account": [
-                "NFTCatalog",
-                "NFTCatalogAdmin",
-                "NFTRetrieval"
-            ],
-            "transaction-generation-testnet-account": [
-                "ArrayUtils",
-                "StringUtils",
-                "TransactionGenerationUtils",
-                "TransactionTemplates",
-                "TransactionGeneration"
-            ]
-        },
-        "mainnet": {
-            "mainnet-nft-catalog-account": [
-                "NFTCatalog",
-                "NFTCatalogAdmin",
-                "NFTRetrieval"
-            ],
-            "mainnet-transaction-generation-account": [
-                "ArrayUtils",
-                "StringUtils",
                 "TransactionGenerationUtils",
                 "TransactionTemplates",
                 "TransactionGeneration"

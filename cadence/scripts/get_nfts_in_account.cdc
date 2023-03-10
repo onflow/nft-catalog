@@ -58,67 +58,70 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address, collectionIdentifiers: [String]): {String: [NFT]} {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let data: {String: [NFT]} = {}
 
     for collectionIdentifier in collectionIdentifiers {
-        if catalog.containsKey(collectionIdentifier) {
-            let value = catalog[collectionIdentifier]!
-            let identifierHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
-            let tempPathStr = "catalog".concat(identifierHash)
-            let tempPublicPath = PublicPath(identifier: tempPathStr)!
+        let catalogEntry = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)
+        if catalogEntry == nil {
+            continue
+        }
 
-            account.link<&{MetadataViews.ResolverCollection}>(
-                tempPublicPath,
-                target: value.collectionData.storagePath
-            )
+        let value = catalogEntry!
+        let identifierHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
+        let tempPathStr = "catalog".concat(identifierHash)
+        let tempPublicPath = PublicPath(identifier: tempPathStr)!
 
-            let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+        account.link<&{MetadataViews.ResolverCollection}>(
+            tempPublicPath,
+            target: value.collectionData.storagePath
+        )
 
-            if !collectionCap.check() {
+        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+
+        if !collectionCap.check() {
+            continue
+        }
+
+        let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier: collectionIdentifier, collectionCap: collectionCap)
+
+        let items: [NFT] = []
+        for view in views {
+            let displayView = view.display
+            let externalURLView = view.externalURL
+            let collectionDataView = view.collectionData
+            let collectionDisplayView = view.collectionDisplay
+            let royaltyView = view.royalties
+
+            if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
+                // Bad NFT. Skipping....
                 continue
             }
 
-            let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier: collectionIdentifier, collectionCap: collectionCap)
-
-            let items: [NFT] = []
-            for view in views {
-                let displayView = view.display
-                let externalURLView = view.externalURL
-                let collectionDataView = view.collectionData
-                let collectionDisplayView = view.collectionDisplay
-                let royaltyView = view.royalties
-
-                if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
-                    // Bad NFT. Skipping....
-                    continue
-                }
-
-                items.append(
-                    NFT(
-                        id: view.id,
-                        name: displayView!.name,
-                        description: displayView!.description,
-                        thumbnail: displayView!.thumbnail.uri(),
-                        externalURL: externalURLView!.url,
-                        storagePath: collectionDataView!.storagePath,
-                        publicPath: collectionDataView!.publicPath,
-                        privatePath: collectionDataView!.providerPath,
-                        publicLinkedType: collectionDataView!.publicLinkedType,
-                        privateLinkedType: collectionDataView!.providerLinkedType,
-                        collectionName: collectionDisplayView!.name,
-                        collectionDescription: collectionDisplayView!.description,
-                        collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
-                        collectionBannerImage: collectionDisplayView!.bannerImage.file.uri(),
-                        collectionExternalURL: collectionDisplayView!.externalURL.url,
-                        royalties: royaltyView!.getRoyalties()
-                    )
+            items.append(
+                NFT(
+                    id: view.id,
+                    name: displayView!.name,
+                    description: displayView!.description,
+                    thumbnail: displayView!.thumbnail.uri(),
+                    externalURL: externalURLView!.url,
+                    storagePath: collectionDataView!.storagePath,
+                    publicPath: collectionDataView!.publicPath,
+                    privatePath: collectionDataView!.providerPath,
+                    publicLinkedType: collectionDataView!.publicLinkedType,
+                    privateLinkedType: collectionDataView!.providerLinkedType,
+                    collectionName: collectionDisplayView!.name,
+                    collectionDescription: collectionDisplayView!.description,
+                    collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
+                    collectionBannerImage: collectionDisplayView!.bannerImage.file.uri(),
+                    collectionExternalURL: collectionDisplayView!.externalURL.url,
+                    royalties: royaltyView!.getRoyalties()
                 )
-            }
-
-            data[collectionIdentifier] = items
+            )
         }
+
+        data[collectionIdentifier] = items
+        
     }
 
     return data

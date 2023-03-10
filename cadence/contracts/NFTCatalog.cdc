@@ -160,12 +160,20 @@ pub contract NFTCatalog {
         }
     }
 
-    pub fun getCatalog() : {String : NFTCatalogMetadata} {
-        return self.catalog
+    pub fun forEachCatalogKey(_ function: ((String): Bool)) {
+        self.catalog.forEachKey(function)
     }
+
 
     pub fun getCatalogEntry(collectionIdentifier : String) : NFTCatalogMetadata? {
         return self.catalog[collectionIdentifier]
+    }
+
+    pub fun mustGetCatalogEntry(collectionIdentifier : String) : NFTCatalogMetadata {
+        pre{
+            self.catalog[collectionIdentifier] != nil : "Invalid collection identifier"
+        }
+        return self.catalog[collectionIdentifier]!
     }
 
     pub fun getCollectionsForType(nftTypeIdentifier: String) : {String : Bool}? {
