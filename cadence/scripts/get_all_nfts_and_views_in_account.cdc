@@ -25,14 +25,14 @@ pub struct NFTCollectionData {
 }
 
 pub fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let items: [MetadataViews.NFTView] = []
     let data: {String: {String: AnyStruct}} = {}
 
-    for key in catalog.keys {
-        let value = catalog[key]!
-        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
+    NFTCatalog.forEachCatalogKey(fun (collectionIdentifier: String):Bool {
+        let value = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: collectionIdentifier)
+        
+        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
         let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
 
@@ -44,13 +44,13 @@ pub fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
 
         if !collectionCap.check() {
-            continue
+            return true
         }
 
-        var views = NFTRetrieval.getAllMetadataViewsFromCap(collectionIdentifier: key, collectionCap: collectionCap)
+        var views = NFTRetrieval.getAllMetadataViewsFromCap(collectionIdentifier: collectionIdentifier, collectionCap: collectionCap)
 
         if views.keys.length == 0 {
-            continue
+            return true
         }
 
         // Cadence doesn't support function return types, lets manually get rid of it
@@ -64,8 +64,10 @@ pub fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
         )
         views.insert(key: Type<MetadataViews.NFTCollectionData>().identifier, collectionDataView)
 
-        data[key] = views
-    }
+        data[collectionIdentifier] = views
+    
+        return true
+    })
 
     return data
 }

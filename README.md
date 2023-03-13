@@ -196,8 +196,8 @@ import NFTCatalog from 0x49a7cda3a1eecc29
     Due to the large size of the response, only the first 10 entries are returned.
 */
 pub fun main(): {String: NFTCatalog.NFTCatalogMetadata} {
-    let catalog = NFTCatalog.getCatalog()
-    let keys = catalog.keys.slice(from: 0, upTo: 10)
+    let catalog = NFTCatalog.getCatalog()  // < -- cannot use this. But I don't know how to fix this example to be equivalent
+    let keys = catalog.keys.slice(from: 0, upTo: 10)  // <-- cannot deterministically slice keys, their order is undefined.
     let collections: {String: NFTCatalog.NFTCatalogMetadata} = {}
 
     for key in keys {
@@ -214,12 +214,13 @@ pub fun main(): {String: NFTCatalog.NFTCatalogMetadata} {
 import NFTCatalog from 0x49a7cda3a1eecc29
 
 pub fun main(): [String] {
-    let catalog: {String: NFTCatalog.NFTCatalogMetadata} = NFTCatalog.getCatalog()
     let catalogNames: [String] = []
 
-    for collectionIdentifier in catalog.keys {
-        catalogNames.append(catalog[collectionIdentifier]!.collectionDisplay.name)
-    }
+    NFTCatalog.forEachCatalogKey(fun (key: String):Bool {
+        let value = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: key)
+        catalogNames.append(value.collectionDisplay.name)
+        return true
+    })
 
     return catalogNames
 }
@@ -233,12 +234,11 @@ import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
 pub fun main(ownerAddress: Address): {String: Number} {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let items: {String: Number} = {}
 
-    for key in catalog.keys {
-        let value = catalog[key]!
+    NFTCatalog.forEachCatalogKey(fun (key: String):Bool {
+        let value = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: key)
         let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
         let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
@@ -251,7 +251,7 @@ pub fun main(ownerAddress: Address): {String: Number} {
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
 
         if !collectionCap.check() {
-            continue
+            return true
         }
 
         let count = NFTRetrieval.getNFTCountFromCap(collectionIdentifier: key, collectionCap: collectionCap)
@@ -259,7 +259,8 @@ pub fun main(ownerAddress: Address): {String: Number} {
         if count > 0 {
             items[key] = count
         }
-    }
+        return true
+    })
 
     return items
 }
@@ -336,13 +337,12 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address): {String: [NFT]} {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let items: [NFTRetrieval.BaseNFTViewsV1] = []
     let data: {String: [NFT]} = {}
 
-    for key in catalog.keys {
-        let value = catalog[key]!
+    NFTCatalog.forEachCatalogKey(fun (key: String):Bool {
+        let value = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: key)
         let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
         let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
@@ -355,7 +355,7 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
 
         if !collectionCap.check() {
-            continue
+            return true
         }
 
         let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier: key, collectionCap: collectionCap)
@@ -397,7 +397,8 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
         }
 
         data[key] = items
-    }
+        return true
+    })
 
     return data
 }
@@ -441,13 +442,12 @@ import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
 pub fun main(ownerAddress: Address) : {String : [UInt64]} {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
 
     let items : {String : [UInt64]} = {}
 
-    for key in catalog.keys {
-        let value = catalog[key]!
+    NFTCatalog.forEachCatalogKey(fun (key: String):Bool {
+        let value = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: key)
         let tempPathStr = "catalogIDs".concat(key)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
         account.link<&{MetadataViews.ResolverCollection}>(
@@ -457,7 +457,7 @@ pub fun main(ownerAddress: Address) : {String : [UInt64]} {
 
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
         if !collectionCap.check() {
-            continue
+            return true
         }
 
         let ids = NFTRetrieval.getNFTIDsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
@@ -465,7 +465,8 @@ pub fun main(ownerAddress: Address) : {String : [UInt64]} {
         if ids.length > 0 {
             items[key] = ids
         }
-    }
+        return true
+    })
     return items
 
 }
@@ -531,68 +532,71 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address, collections: {String: [UInt64]}): {String: [NFT]} {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let data: {String: [NFT]} = {}
 
     for collectionIdentifier in collections.keys {
-        if catalog.containsKey(collectionIdentifier) {
-            let value = catalog[collectionIdentifier]!
-            let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
-            let tempPathStr = "catalog".concat(keyHash)
-            let tempPublicPath = PublicPath(identifier: tempPathStr)!
-
-            account.link<&{MetadataViews.ResolverCollection}>(
-                tempPublicPath,
-                target: value.collectionData.storagePath
-            )
-
-            let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
-
-            if !collectionCap.check() {
-                return data
-            }
-
-            let views = NFTRetrieval.getNFTViewsFromIDs(collectionIdentifier: collectionIdentifier, ids: collections[collectionIdentifier]!, collectionCap : collectionCap)
-
-            let items: [NFT] = []
-
-            for view in views {
-                let displayView = view.display
-                let externalURLView = view.externalURL
-                let collectionDataView = view.collectionData
-                let collectionDisplayView = view.collectionDisplay
-                let royaltyView = view.royalties
-
-                if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
-                    // Bad NFT. Skipping....
-                    continue
-                }
-
-                items.append(
-                    NFT(
-                        id: view.id,
-                        name: displayView!.name,
-                        description: displayView!.description,
-                        thumbnail: displayView!.thumbnail.uri(),
-                        externalURL: externalURLView!.url,
-                        storagePath: collectionDataView!.storagePath,
-                        publicPath: collectionDataView!.publicPath,
-                        privatePath: collectionDataView!.providerPath,
-                        publicLinkedType: collectionDataView!.publicLinkedType,
-                        privateLinkedType: collectionDataView!.providerLinkedType,
-                        collectionName: collectionDisplayView!.name,
-                        collectionDescription: collectionDisplayView!.description,
-                        collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
-                        collectionBannerImage: collectionDisplayView!.bannerImage.file.uri(),
-                        royalties: royaltyView!.getRoyalties()
-                    )
-                )
-            }
-
-            data[collectionIdentifier] = items
+        let catalogEntry = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)
+        if catalogEntry == nil {
+            continue
         }
+
+        let value = catalogEntry!
+        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
+        let tempPathStr = "catalog".concat(keyHash)
+        let tempPublicPath = PublicPath(identifier: tempPathStr)!
+
+        account.link<&{MetadataViews.ResolverCollection}>(
+            tempPublicPath,
+            target: value.collectionData.storagePath
+        )
+
+        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+
+        if !collectionCap.check() {
+            return data
+        }
+
+        let views = NFTRetrieval.getNFTViewsFromIDs(collectionIdentifier: collectionIdentifier, ids: collections[collectionIdentifier]!, collectionCap : collectionCap)
+
+        let items: [NFT] = []
+
+        for view in views {
+            let displayView = view.display
+            let externalURLView = view.externalURL
+            let collectionDataView = view.collectionData
+            let collectionDisplayView = view.collectionDisplay
+            let royaltyView = view.royalties
+
+            if (displayView == nil || externalURLView == nil || collectionDataView == nil || collectionDisplayView == nil || royaltyView == nil) {
+                // Bad NFT. Skipping....
+                continue
+            }
+
+            items.append(
+                NFT(
+                    id: view.id,
+                    name: displayView!.name,
+                    description: displayView!.description,
+                    thumbnail: displayView!.thumbnail.uri(),
+                    externalURL: externalURLView!.url,
+                    storagePath: collectionDataView!.storagePath,
+                    publicPath: collectionDataView!.publicPath,
+                    privatePath: collectionDataView!.providerPath,
+                    publicLinkedType: collectionDataView!.publicLinkedType,
+                    privateLinkedType: collectionDataView!.providerLinkedType,
+                    collectionName: collectionDisplayView!.name,
+                    collectionDescription: collectionDisplayView!.description,
+                    collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
+                    collectionBannerImage: collectionDisplayView!.bannerImage.file.uri(),
+                    royalties: royaltyView!.getRoyalties()
+                )
+            )
+        }
+
+        data[collectionIdentifier] = items
     }
+    
 
     return data
 }
@@ -630,13 +634,12 @@ pub struct NFTCollectionData {
 }
 
 pub fun main(ownerAddress: Address): {String: {String: AnyStruct}}  {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let items: [MetadataViews.NFTView] = []
     let data: {String: {String: AnyStruct}} = {}
 
-    for key in catalog.keys {
-        let value = catalog[key]!
+    NFTCatalog.forEachCatalogKey(fun (key: String):Bool {
+        let value = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: key)
         let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
         let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
@@ -649,13 +652,13 @@ pub fun main(ownerAddress: Address): {String: {String: AnyStruct}}  {
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
 
         if !collectionCap.check() {
-            continue
+            return true
         }
 
         var views = NFTRetrieval.getAllMetadataViewsFromCap(collectionIdentifier: key, collectionCap: collectionCap)
 
         if views.keys.length == 0 {
-            continue
+            return true
         }
 
         // Cadence doesn't support function return types, lets manually get rid of it
@@ -671,7 +674,9 @@ pub fun main(ownerAddress: Address): {String: {String: AnyStruct}}  {
         views.insert(key: Type<MetadataViews.NFTCollectionData>().identifier, collectionDataView)
 
         data[key] = views
-    }
+
+        return true
+    })
 
     return data
 }
@@ -728,13 +733,9 @@ pub struct NFTCollection {
 }
 
 pub fun main(collectionIdentifier : String) : NFTCollection? {
-    let catalog = NFTCatalog.getCatalog()
-
-    assert(catalog.containsKey(collectionIdentifier), message: "Invalid Collection")
-
-    let contractView = catalog[collectionIdentifier]!
-    let collectionDataView = catalog[collectionIdentifier]!.collectionData
-    let collectionDisplayView = catalog[collectionIdentifier]!.collectionDisplay
+    let contractView = NFTCatalog.mustGetCatalogEntry(collectionIdentifier: collectionIdentifier)
+    let collectionDataView = contractView.collectionData
+    let collectionDisplayView = contractView.collectionDisplay
 
     return NFTCollection(
         contractName: contractView.contractName,
