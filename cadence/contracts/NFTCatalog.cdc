@@ -1,4 +1,5 @@
 import MetadataViews from "./MetadataViews.cdc"
+import NFTCatalogSnapshot from "./NFTCatalogSnapshot.cdc"
 
 // NFTCatalog
 //
@@ -161,6 +162,10 @@ pub contract NFTCatalog {
     }
 
     pub fun getCatalog() : {String : NFTCatalogMetadata} {
+        let snapshot = NFTCatalogSnapshot.getCatalogSnapshot()
+        if snapshot != nil {
+            return snapshot! as! {String : NFTCatalogMetadata}
+        }
         return self.catalog
     }
 
