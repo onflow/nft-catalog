@@ -59,12 +59,11 @@ pub struct NFT {
 
 pub fun main(ownerAddress: Address, collections: {String: [UInt64]}): {String: [NFT]} {
     let data: {String: [NFT]} = {}
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
 
     for collectionIdentifier in collections.keys {
-        if catalog.containsKey(collectionIdentifier) {
-            let value = catalog[collectionIdentifier]!
+        if NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil {
+            let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
             let identifierHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
             let tempPathStr = "catalog".concat(identifierHash)
             let tempPublicPath = PublicPath(identifier: tempPathStr)!

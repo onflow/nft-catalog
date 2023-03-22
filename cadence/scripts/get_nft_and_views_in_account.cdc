@@ -83,13 +83,12 @@ pub struct NFT {
 }
 
  pub fun getAllMetadataViewsFromCap(tokenID: UInt64, collectionIdentifier: String, collectionCap: Capability<&AnyResource{MetadataViews.ResolverCollection}>): {String: AnyStruct} {
-    pre {
-        NFTCatalog.getCatalog()[collectionIdentifier] != nil : "Invalid collection identifier"
+   pre {
+        NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
     }
 
-    let catalog = NFTCatalog.getCatalog()
     let items: {String: AnyStruct} = {}
-    let value = catalog[collectionIdentifier]!
+    let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
 
     // Check if we have multiple collections for the NFT type...
     let hasMultipleCollections = false
@@ -116,13 +115,13 @@ pub struct NFT {
 }
 
 pub fun main(ownerAddress: Address, collectionIdentifier: String, tokenID: UInt64) : NFT? {
-    let catalog = NFTCatalog.getCatalog()
-
-    assert(catalog.containsKey(collectionIdentifier), message: "Invalid Collection")
+    pre {
+        NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
+    }
 
     let account = getAuthAccount(ownerAddress)
 
-    let value = catalog[collectionIdentifier]!
+    let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
     let identifierHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
     let tempPathStr = "catalog".concat(identifierHash)
     let tempPublicPath = PublicPath(identifier: tempPathStr)!
@@ -147,7 +146,11 @@ pub fun main(ownerAddress: Address, collectionIdentifier: String, tokenID: UInt6
 
     allViews.insert(key: Type<MetadataViews.NFTCollectionData>().identifier, collectionDataView)
 
-    let views = NFTRetrieval.getNFTViewsFromCap(collectionIdentifier: collectionIdentifier, collectionCap: collectionCap)
+    let views = NFTRetrieval.getNFTViewsFromIDs(collectionIdentifier: collectionIdentifier, ids: [tokenID], collectionCap: collectionCap)
+
+    if views.length == 0 {
+        panic("Invalid Token ID")
+    }
 
     for view in views {
         if view.id == tokenID {

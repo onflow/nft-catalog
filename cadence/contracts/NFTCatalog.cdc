@@ -164,6 +164,14 @@ pub contract NFTCatalog {
         return self.catalog
     }
 
+    pub fun getCatalogKeys(): [String] {
+        return self.catalog.keys
+    }
+
+    pub fun forEachCatalogKey(_ function: ((String): Bool)) {
+        self.catalog.forEachKey(function)
+    }
+
     pub fun getCatalogEntry(collectionIdentifier : String) : NFTCatalogMetadata? {
         return self.catalog[collectionIdentifier]
     }
