@@ -161,8 +161,8 @@ pub contract NFTCatalog {
     }
 
     /*
-        Don't use this function, as its deprecation is imminent and an increasing catalog size may result in your code reaching its gas limit. 
-        If obtaining all elements from the catalog is truly essential, make sure to use the forEachCatalogKey method instead.
+        DEPRECATED
+        If obtaining all elements from the catalog is truly essential, make sure to use getCatalogKeys and forEachCatalogKey methods instead.
      */
     pub fun getCatalog() : {String : NFTCatalogMetadata} {
         return self.catalog
