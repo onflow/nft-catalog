@@ -164,7 +164,7 @@ pub contract NFTCatalog {
     pub fun getCatalog() : {String : NFTCatalogMetadata} {
         let snapshot = NFTCatalogSnapshot.getCatalogSnapshot()
         if snapshot != nil {
-            return snapshot! as! {String : NFTCatalogMetadata}
+            return snapshot! as? {String : NFTCatalogMetadata} ?? self.catalog
         }
         return self.catalog
     }
