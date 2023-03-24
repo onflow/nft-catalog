@@ -167,18 +167,16 @@ export async function getGeneratedTransaction(
 
 export async function getAllCollections(): Promise<any> {
   const CHUNK = 50;
-  const collectionCount = await getCollectionsCount();
-  const catalogBatches: [string, string][] = [];
-  for (let i = 0; i < collectionCount; i += CHUNK) {
-    if (i + CHUNK > collectionCount) {
-      catalogBatches.push([String(i), String(collectionCount)]);
-    } else {
-      catalogBatches.push([String(i), String(i + CHUNK)]);
-    }
+  const collectionIdentifiers= await getCatalogCollectionIdentifiers();
+  const catalogBatches: [string][] = [];
+  for (let i = 0; i < collectionIdentifiers.length; i += CHUNK) {
+    catalogBatches.push(collectionIdentifiers.slice(i, i + CHUNK));
   }
   let collections: any = {};
   for (const catalogBatch of catalogBatches) {
     const currentBatch = (await getCollections(catalogBatch)) || [];
+    console.log('batch');
+    console.log(currentBatch);
     collections = {
       ...currentBatch,
       ...collections,
@@ -188,13 +186,14 @@ export async function getAllCollections(): Promise<any> {
 }
 
 export async function getCollections(
-  batch: [string, string] | null
+  collectionIdentifiers: [string]
 ): Promise<any> {
+  console.log(collectionIdentifiers);
   try {
     const scriptResult = await fcl
       .send([
         fcl.script(catalogJson.scripts.get_nft_catalog),
-        fcl.args([fcl.arg(batch, t.Optional(t.Array(t.UInt64)))]),
+        fcl.args([fcl.arg(collectionIdentifiers, t.Array(t.String))]),
       ])
       .then(fcl.decode);
     return scriptResult;
@@ -204,11 +203,11 @@ export async function getCollections(
   }
 }
 
-export async function getCollectionsCount(): Promise<any> {
+export async function getCatalogCollectionIdentifiers(): Promise<any> {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nft_catalog_count),
+        fcl.script(catalogJson.scripts.get_nft_catalog_identifiers),
         fcl.args([]),
       ])
       .then(fcl.decode);

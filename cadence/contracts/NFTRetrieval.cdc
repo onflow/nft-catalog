@@ -26,10 +26,9 @@ pub contract NFTRetrieval {
 
     pub fun getNFTIDsFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : [UInt64] {
         pre {
-            NFTCatalog.getCatalog()[collectionIdentifier] != nil : "Invalid collection identifier"
+            NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
-        let catalog = NFTCatalog.getCatalog()
-        let value = catalog[collectionIdentifier]!
+        let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
 
         // Check if we have multiple collections for the NFT type...
         let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
@@ -56,10 +55,9 @@ pub contract NFTRetrieval {
 
     pub fun getNFTCountFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : UInt64 {
         pre {
-            NFTCatalog.getCatalog()[collectionIdentifier] != nil : "Invalid collection identifier"
+            NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
-        let catalog = NFTCatalog.getCatalog()
-        let value = catalog[collectionIdentifier]!
+        let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
         // Check if we have multiple collections for the NFT type...
         let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
 
@@ -83,11 +81,10 @@ pub contract NFTRetrieval {
 
     pub fun getAllMetadataViewsFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : {String: AnyStruct} {
         pre {
-            NFTCatalog.getCatalog()[collectionIdentifier] != nil : "Invalid collection identifier"
+            NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
-        let catalog = NFTCatalog.getCatalog()
         let items : {String: AnyStruct} = {}
-        let value = catalog[collectionIdentifier]!
+        let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
 
         // Check if we have multiple collections for the NFT type...
         let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
@@ -113,11 +110,10 @@ pub contract NFTRetrieval {
 
     pub fun getNFTViewsFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : [MetadataViews.NFTView] {
         pre {
-            NFTCatalog.getCatalog()[collectionIdentifier] != nil : "Invalid collection identifier"
+            NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
-        let catalog = NFTCatalog.getCatalog()
         let items : [MetadataViews.NFTView] = []
-        let value = catalog[collectionIdentifier]!
+        let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
 
         // Check if we have multiple collections for the NFT type...
         let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
@@ -141,12 +137,10 @@ pub contract NFTRetrieval {
 
     pub fun getNFTViewsFromIDs(collectionIdentifier : String, ids: [UInt64], collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : [MetadataViews.NFTView] {
         pre {
-            NFTCatalog.getCatalog()[collectionIdentifier] != nil : "Invalid collection identifier"
+             NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
-
-        let catalog = NFTCatalog.getCatalog()
         let items : [MetadataViews.NFTView] = []
-        let value = catalog[collectionIdentifier]!
+        let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
 
         // Check if we have multiple collections for the NFT type...
         let hasMultipleCollections = self.hasMultipleCollections(nftTypeIdentifier : value.nftType.identifier)
