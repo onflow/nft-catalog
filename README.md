@@ -19,11 +19,16 @@ Method signatures and their associating parameters/responses can be found in the
 ```
 checkForRecommendedV1Views
 genTx
+getAllNftsAndViewsInAccount
 getAllNftsInAccount
 getExamplenftCollectionLength
 getExamplenftType
+getNftAndViewsInAccount
 getNftCatalog
+getNftCatalogCount
+getNftCatalogIdentifiers
 getNftCatalogProposals
+getNftCatalogProposalsCount
 getNftCollectionsForNftType
 getNftIdsInAccount
 getNftInAccount
@@ -34,6 +39,7 @@ getNftsCountInAccount
 getNftsInAccount
 getNftsInAccountFromIds
 getNftsInAccountFromPath
+getSupportedGeneratedScripts
 getSupportedGeneratedTransactions
 hasAdminProxy
 isCatalogAdmin
@@ -138,13 +144,10 @@ For example, the result of the method above would look like -
 1. Visit [here](https://www.flow-nft-catalog.com/v)
 2. Enter the address containing the NFT contract which contains the collection and select the contract
 
-    <img width="1509" alt="Screen Shot 2023-02-08 at 9 40 01 AM" src="https://user-images.githubusercontent.com/5430668/217561873-54beb50e-0ea2-46fb-b9f8-8dbe758ee12f.png">
-
+ <img width="1509" alt="Screen Shot 2023-02-08 at 9 40 01 AM" src="https://user-images.githubusercontent.com/5430668/217561873-54beb50e-0ea2-46fb-b9f8-8dbe758ee12f.png">
 
 3. Enter the storage path where the NFTs are stored and enter an address that holds a sample NFT or log in if you have access to an account that owns the NFT
-<img width="1508" alt="Screen Shot 2023-02-08 at 9 42 54 AM" src="https://user-images.githubusercontent.com/5430668/217562366-e6cbf3cb-38b8-45cb-943e-e20185565743.png">
-
-    
+   <img width="1508" alt="Screen Shot 2023-02-08 at 9 42 54 AM" src="https://user-images.githubusercontent.com/5430668/217562366-e6cbf3cb-38b8-45cb-943e-e20185565743.png">
 
 4. The application will verify that your NFT collection implements the required Metadata views.
 
@@ -162,13 +165,11 @@ For example, the result of the method above would look like -
     2. You can find sample implementations of all these views in this example NFT [contract](https://github.com/onflow/flow-nft/blob/master/contracts/ExampleNFT.cdc).
     3. If you are not implementing a view, the app will communicate this and you can update your NFT contract and try resubmitting.
 
-        <img width="738" alt="Screen Shot 2023-02-08 at 9 46 56 AM" src="https://user-images.githubusercontent.com/5430668/217563435-86863297-183b-4345-9615-61f9d4212fe9.png">
-
+     <img width="738" alt="Screen Shot 2023-02-08 at 9 46 56 AM" src="https://user-images.githubusercontent.com/5430668/217563435-86863297-183b-4345-9615-61f9d4212fe9.png">
 
 5. Submit proposal transaction to the NFT catalog by entering a unique url safe identifier for the collection and a message including any additional context (like contact information).
 
-    <img width="1503" alt="Screen Shot 2023-02-08 at 9 48 45 AM" src="https://user-images.githubusercontent.com/5430668/217563785-65065f51-37bc-49c7-8b3e-ba5d1dda3b24.png">
-
+ <img width="1503" alt="Screen Shot 2023-02-08 at 9 48 45 AM" src="https://user-images.githubusercontent.com/5430668/217563785-65065f51-37bc-49c7-8b3e-ba5d1dda3b24.png">
 
 6. Once submitted you can view all proposals [here](https://www.flow-nft-catalog.com/proposals/mainnet) to track the review of your NFT.
 
@@ -789,70 +790,65 @@ transaction {
 We can achieve this with JavaScript, for example:
 
 ```javascript
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from "fs";
 import * as fcl from "@onflow/fcl";
 
 fcl.config()
-  .put("accessNode.api", "https://rest-mainnet.onflow.org")
-  .put("flow.network", "mainnet")
+    .put("accessNode.api", "https://rest-mainnet.onflow.org")
+    .put("flow.network", "mainnet");
 
 const args = process.argv.slice(2);
 
 const collectionIdentifier = args[0];
 if (collectionIdentifier === undefined) {
-  console.error('You need to pass the Collection identifier as an argument.');
-  process.exit(1);
+    console.error("You need to pass the Collection identifier as an argument.");
+    process.exit(1);
 }
 
 try {
-  const scriptPath = new URL('get_nft_collection_data.cdc', import.meta.url);
-  const scriptCode = readFileSync(scriptPath, { encoding: 'utf8' });
+    const scriptPath = new URL("get_nft_collection_data.cdc", import.meta.url);
+    const scriptCode = readFileSync(scriptPath, { encoding: "utf8" });
 
-  const nftCollection = await fcl.query({
-    cadence: scriptCode,
-    args: (arg, t) => [
-      arg(collectionIdentifier, t.String)
-    ],
-  });
+    const nftCollection = await fcl.query({
+        cadence: scriptCode,
+        args: (arg, t) => [arg(collectionIdentifier, t.String)],
+    });
 
-  console.log(nftCollection);
+    console.log(nftCollection);
 
-  const filePath = new URL('setup_collection_template.cdc', import.meta.url);
-  const transactionTemplate = readFileSync(filePath, { encoding: 'utf8' });
+    const filePath = new URL("setup_collection_template.cdc", import.meta.url);
+    const transactionTemplate = readFileSync(filePath, { encoding: "utf8" });
 
-  const transaction = transactionTemplate.replaceAll(
-    '{CONTRACT_NAME}',
-    nftCollection.contractName
-  )
-  .replaceAll(
-    '{CONTRACT_ADDRESS}',
-    nftCollection.contractAddress
-  ).replaceAll(
-    '{STORAGE_PATH}',
-    `/${nftCollection.storagePath.domain}/${nftCollection.storagePath.identifier}`
-  ).replaceAll(
-    '{PUBLIC_PATH}',
-    `/${nftCollection.publicPath.domain}/${nftCollection.publicPath.identifier}`
-  ).replaceAll(
-    '{PRIVATE_PATH}',
-    `/${nftCollection.privatePath.domain}/${nftCollection.privatePath.identifier}`
-  ).replaceAll(
-    '{PUBLIC_LINKED_TYPE}',
-    nftCollection.publicLinkedType.typeID.replace(/A\.\w{16}\./g, '')
-  ).replaceAll(
-    '{PRIVATE_LINKED_TYPE}',
-    nftCollection.privateLinkedType.typeID.replace(/A\.\w{16}\./g, '')
-  );
+    const transaction = transactionTemplate
+        .replaceAll("{CONTRACT_NAME}", nftCollection.contractName)
+        .replaceAll("{CONTRACT_ADDRESS}", nftCollection.contractAddress)
+        .replaceAll(
+            "{STORAGE_PATH}",
+            `/${nftCollection.storagePath.domain}/${nftCollection.storagePath.identifier}`
+        )
+        .replaceAll(
+            "{PUBLIC_PATH}",
+            `/${nftCollection.publicPath.domain}/${nftCollection.publicPath.identifier}`
+        )
+        .replaceAll(
+            "{PRIVATE_PATH}",
+            `/${nftCollection.privatePath.domain}/${nftCollection.privatePath.identifier}`
+        )
+        .replaceAll(
+            "{PUBLIC_LINKED_TYPE}",
+            nftCollection.publicLinkedType.typeID.replace(/A\.\w{16}\./g, "")
+        )
+        .replaceAll(
+            "{PRIVATE_LINKED_TYPE}",
+            nftCollection.privateLinkedType.typeID.replace(/A\.\w{16}\./g, "")
+        );
 
-  const transactionPath = `setup_${nftCollection.contractName}_collection.cdc`;
-  writeFileSync(
-    transactionPath,
-    transaction
-  );
+    const transactionPath = `setup_${nftCollection.contractName}_collection.cdc`;
+    writeFileSync(transactionPath, transaction);
 
-  console.log(transaction);
+    console.log(transaction);
 } catch (err) {
-  console.error(err.message);
+    console.error(err.message);
 }
 ```
 
