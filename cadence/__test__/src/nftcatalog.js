@@ -6,6 +6,7 @@ export const deployNFTCatalog = async () => {
     await mintFlow(NFTCatalogAdmin, '10.0')
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NonFungibleToken' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'MetadataViews' })
+    await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogSnapshot' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalog' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'ArrayUtils' })
@@ -18,6 +19,15 @@ export const deployNFTCatalog = async () => {
     await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionTemplates' });
     return await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGeneration' })
 }
+
+export const updateSnapshotAdmin = async(proxyAccount) => {
+    const name = 'update_snapshot_admin';
+
+    const args = []
+    const signers = [proxyAccount];
+
+    return sendTransaction({ name, args, signers });
+} 
 
 export const addToCatalogAdmin = async (collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, addressWithNFT, nftID, publicPathIdentifier) => {
     const NFTCatalogAdmin = await getAdminAddress();
@@ -155,4 +165,10 @@ export const getInitFunction = async (collectionIdentifier) => {
     const args = [collectionIdentifier]
 
     return executeScript({ name, args })
+}
+
+export const getFullCatalog = async () => {
+    const name = 'get_full_nft_catalog';
+    const args = []
+    return executeScript({ name, args });
 }
