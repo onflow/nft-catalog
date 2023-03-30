@@ -3,13 +3,12 @@ import NFTCatalog from "../contracts/NFTCatalog.cdc"
 import NFTRetrieval from "../contracts/NFTRetrieval.cdc"
 
 pub fun main(ownerAddress: Address): {String: Number} {
-    let catalog = NFTCatalog.getCatalog()
     let account = getAuthAccount(ownerAddress)
     let items: {String: Number} = {}
 
-    for key in catalog.keys {
-        let value = catalog[key]!
-        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
+    NFTCatalog.forEachCatalogKey(fun (collectionIdentifier: String):Bool {
+        let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
+        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(collectionIdentifier.utf8))
         let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
 
@@ -21,15 +20,16 @@ pub fun main(ownerAddress: Address): {String: Number} {
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
 
         if !collectionCap.check() {
-            continue
+            return true
         }
 
-        let count = NFTRetrieval.getNFTCountFromCap(collectionIdentifier: key, collectionCap: collectionCap)
+        let count = NFTRetrieval.getNFTCountFromCap(collectionIdentifier: collectionIdentifier, collectionCap: collectionCap)
 
         if count != 0 {
-            items[key] = count
+            items[collectionIdentifier] = count
         }
-    }
+        return true
+    })
 
     return items
 }

@@ -161,12 +161,24 @@ pub contract NFTCatalog {
         }
     }
 
+    /*
+        DEPRECATED
+        If obtaining all elements from the catalog is truly essential, make sure to use getCatalogKeys and forEachCatalogKey methods instead.
+     */
     pub fun getCatalog() : {String : NFTCatalogMetadata} {
         let snapshot = NFTCatalogSnapshot.getCatalogSnapshot()
         if snapshot != nil {
             return snapshot! as? {String : NFTCatalogMetadata} ?? self.catalog
         }
         return self.catalog
+    }
+
+    pub fun getCatalogKeys(): [String] {
+        return self.catalog.keys
+    }
+
+    pub fun forEachCatalogKey(_ function: ((String): Bool)) {
+        self.catalog.forEachKey(function)
     }
 
     pub fun getCatalogEntry(collectionIdentifier : String) : NFTCatalogMetadata? {

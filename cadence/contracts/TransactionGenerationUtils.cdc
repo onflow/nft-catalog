@@ -170,11 +170,11 @@ pub contract TransactionGenerationUtils {
     }
 
     pub fun getNftSchema(collectionIdentifier: String): NFTSchema? {
-        let catalog = NFTCatalog.getCatalog()
-        if catalog[collectionIdentifier] == nil {
+        let catalogEntry = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)
+        if catalogEntry == nil {
             return nil
         }
-        let catalogData = catalog[collectionIdentifier]!
+        let catalogData = catalogEntry!
 
         let publicLinkedType: Type = catalogData.collectionData.publicLinkedType
         let privateLinkedType: Type = catalogData.collectionData.privateLinkedType
