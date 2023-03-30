@@ -175,8 +175,6 @@ export async function getAllCollections(): Promise<any> {
   let collections: any = {};
   for (const catalogBatch of catalogBatches) {
     const currentBatch = (await getCollections(catalogBatch)) || [];
-    console.log('batch');
-    console.log(currentBatch);
     collections = {
       ...currentBatch,
       ...collections,
@@ -188,7 +186,6 @@ export async function getAllCollections(): Promise<any> {
 export async function getCollections(
   collectionIdentifiers: [string]
 ): Promise<any> {
-  console.log(collectionIdentifiers);
   try {
     const scriptResult = await fcl
       .send([
@@ -220,14 +217,10 @@ export async function getCatalogCollectionIdentifiers(): Promise<any> {
 
 export async function getAllProposals(): Promise<any> {
   const CHUNK = 50;
-  const proposalCount = await getProposalsCount();
-  const proposalBatches: [string, string][] = [];
-  for (let i = 0; i < proposalCount; i += CHUNK) {
-    if (i + CHUNK > proposalCount) {
-      proposalBatches.push([String(i), String(proposalCount)]);
-    } else {
-      proposalBatches.push([String(i), String(i + CHUNK)]);
-    }
+  const proposalIDs = await getProposalIds();
+  const proposalBatches: [string][] = [];
+  for (let i = 0; i < proposalIDs.length; i += CHUNK) {
+    proposalBatches.push(proposalIDs.slice(i, i + CHUNK));
   }
   let proposals: any = {};
   for (const proposalBatch of proposalBatches) {
@@ -241,13 +234,13 @@ export async function getAllProposals(): Promise<any> {
 }
 
 export async function getProposals(
-  batch: [string, string] | null
+  proposalIDs: [string]
 ): Promise<any> {
   try {
     const scriptResult = await fcl
       .send([
         fcl.script(catalogJson.scripts.get_nft_catalog_proposals),
-        fcl.args([fcl.arg(batch, t.Optional(t.Array(t.UInt64)))]),
+        fcl.args([fcl.arg(proposalIDs, t.Array(t.UInt64))]),
       ])
       .then(fcl.decode);
     return scriptResult;
@@ -257,11 +250,11 @@ export async function getProposals(
   }
 }
 
-export async function getProposalsCount(): Promise<any> {
+export async function getProposalIds(): Promise<any> {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nft_catalog_proposals_count),
+        fcl.script(catalogJson.scripts.get_nft_catalog_proposal_ids),
         fcl.args([]),
       ])
       .then(fcl.decode);
@@ -324,7 +317,6 @@ export async function getNFTInAccountFromCatalog(
   collectionIdentifier: string,
   tokenID: string
 ) {
-  console.log('sdfsdfjkhjkhxckjvh');
   const scriptResult = await fcl
     .send([
       fcl.script(catalogJson.scripts.get_nft_in_account),
