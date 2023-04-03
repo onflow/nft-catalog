@@ -16,7 +16,8 @@ import {
     setupNFTCatalogAdminProxy,
     sendAdminProxyCapability,
     addToCatalog,
-    getNFTCollectionsForNFTType
+    getNFTCollectionsForNFTType,
+    updateShouldUseSnapshotAdmin
 } from '../src/nftcatalog';
 import {
     deployExampleNFT,
@@ -81,24 +82,27 @@ describe('NFT Catalog Snapshots Test Suite', () => {
         const catalog = await getFullCatalog();
         expect(Object.keys(catalog[0]).length).toEqual(1)
 
-        await shallPass(updateSnapshotAdmin(Alice));
-        const snapshottedCatalog = await getFullCatalog();
-        expect(Object.keys(snapshottedCatalog[0]).length).toEqual(1)
+        await shallPass(updateSnapshotAdmin(Alice, ['ExampleNFT']));
+        const updatedCatalog = await getFullCatalog();
+        expect(Object.keys(updatedCatalog[0]).length).toEqual(1)
 
         await shallPass(removeFromNFTCatalog(
             Alice,
             nftCreationEvent.data.contract
         ));
+        
+        
+        const fullCatalogAfterRemoval = await getFullCatalog();
+        expect(Object.keys(fullCatalogAfterRemoval[0]).length).toEqual(0)
+
+        // Switch to use the snapshot, which still has the previous state of the catalog
+        await shallPass(updateShouldUseSnapshotAdmin(Alice, true));
 
         // Even though the catalog is empty, the snapshot should still be there
         // ensuring that the snapshot doesn't change as the catalog changes.
         const snapshottedCatalogAfterRemoval = await getFullCatalog();
+        console.log('snapshotted', snapshottedCatalogAfterRemoval)
         expect(Object.keys(snapshottedCatalogAfterRemoval[0]).length).toEqual(1)
-
-        await shallPass(updateSnapshotAdmin(Alice));
-
-        const snapshottedEmptyCatalog = await getFullCatalog();
-        expect(Object.keys(snapshottedEmptyCatalog[0]).length).toEqual(1)
     
     });
 });

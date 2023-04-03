@@ -1,4 +1,4 @@
-// NFTCatalogSnapshot
+// NFTCatalogSnapshotV2
 //
 // A snapshot of the NFT Catalog at a specific time.
 // This is provided in order to provide post-deprecation
@@ -9,24 +9,28 @@
 // https://github.com/dapperlabs/nft-catalog/issues/138
 // 
 
-pub contract NFTCatalogSnapshot {
+pub contract NFTCatalogSnapshotV2 {
 
-  access(self) var catalogSnapshot: {String : AnyStruct}?
-  access(self) var shouldUseSnapshot: Boolean
+  access(self) var catalogSnapshot: {String : AnyStruct}
+  access(account) var shouldUseSnapshot: Bool
   pub var snapshotBlockHeight: UInt64?
 
   access(account) fun setPartialSnapshot(_ snapshotKey: String, _ snapshotEntry: AnyStruct) {
     self.catalogSnapshot[snapshotKey] = snapshotEntry
   }
 
-  pub fun getCatalogSnapshot(): {String : AnyStruct}? {
+  access(account) fun setShouldUseSnapshot(_ shouldUseSnapshot: Bool) {
+    self.shouldUseSnapshot = shouldUseSnapshot
+  }
+
+  pub fun getCatalogSnapshot(): {String : AnyStruct} {
     return self.catalogSnapshot
   }
 
   init() {
     self.shouldUseSnapshot = false
     self.snapshotBlockHeight = nil
-    self.catalogSnapshot = nil
+    self.catalogSnapshot = {}
   }
 }
  

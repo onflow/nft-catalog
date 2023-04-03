@@ -1,5 +1,5 @@
 import MetadataViews from "./MetadataViews.cdc"
-import NFTCatalogSnapshot from "./NFTCatalogSnapshot.cdc"
+import NFTCatalogSnapshotV2 from "./NFTCatalogSnapshotV2.cdc"
 
 // NFTCatalog
 //
@@ -163,12 +163,13 @@ pub contract NFTCatalog {
 
     /*
         DEPRECATED
-        If obtaining all elements from the catalog is truly essential, make sure to use getCatalogKeys and forEachCatalogKey methods instead.
+        If obtaining all elements from the catalog is essential, please
+        use the getCatalogKeys and forEachCatalogKey methods instead.
      */
     pub fun getCatalog() : {String : NFTCatalogMetadata} {
-        let snapshot = NFTCatalogSnapshot.getCatalogSnapshot()
-        if snapshot != nil {
-            return snapshot! as? {String : NFTCatalogMetadata} ?? self.catalog
+        if NFTCatalogSnapshotV2.shouldUseSnapshot {
+            let snapshot = NFTCatalogSnapshotV2.getCatalogSnapshot()
+            return snapshot as! {String : NFTCatalogMetadata}
         }
         return self.catalog
     }

@@ -1,5 +1,5 @@
 import NFTCatalog from "./NFTCatalog.cdc"
-import NFTCatalogSnapshot from "./NFTCatalogSnapshot.cdc"
+import NFTCatalogSnapshotV2 from "./NFTCatalogSnapshotV2.cdc"
 
 // NFTCatalogAdmin
 //
@@ -115,8 +115,13 @@ pub contract NFTCatalogAdmin {
             NFTCatalog.removeCatalogProposal(proposalID : proposalID)
         }
 
-        pub fun updateSnapshot() {
-            NFTCatalogSnapshot.setSnapshot(NFTCatalog.getCatalog())
+        pub fun updatePartialSnapshot(_ catalogKey: String) {
+            let catalogEntry = NFTCatalog.getCatalogEntry(collectionIdentifier: catalogKey)!
+            NFTCatalogSnapshotV2.setPartialSnapshot(catalogKey, catalogEntry)
+        }
+
+        pub fun setShouldUseSnapshot(_ shouldUseSnapshot: Bool) {
+            NFTCatalogSnapshotV2.setShouldUseSnapshot(shouldUseSnapshot)
         }
 
         init () {}

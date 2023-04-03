@@ -2,7 +2,7 @@ import MetadataViews from "../contracts/MetadataViews.cdc"
 import NFTCatalog from "../contracts/NFTCatalog.cdc"
 import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
 
-transaction(collectionIdentifiers: [String]) {
+transaction(shouldUseSnapshot: Bool) {
     let adminProxyResource : &NFTCatalogAdmin.AdminProxy
 
     prepare(acct: AuthAccount) {
@@ -10,9 +10,6 @@ transaction(collectionIdentifiers: [String]) {
     }
 
     execute {
-        let adminProxy = self.adminProxyResource.getCapability()!.borrow()!
-        for id in collectionIdentifiers {
-            adminProxy.updatePartialSnapshot(id)
-        }
+        self.adminProxyResource.getCapability()!.borrow()!.setShouldUseSnapshot(shouldUseSnapshot)
     }
 }

@@ -67,6 +67,7 @@
         "ExampleNFT": "./cadence/contracts/ExampleNFT.cdc",
         "NonStandardNFT": "./cadence/contracts/NonStandardNFT.cdc",
         "NFTCatalogSnapshot": "./cadence/contracts/NFTCatalogSnapshot.cdc",
+        "NFTCatalogSnapshotV2": "./cadence/contracts/NFTCatalogSnapshotV2.cdc",
         "NFTCatalog": "./cadence/contracts/NFTCatalog.cdc",
         "NFTCatalogAdmin": "./cadence/contracts/NFTCatalogAdmin.cdc",
         "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc",
@@ -143,7 +144,7 @@
                 "MetadataViews",
                 "ExampleNFT",
                 "NonStandardNFT",
-                "NFTCatalogSnapshot",
+                "NFTCatalogSnapshotV2",
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval",
@@ -160,7 +161,7 @@
         },
         "testnet": {
             "catalog-testnet-account": [
-                "NFTCatalogSnapshot",
+                "NFTCatalogSnapshotV2",
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
@@ -175,7 +176,7 @@
         },
         "mainnet": {
             "mainnet-nft-catalog-account": [
-                "NFTCatalogSnapshot",
+                "NFTCatalogSnapshotV2",
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
