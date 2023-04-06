@@ -1,5 +1,4 @@
 import MetadataViews from "./MetadataViews.cdc"
-import NFTCatalogSnapshotV2 from "./NFTCatalogSnapshotV2.cdc"
 
 // NFTCatalog
 //
@@ -95,6 +94,33 @@ pub contract NFTCatalog {
             }
     }
 
+
+    pub resource Snapshot {
+        pub var catalogSnapshot: {String : NFTCatalogMetadata}
+        pub var shouldUseSnapshot: Bool
+
+        pub fun setPartialSnapshot(_ snapshotKey: String, _ snapshotEntry: NFTCatalogMetadata) {
+            self.catalogSnapshot[snapshotKey] = snapshotEntry
+        }
+
+        pub fun setShouldUseSnapshot(_ shouldUseSnapshot: Bool) {
+            self.shouldUseSnapshot = shouldUseSnapshot
+        }
+
+        pub fun getCatalogSnapshot(): {String : NFTCatalogMetadata} {
+            return self.catalogSnapshot
+        }
+
+        init() {
+            self.shouldUseSnapshot = false
+            self.catalogSnapshot = {}
+        }
+    }
+
+    pub fun createEmptySnapshot(): @Snapshot {
+        return <- create Snapshot()
+    }
+
     // NFTCollectionData
     // Represents information about an NFT collection resource
     // Note: Not suing the struct from Metadata standard due to
@@ -167,11 +193,17 @@ pub contract NFTCatalog {
         use the getCatalogKeys and forEachCatalogKey methods instead.
      */
     pub fun getCatalog() : {String : NFTCatalogMetadata} {
-        if NFTCatalogSnapshotV2.shouldUseSnapshot {
-            let snapshot = NFTCatalogSnapshotV2.getCatalogSnapshot()
-            return snapshot as! {String : NFTCatalogMetadata}
+        let snapshot = self.account.borrow<&NFTCatalog.Snapshot>(from: /storage/CatalogSnapshot)
+        if snapshot != nil {
+            let snapshot = snapshot!
+            if snapshot.shouldUseSnapshot {
+                return snapshot.getCatalogSnapshot()
+            } else {
+                return self.catalog
+            }
+        } else {
+            return self.catalog
         }
-        return self.catalog
     }
 
     pub fun getCatalogKeys(): [String] {

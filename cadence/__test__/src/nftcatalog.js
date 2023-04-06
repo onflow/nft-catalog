@@ -6,8 +6,6 @@ export const deployNFTCatalog = async () => {
     await mintFlow(NFTCatalogAdmin, '10.0')
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NonFungibleToken' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'MetadataViews' })
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogSnapshotV2' })
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogSnapshot' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalog' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'ArrayUtils' })
@@ -21,20 +19,20 @@ export const deployNFTCatalog = async () => {
     return await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGeneration' })
 }
 
-export const updateSnapshotAdmin = async(proxyAccount, collections) => {
+export const updateSnapshotAdmin = async(catalogAccount, collections) => {
     const name = 'update_snapshot_admin';
 
     const args = [collections]
-    const signers = [proxyAccount];
+    const signers = [catalogAccount];
 
     return sendTransaction({ name, args, signers });
 }
 
-export const updateShouldUseSnapshotAdmin = async(proxyAccount, shouldUseSnapshot) => {
+export const updateShouldUseSnapshotAdmin = async(catalogAccount, shouldUseSnapshot) => {
     const name = 'set_snapshot_enabled_admin';
 
     const args = [shouldUseSnapshot]
-    const signers = [proxyAccount]
+    const signers = [catalogAccount]
 
     return sendTransaction({ name, args, signers })
 }

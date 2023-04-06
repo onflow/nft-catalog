@@ -25,7 +25,7 @@ import {
     mintExampleNFT,
     setupExampleNFTCollection
 } from '../src/examplenft';
-import { TIMEOUT } from '../src/common';
+import { TIMEOUT, getAdminAddress } from '../src/common';
 
 const TEST_NFT_NAME = 'Test Name';
 const TEST_NFT_DESCRIPTION = 'Test Description';
@@ -82,7 +82,9 @@ describe('NFT Catalog Snapshots Test Suite', () => {
         const catalog = await getFullCatalog();
         expect(Object.keys(catalog[0]).length).toEqual(1)
 
-        await shallPass(updateSnapshotAdmin(Alice, ['ExampleNFT']));
+        const NFTCatalogAdmin = await getAdminAddress()
+
+        await shallPass(updateSnapshotAdmin(NFTCatalogAdmin, ['ExampleNFT']));
         const updatedCatalog = await getFullCatalog();
         expect(Object.keys(updatedCatalog[0]).length).toEqual(1)
 
@@ -96,12 +98,11 @@ describe('NFT Catalog Snapshots Test Suite', () => {
         expect(Object.keys(fullCatalogAfterRemoval[0]).length).toEqual(0)
 
         // Switch to use the snapshot, which still has the previous state of the catalog
-        await shallPass(updateShouldUseSnapshotAdmin(Alice, true));
+        await shallPass(updateShouldUseSnapshotAdmin(NFTCatalogAdmin, true));
 
         // Even though the catalog is empty, the snapshot should still be there
         // ensuring that the snapshot doesn't change as the catalog changes.
         const snapshottedCatalogAfterRemoval = await getFullCatalog();
-        console.log('snapshotted', snapshottedCatalogAfterRemoval)
         expect(Object.keys(snapshottedCatalogAfterRemoval[0]).length).toEqual(1)
     
     });

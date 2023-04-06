@@ -1,18 +1,21 @@
 import MetadataViews from "../contracts/MetadataViews.cdc"
 import NFTCatalog from "../contracts/NFTCatalog.cdc"
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
 
 transaction(collectionIdentifiers: [String]) {
-    let adminProxyResource : &NFTCatalogAdmin.AdminProxy
+    let snapshotResource: &NFTCatalog.Snapshot
 
     prepare(acct: AuthAccount) {
-        self.adminProxyResource = acct.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
+        let snapshot = acct.borrow<&NFTCatalog.Snapshot>(from: /storage/CatalogSnapshot)
+        if snapshot == nil {
+            acct.save(<-NFTCatalog.createEmptySnapshot(), to: /storage/CatalogSnapshot)
+        }
+        self.snapshotResource = acct.borrow<&NFTCatalog.Snapshot>(from: /storage/CatalogSnapshot)!
     }
 
     execute {
-        let adminProxy = self.adminProxyResource.getCapability()!.borrow()!
         for id in collectionIdentifiers {
-            adminProxy.updatePartialSnapshot(id)
+            let entry = NFTCatalog.getCatalogEntry(collectionIdentifier: id)
+            self.snapshotResource.setPartialSnapshot(id, entry!)
         }
     }
 }
