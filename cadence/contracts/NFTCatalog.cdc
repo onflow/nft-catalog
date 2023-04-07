@@ -276,6 +276,14 @@ pub contract NFTCatalog {
         return self.catalogProposals[proposalID]
     }
 
+    pub fun getCatalogProposalKeys() : [UInt64] {
+        return self.catalogProposals.keys
+    }
+
+    pub fun forEachCatalogProposalKey(_ function: ((UInt64): Bool)) {
+        self.catalogProposals.forEachKey(function)
+    }
+
     pub fun createNFTCatalogProposalManager(): @NFTCatalogProposalManager {
         return <-create NFTCatalogProposalManager()
     }
