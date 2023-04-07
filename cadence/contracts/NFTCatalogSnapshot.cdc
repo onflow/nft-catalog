@@ -12,11 +12,11 @@
 pub contract NFTCatalogSnapshot {
 
   access(self) var catalogSnapshot: {String : AnyStruct}?
-  access(self) var shouldUseSnapshot: Boolean
   pub var snapshotBlockHeight: UInt64?
 
-  access(account) fun setPartialSnapshot(_ snapshotKey: String, _ snapshotEntry: AnyStruct) {
-    self.catalogSnapshot[snapshotKey] = snapshotEntry
+  access(account) fun setSnapshot(_ snapshot: {String : AnyStruct}) {
+    self.catalogSnapshot = snapshot
+    self.snapshotBlockHeight = getCurrentBlock().height
   }
 
   pub fun getCatalogSnapshot(): {String : AnyStruct}? {
@@ -24,7 +24,6 @@ pub contract NFTCatalogSnapshot {
   }
 
   init() {
-    self.shouldUseSnapshot = false
     self.snapshotBlockHeight = nil
     self.catalogSnapshot = nil
   }
