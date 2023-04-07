@@ -1,5 +1,4 @@
 import NFTCatalog from "./NFTCatalog.cdc"
-import NFTCatalogSnapshot from "./NFTCatalogSnapshot.cdc"
 
 // NFTCatalogAdmin
 //
@@ -113,10 +112,6 @@ pub contract NFTCatalogAdmin {
                 NFTCatalog.getCatalogProposalEntry(proposalID : proposalID) != nil : "Invalid Proposal ID"
             }
             NFTCatalog.removeCatalogProposal(proposalID : proposalID)
-        }
-
-        pub fun updateSnapshot() {
-            NFTCatalogSnapshot.setSnapshot(NFTCatalog.getCatalog())
         }
 
         init () {}
