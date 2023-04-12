@@ -79,6 +79,8 @@ or
 yarn add flow-catalog
 ```
 
+Flow-catalog is an npm module which you can view here: https://www.npmjs.com/package/flow-catalog
+
 ### Usage
 
 Methods can be imported as follows, all nested methods live under the `scripts` or `transactions` variable.
