@@ -8,7 +8,7 @@ Checkout the catalog [site](https://www.flow-nft-catalog.com/) to submit your NF
 
 ## NPM Module
 
-We exposed an interface to the catalog via a consumable NPM module. This library will expose a number of methods that can be called to interact with the catalog.
+We exposed an interface to the catalog via a consumable NPM module. This library will expose a number of methods that can be called to interact with the catalog. The module can be found here with installation instructions below: https://www.npmjs.com/package/flow-catalog
 
 ### Methods
 
@@ -78,8 +78,6 @@ or
 ```
 yarn add flow-catalog
 ```
-
-Flow-catalog is an npm module which you can view here: https://www.npmjs.com/package/flow-catalog
 
 ### Usage
 
