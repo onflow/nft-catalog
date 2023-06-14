@@ -440,34 +440,36 @@ import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
-pub fun main(ownerAddress: Address) : {String : [UInt64]} {
+pub fun main(ownerAddress: Address): {String: [UInt64]} {
     let account = getAuthAccount(ownerAddress)
+    let items: {String: [UInt64]} = {}
 
-    let items : {String : [UInt64]} = {}
-
-    NFTCatalog.forEachCatalogKey(fun (collectionIdentifier: String):Bool {
-        let value = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!
-        let tempPathStr = "catalogIDs".concat(key)
+    NFTCatalog.forEachCatalogKey(fun (key: String):Bool {
+        let value = NFTCatalog.getCatalogEntry(collectionIdentifier: key)!
+        let keyHash = String.encodeHex(HashAlgorithm.SHA3_256.hash(key.utf8))
+        let tempPathStr = "catalogIDs".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
+
         account.link<&{MetadataViews.ResolverCollection}>(
             tempPublicPath,
             target: value.collectionData.storagePath
         )
 
         let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+
         if !collectionCap.check() {
             return true
         }
 
-        let ids = NFTRetrieval.getNFTIDsFromCap(collectionIdentifier : key, collectionCap : collectionCap)
+        let ids = NFTRetrieval.getNFTIDsFromCap(collectionIdentifier: key, collectionCap: collectionCap)
 
         if ids.length > 0 {
             items[key] = ids
         }
         return true
-    }
-    return items
+    })
 
+    return items
 }
 ```
 
