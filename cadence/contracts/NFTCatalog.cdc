@@ -353,6 +353,22 @@ pub contract NFTCatalog {
         emit EntryRemoved(collectionIdentifier : collectionIdentifier, nftType: removedType)
     }
 
+    // This function is not preferred, and was used for the following issue:
+    // https://github.com/onflow/cadence/issues/2649
+    // If a contract's type is no longer resolvable in cadence and crashing,
+    // this function can be used to remove it from the catalog.
+    access(account) fun removeCatalogEntryUnsafe(collectionIdentifier: String, nftTypeIdentifier: String) {
+        // Remove the catalog entry
+        self.catalog.remove(key: collectionIdentifier)
+
+        // Remove the type entry
+        if (self.catalogTypeData[nftTypeIdentifier]!.keys.length == 1) {
+            self.catalogTypeData.remove(key: nftTypeIdentifier)
+        } else {
+            self.catalogTypeData[nftTypeIdentifier]!.remove(key: collectionIdentifier)
+        }
+    }
+
     access(account) fun updateCatalogProposal(proposalID: UInt64, proposalMetadata : NFTCatalogProposal) {
         self.catalogProposals[proposalID] = proposalMetadata
 

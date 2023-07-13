@@ -60,6 +60,10 @@ pub contract NFTCatalogAdmin {
             NFTCatalog.removeCatalogEntry(collectionIdentifier : collectionIdentifier)
         }
 
+        pub fun removeCatalogEntryUnsafe(collectionIdentifier : String, nftTypeIdentifier: String) {
+            NFTCatalog.removeCatalogEntryUnsafe(collectionIdentifier : collectionIdentifier, nftTypeIdentifier: nftTypeIdentifier)
+        }
+
         pub fun approveCatalogProposal(proposalID : UInt64) {
             pre {
                 NFTCatalog.getCatalogProposalEntry(proposalID : proposalID) != nil : "Invalid Proposal ID"
