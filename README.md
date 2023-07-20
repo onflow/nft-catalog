@@ -184,7 +184,7 @@ Proposals should be reviewed and approved within a few days. Reasons for a propo
 
 All of the below examples use the catalog in mainnet, you may replace the imports to the testnet address when using the testnet network.
 
-**Example 1 - Retrieve all NFT collections on the catalog**
+**Example 1 - Retrieve NFT collections from the catalog**
 
 ```cadence
 import NFTCatalog from 0x49a7cda3a1eecc29
@@ -202,7 +202,7 @@ pub fun main(): {String: NFTCatalog.NFTCatalogMetadata} {
     let collections: {String: NFTCatalog.NFTCatalogMetadata} = {}
 
     for key in keys {
-        collections[key] = catalog[key]
+        collections[key] = NFTCatalog.getCatalogEntry(collectionIdentifier: key)
     }
 
     return collections
@@ -215,11 +215,11 @@ pub fun main(): {String: NFTCatalog.NFTCatalogMetadata} {
 import NFTCatalog from 0x49a7cda3a1eecc29
 
 pub fun main(): [String] {
-    let catalogKeys: {String: NFTCatalog.NFTCatalogMetadata} = NFTCatalog.getCatalogKeys()
+    let catalogKeys = NFTCatalog.getCatalogKeys()
     let catalogNames: [String] = []
 
-    for collectionIdentifier in catalogKeys {
-        catalogNames.append(catalog[collectionIdentifier]!.collectionDisplay.name)
+    for key in catalogKeys {
+        catalogNames.append(NFTCatalog.getCatalogEntry(collectionIdentifier: key)!.collectionDisplay.name)
     }
 
     return catalogNames
