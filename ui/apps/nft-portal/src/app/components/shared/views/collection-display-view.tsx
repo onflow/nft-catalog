@@ -17,7 +17,7 @@ function getFormattedDate(date: any) {
   return month + '/' + day + '/' + year;
 }
 
-function Socials(externalURL: string, socials: any) {
+function Socials(externalURL: any, socials: any) {
   let formattedSocials: [{ social: string; socialLink: string }] = [
     {
       social: 'Website',
@@ -64,9 +64,9 @@ function Socials(externalURL: string, socials: any) {
   };
   const withIcons = (
     <>
-      {externalURL && (
+      {externalURL && externalURL.url && externalURL.url !== '' && (
         <div>
-          <SocialIcon url={externalURL} href={externalURL} {...socialProps} />{' '}
+          <SocialIcon url={externalURL.url} href={externalURL.url} {...socialProps} />{' '}
         </div>
       )}
       {socials &&
@@ -75,11 +75,17 @@ function Socials(externalURL: string, socials: any) {
             socials[social] && socials[social].url
               ? socials[social].url
               : socials[social];
-          return (
-            <div key={social}>
-              <SocialIcon url={socialLink} href={socialLink} {...socialProps} />{' '}
-            </div>
-          );
+          
+          // Only return the SocialIcon component if the socialLink is not null or an empty string
+          if (socialLink && socialLink.url && socialLink.url !== '') {
+            return (
+              <div key={social}>
+                <SocialIcon url={socialLink} href={socialLink} {...socialProps} />{' '}
+              </div>
+            );
+          } else {
+            return null;
+          }
         })}
     </>
   );
