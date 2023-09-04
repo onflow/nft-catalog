@@ -2,6 +2,7 @@ import NonFungibleToken from "../contracts/NonFungibleToken.cdc"
 import ExampleNFT from "../contracts/ExampleNFT.cdc"
 import MetadataViews from "../contracts/MetadataViews.cdc"
 import FungibleToken from "../contracts/FungibleToken.cdc"
+import DapperStorageRent from "../contracts/DapperStorageRent.cdc"
 
 // This script uses the NFTMinter resource to mint a new NFT
 // It must be run with the account that has the minter resource
@@ -60,6 +61,9 @@ transaction(
             .getCapability(ExampleNFT.CollectionPublicPath)
             .borrow<&{NonFungibleToken.CollectionPublic}>()
             ?? panic("Could not get receiver reference to the NFT Collection")
+
+        // Attempt to refuel recipient before depositing NFT
+        DapperStorageRent.tryRefill(recipient)
 
         // Mint the NFT and deposit it to the recipient's collection
         self.minter.mintNFT(
