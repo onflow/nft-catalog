@@ -1,6 +1,6 @@
-import TransactionGeneration from "../contracts/TransactionGeneration.cdc"
+import TransactionGeneration from "TransactionGeneration"
 
-pub fun main(tx: String, collectionIdentifier: String, vaultIdentifier: String, merchantAddress: String) : String {
+access(all) fun main(tx: String, collectionIdentifier: String, vaultIdentifier: String, merchantAddress: String) : String {
     return TransactionGeneration.getTx(tx: tx, params: {
         "collectionIdentifier": collectionIdentifier,
         "vaultIdentifier": vaultIdentifier,

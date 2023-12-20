@@ -1,6 +1,6 @@
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import NFTCatalog from "NFTCatalog"
 
-pub fun main(proposalIDs: [UInt64]): {UInt64 : NFTCatalog.NFTCatalogProposal} {
+access(all) fun main(proposalIDs: [UInt64]): {UInt64 : NFTCatalog.NFTCatalogProposal} {
     var data : {UInt64 : NFTCatalog.NFTCatalogProposal}  = {}
     for proposalID in proposalIDs {
         assert(NFTCatalog.getCatalogProposalEntry(proposalID: proposalID) != nil, message: "Invalid Proposal ID")

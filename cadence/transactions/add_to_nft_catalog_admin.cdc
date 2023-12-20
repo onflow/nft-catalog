@@ -1,6 +1,7 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
+import MetadataViews from "MetadataViews"
+import NFTCatalog from "NFTCatalog"
+import NFTCatalogAdmin from "NFTCatalogAdmin"
+import NonFungibleToken from "NonFungibleToken"
 
 transaction(
     collectionIdentifier : String,
@@ -12,20 +13,18 @@ transaction(
     publicPathIdentifier: String
 ) {
     
-    let adminResource: &NFTCatalogAdmin.Admin
+    let adminResource: auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.Admin
     
-    prepare(acct: AuthAccount) {
-        self.adminResource = acct.borrow<&NFTCatalogAdmin.Admin>(from: NFTCatalogAdmin.AdminStoragePath)!
+    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
+        self.adminResource = acct.storage.borrow<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.Admin>(from: NFTCatalogAdmin.AdminStoragePath)!
     }
     
     execute {
         let nftAccount = getAccount(addressWithNFT)
         let pubPath = PublicPath(identifier: publicPathIdentifier)!
-        let collectionCap = nftAccount.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(pubPath)
-        assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
-        let collectionRef = collectionCap.borrow()!
+        let collectionRef = nftAccount.capabilities.borrow<&{NonFungibleToken.Collection}>(pubPath) ?? panic("Could not get collection public capability")
         assert(collectionRef.getIDs().length > 0, message: "No NFTs exist in this collection.")
-        let nftResolver = collectionRef.borrowViewResolver(id: nftID)
+        let nftResolver = collectionRef.borrowViewResolver(id: nftID) ?? panic("Couldn't get view resolver")
         
         let metadataCollectionData = nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
         

@@ -1,24 +1,25 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
-import NFTRetrieval from "../contracts/NFTRetrieval.cdc"
+import MetadataViews from "MetadataViews"
+import NFTCatalog from "NFTCatalog"
+import NFTRetrieval from "NFTRetrieval"
+import ViewResolver from "ViewResolver"
 
-pub struct NFT {
-    pub let id: UInt64
-    pub let name: String
-    pub let description: String
-    pub let thumbnail: String
-    pub let externalURL: String
-    pub let storagePath: StoragePath
-    pub let publicPath: PublicPath
-    pub let privatePath: PrivatePath
-    pub let publicLinkedType: Type
-    pub let privateLinkedType: Type
-    pub let collectionName: String
-    pub let collectionDescription: String
-    pub let collectionSquareImage: String
-    pub let collectionBannerImage: String
-    pub let collectionExternalURL: String
-    pub let royalties: [MetadataViews.Royalty]
+access(all) struct NFT {
+    access(all) let id: UInt64
+    access(all) let name: String
+    access(all) let description: String
+    access(all) let thumbnail: String
+    access(all) let externalURL: String
+    access(all) let storagePath: StoragePath
+    access(all) let publicPath: PublicPath
+    access(all) let privatePath: PrivatePath
+    access(all) let publicLinkedType: Type
+    access(all) let privateLinkedType: Type
+    access(all) let collectionName: String
+    access(all) let collectionDescription: String
+    access(all) let collectionSquareImage: String
+    access(all) let collectionBannerImage: String
+    access(all) let collectionExternalURL: String
+    access(all) let royalties: [MetadataViews.Royalty]
 
     init(
         id: UInt64,
@@ -57,8 +58,8 @@ pub struct NFT {
     }
 }
 
-pub fun main(ownerAddress: Address, collectionIdentifiers: [String]): {String: [NFT]} {
-    let account = getAuthAccount(ownerAddress)
+access(all) fun main(ownerAddress: Address, collectionIdentifiers: [String]): {String: [NFT]} {
+    let account = getAuthAccount<auth(Storage,BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account>(ownerAddress)
     let data: {String: [NFT]} = {}
 
     for collectionIdentifier in collectionIdentifiers {
@@ -68,12 +69,8 @@ pub fun main(ownerAddress: Address, collectionIdentifiers: [String]): {String: [
             let tempPathStr = "catalog".concat(identifierHash)
             let tempPublicPath = PublicPath(identifier: tempPathStr)!
 
-            account.link<&{MetadataViews.ResolverCollection}>(
-                tempPublicPath,
-                target: value.collectionData.storagePath
-            )
-
-            let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+            let collectionCap = account.capabilities.storage.issue<&{ViewResolver.ResolverCollection}>(value.collectionData.storagePath)
+            account.capabilities.publish(collectionCap, at: tempPublicPath)
 
             if !collectionCap.check() {
                 continue

@@ -1,13 +1,13 @@
-import FungibleToken from "./FungibleToken.cdc"
-import FlowToken from "./FlowToken.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
-import MetadataViews from "./MetadataViews.cdc"
-import NFTCatalog from "./NFTCatalog.cdc"
-import StringUtils from "./StringUtils.cdc"
-import ArrayUtils from "./ArrayUtils.cdc"
-import NFTStorefrontV2 from "./NFTStorefrontV2.cdc"
-import DapperUtilityCoin from "./DapperUtilityCoin.cdc"
-import FlowUtilityToken from "./FlowUtilityToken.cdc"
+import FungibleToken from "FungibleToken"
+import FlowToken from "FlowToken"
+import NonFungibleToken from "NonFungibleToken"
+import MetadataViews from "MetadataViews"
+import NFTCatalog from "NFTCatalog"
+import StringUtils from "StringUtils"
+import ArrayUtils from "ArrayUtils"
+import NFTStorefrontV2 from "NFTStorefrontV2"
+import DapperUtilityCoin from "DapperUtilityCoin"
+import FlowUtilityToken from "FlowUtilityToken"
 
 // TransactionGenerationUtils
 //
@@ -17,27 +17,27 @@ import FlowUtilityToken from "./FlowUtilityToken.cdc"
 // WIP made by amit
 //
 
-pub contract TransactionGenerationUtils {
-    pub struct interface TokenSchema {
-        pub let identifier: String
-        pub let contractName: String
-        pub let storagePath: String
-        pub let publicPath: String
-        pub let privatePath: String
-        pub let type: Type
-        pub let publicLinkedType: Type
-        pub let privateLinkedType: Type
+access(all) contract TransactionGenerationUtils {
+    access(all) struct interface TokenSchema {
+        access(all) let identifier: String
+        access(all) let contractName: String
+        access(all) let storagePath: String
+        access(all) let publicPath: String
+        access(all) let privatePath: String
+        access(all) let type: Type
+        access(all) let publicLinkedType: Type
+        access(all) let privateLinkedType: Type
     }
 
-    pub struct FTSchema: TokenSchema {
-        pub let identifier: String
-        pub let contractName: String
-        pub let storagePath: String
-        pub let publicPath: String
-        pub let privatePath: String
-        pub let type: Type
-        pub let publicLinkedType: Type
-        pub let privateLinkedType: Type
+    access(all) struct FTSchema: TokenSchema {
+        access(all) let identifier: String
+        access(all) let contractName: String
+        access(all) let storagePath: String
+        access(all) let publicPath: String
+        access(all) let privatePath: String
+        access(all) let type: Type
+        access(all) let publicLinkedType: Type
+        access(all) let privateLinkedType: Type
         init(
             identifier: String,
             contractName: String,
@@ -59,16 +59,16 @@ pub contract TransactionGenerationUtils {
         }
     }
 
-    pub struct FTSchemaV2: TokenSchema {
-        pub let identifier: String
-        pub let contractName: String
-        pub let storagePath: String
-        pub let publicPath: String
-        pub let privatePath: String
-        pub let type: Type
-        pub let publicLinkedType: Type
-        pub let privateLinkedType: Type
-        pub let receiverStoragePath : String?
+    access(all) struct FTSchemaV2: TokenSchema {
+        access(all) let identifier: String
+        access(all) let contractName: String
+        access(all) let storagePath: String
+        access(all) let publicPath: String
+        access(all) let privatePath: String
+        access(all) let type: Type
+        access(all) let publicLinkedType: Type
+        access(all) let privateLinkedType: Type
+        access(all) let receiverStoragePath : String?
         
         init(
             identifier: String,
@@ -93,15 +93,15 @@ pub contract TransactionGenerationUtils {
         }
     }
 
-    pub struct NFTSchema: TokenSchema {
-        pub let identifier: String
-        pub let contractName: String
-        pub let storagePath: String
-        pub let publicPath: String
-        pub let privatePath: String
-        pub let type: Type
-        pub let publicLinkedType: Type
-        pub let privateLinkedType: Type
+    access(all) struct NFTSchema: TokenSchema {
+        access(all) let identifier: String
+        access(all) let contractName: String
+        access(all) let storagePath: String
+        access(all) let publicPath: String
+        access(all) let privatePath: String
+        access(all) let type: Type
+        access(all) let publicLinkedType: Type
+        access(all) let privateLinkedType: Type
         init(
             identifier: String,
             contractName: String,
@@ -126,7 +126,7 @@ pub contract TransactionGenerationUtils {
     /*
         We do not yet have a FT catalog, so FTs must be hardcoded for now.
     */
-    pub fun getFtSchema(vaultIdentifier: String): FTSchemaV2? {
+    access(all) fun getFtSchema(vaultIdentifier: String): FTSchemaV2? {
         switch vaultIdentifier {
             case "flow":
                 return FTSchemaV2(
@@ -136,8 +136,8 @@ pub contract TransactionGenerationUtils {
                     publicPath: "/public/flow",
                     privatePath: "/private/flow",
                     type: Type<@FlowToken.Vault>(),
-                    publicLinkedType: Type<@FlowToken.Vault{FungibleToken.Receiver, FungibleToken.Balance}>(),
-                    privateLinkedType: Type<@FlowToken.Vault{FungibleToken.Provider}>(),
+                    publicLinkedType: Type<@FlowToken.Vault>(),
+                    privateLinkedType: Type<auth(NonFungibleToken.Withdrawable) &FlowToken.Vault>(),
                     receiverStoragePath : nil
                 )
             case "duc":
@@ -148,8 +148,8 @@ pub contract TransactionGenerationUtils {
                     publicPath: "/public/dapperUtilityCoinReceiver",
                     privatePath: "/private/dapperUtilityCoinVault",
                     type: Type<@DapperUtilityCoin.Vault>(),
-                    publicLinkedType: Type<@DapperUtilityCoin.Vault{FungibleToken.Receiver}>(),
-                    privateLinkedType: Type<@DapperUtilityCoin.Vault{FungibleToken.Provider, FungibleToken.Balance}>(),
+                    publicLinkedType: Type<@DapperUtilityCoin.Vault>(),
+                    privateLinkedType: Type<auth(NonFungibleToken.Withdrawable) &DapperUtilityCoin.Vault>(),
                     receiverStoragePath : "/storage/dapperUtilityCoinReceiver"
                 )
             case "fut":
@@ -160,8 +160,8 @@ pub contract TransactionGenerationUtils {
                     publicPath: "/public/flowUtilityTokenReceiver",
                     privatePath: "",
                     type: Type<@FlowUtilityToken.Vault>(),
-                    publicLinkedType: Type<@FlowUtilityToken.Vault{FungibleToken.Receiver}>(),
-                    privateLinkedType: Type<@FlowUtilityToken.Vault>(),
+                    publicLinkedType: Type<@FlowUtilityToken.Vault>(),
+                    privateLinkedType: Type<auth(NonFungibleToken.Withdrawable) &FlowUtilityToken.Vault>(),
                     receiverStoragePath : "/storage/flowUtilityTokenReceiver"
                 )
             default:
@@ -169,7 +169,7 @@ pub contract TransactionGenerationUtils {
         }
     }
 
-    pub fun getNftSchema(collectionIdentifier: String): NFTSchema? {
+    access(all) fun getNftSchema(collectionIdentifier: String): NFTSchema? {
         let catalogEntry = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)
         if catalogEntry == nil {
             return nil
@@ -196,7 +196,7 @@ pub contract TransactionGenerationUtils {
         )
     }
 
-    pub fun createImports(imports: [Type]): String {
+    access(all) fun createImports(imports: [Type]): String {
         var duplicates: {String: Bool} = {}
         var res: [String] = []
         let types: [String] = []
@@ -235,12 +235,12 @@ pub contract TransactionGenerationUtils {
         return StringUtils.join(res, "\n")
     }
 
-    pub fun getAddressFromType(_ type: Type): String {
+    access(all) fun getAddressFromType(_ type: Type): String {
         let typeStr = type.identifier
         return "0x".concat(StringUtils.split(typeStr, ".")[1])
     }
 
-    pub fun createStaticTypeFromType(_ type: Type): String {
+    access(all) fun createStaticTypeFromType(_ type: Type): String {
         // A type identifier may come in like the following:
         // &A.01cf0e2f2f715450.ExampleNFT.Collection{A.01cf0e2f2f715450.ExampleNFT.ExampleNFTCollectionPublic}
         // and we would want:

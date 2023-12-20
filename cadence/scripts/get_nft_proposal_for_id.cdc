@@ -1,5 +1,5 @@
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import NFTCatalog from "NFTCatalog"
 
-pub fun main(proposalID: UInt64): NFTCatalog.NFTCatalogProposal? {
+access(all) fun main(proposalID: UInt64): NFTCatalog.NFTCatalogProposal? {
     return NFTCatalog.getCatalogProposalEntry(proposalID: proposalID)
 }

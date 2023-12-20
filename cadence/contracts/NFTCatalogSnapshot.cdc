@@ -9,7 +9,7 @@
 // https://github.com/dapperlabs/nft-catalog/issues/138
 // 
 
-pub contract NFTCatalogSnapshot {
+access(all) contract NFTCatalogSnapshot {
 
   access(self) var catalogSnapshot: {String : AnyStruct}?
   pub var snapshotBlockHeight: UInt64?
@@ -19,7 +19,7 @@ pub contract NFTCatalogSnapshot {
     self.snapshotBlockHeight = getCurrentBlock().height
   }
 
-  pub fun getCatalogSnapshot(): {String : AnyStruct}? {
+  access(all) fun getCatalogSnapshot(): {String : AnyStruct}? {
     return self.catalogSnapshot
   }
 

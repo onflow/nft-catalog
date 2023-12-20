@@ -1,13 +1,13 @@
-import FungibleToken from "./FungibleToken.cdc"
-import NonFungibleToken from "./NonFungibleToken.cdc"
-import MetadataViews from "./MetadataViews.cdc"
-import NFTCatalog from "./NFTCatalog.cdc"
-import StringUtils from "./StringUtils.cdc"
-import ArrayUtils from "./ArrayUtils.cdc"
-import NFTStorefrontV2 from "./NFTStorefrontV2.cdc"
-import TransactionGenerationUtils from "./TransactionGenerationUtils.cdc"
-import TransactionTemplates from "./TransactionTemplates.cdc"
-import TokenForwarding from "./TokenForwarding.cdc"
+import FungibleToken from "FungibleToken"
+import NonFungibleToken from "NonFungibleToken"
+import MetadataViews from "MetadataViews"
+import NFTCatalog from "NFTCatalog"
+import StringUtils from "StringUtils"
+import ArrayUtils from "ArrayUtils"
+import NFTStorefrontV2 from "NFTStorefrontV2"
+import TransactionGenerationUtils from "TransactionGenerationUtils"
+import TransactionTemplates from "TransactionTemplates"
+import TokenForwarding from "TokenForwarding"
 
 // TransactionGeneration
 //
@@ -18,12 +18,12 @@ import TokenForwarding from "./TokenForwarding.cdc"
 // and add a new switch case for your template within the `getTx` function
 //
 
-pub contract TransactionGeneration {
+access(all) contract TransactionGeneration {
 
-    pub fun createTxFromSchemas(
+    access(all) fun createTxFromSchemas(
         nftSchema: TransactionGenerationUtils.NFTSchema?,
         ftSchema: TransactionGenerationUtils.FTSchemaV2?,
-        createTxCode: ((TransactionGenerationUtils.NFTSchema?,TransactionGenerationUtils.FTSchemaV2?): String),
+        createTxCode: fun (TransactionGenerationUtils.NFTSchema?,TransactionGenerationUtils.FTSchemaV2?): String,
         importTypes: [Type]
     ) : String? {
         let imports = TransactionGenerationUtils.createImports(imports: importTypes)
@@ -31,7 +31,7 @@ pub contract TransactionGeneration {
         return StringUtils.join([imports, tx!], "\n")
     }
 
-    pub fun getSupportedTx(): [String] {
+    access(all) fun getSupportedTx(): [String] {
         return [
             "CollectionInitialization",
             "StorefrontListItem",
@@ -43,14 +43,14 @@ pub contract TransactionGeneration {
         ]
     }
 
-    pub fun getSupportedScripts(): [String] {
+    access(all) fun getSupportedScripts(): [String] {
         return [
             "DapperGetPrimaryListingMetadata",
             "DapperGetSecondaryListingMetadata"
         ]
     }
 
-    pub fun getTx(tx: String, params: {String: String}): String? {
+    access(all) fun getTx(tx: String, params: {String: String}): String? {
         let collectionIdentifier = params["collectionIdentifier"]
         let vaultIdentifier = params["vaultIdentifier"]
         
@@ -68,7 +68,7 @@ pub contract TransactionGeneration {
         // This createTxCode function will get overrode, and utilized towards the end.
         // If we're unable to override this function due to not having a relevant template,
         // the function will not continue, and will just return nil
-        var createTxCode: ((TransactionGenerationUtils.NFTSchema?,TransactionGenerationUtils.FTSchemaV2?): String) = (
+        var createTxCode: fun (TransactionGenerationUtils.NFTSchema?,TransactionGenerationUtils.FTSchemaV2?): String = (
             fun (nftSchema: TransactionGenerationUtils.NFTSchema?,ftSchema: TransactionGenerationUtils.FTSchemaV2?): String {
                 return ""
             }

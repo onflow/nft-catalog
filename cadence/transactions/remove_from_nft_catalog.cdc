@@ -1,17 +1,16 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
+import NFTCatalog from "NFTCatalog"
+import NFTCatalogAdmin from "NFTCatalogAdmin"
 
 transaction(
     collectionIdentifier : String
 ) {
-    let adminProxyResource : &NFTCatalogAdmin.AdminProxy
+    let adminProxyRef: &NFTCatalogAdmin.AdminProxy
 
-    prepare(acct: AuthAccount) {
-        self.adminProxyResource = acct.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
+    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
+        self.adminProxyRef = acct.storage.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
     }
 
     execute {     
-        self.adminProxyResource.getCapability()!.borrow()!.removeCatalogEntry(collectionIdentifier : collectionIdentifier)
+        self.adminProxyRef.getCapability()!.borrow()!.removeCatalogEntry(collectionIdentifier : collectionIdentifier)
     }
 }

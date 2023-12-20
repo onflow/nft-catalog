@@ -1,14 +1,15 @@
 import MetadataViews from "./MetadataViews.cdc"
 import NFTCatalog from "./NFTCatalog.cdc"
+import ViewResolver from "./ViewResolver.cdc"
 
 // NFTRetrieval
 //
 // A helper contract to get NFT's in a users account
 // leveraging the NFTCatalog Smart Contract
 
-pub contract NFTRetrieval {
+access(all) contract NFTRetrieval {
     
-    pub fun getRecommendedViewsTypes(version: String) : [Type] {
+    access(all) fun getRecommendedViewsTypes(version: String) : [Type] {
         switch version {
             case "v1":
                 return [
@@ -21,10 +22,9 @@ pub contract NFTRetrieval {
             default:
                 panic("Version not supported")
         } 
-        return []
     }
 
-    pub fun getNFTIDsFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : [UInt64] {
+    access(all) fun getNFTIDsFromCap(collectionIdentifier: String, collectionCap : Capability<&{ViewResolver.ResolverCollection}>) : [UInt64] {
         pre {
             NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
@@ -42,7 +42,7 @@ pub contract NFTRetrieval {
             
             for id in collectionRef.getIDs() {
                 let nftResolver = collectionRef.borrowViewResolver(id: id)
-                let nftViews = MetadataViews.getNFTView(id: id, viewResolver: nftResolver)
+                let nftViews = MetadataViews.getNFTView(id: id, viewResolver: nftResolver!)
                 if nftViews.display!.name == value.collectionDisplay.name {
                     ids.append(id)
                 } 
@@ -53,7 +53,7 @@ pub contract NFTRetrieval {
         return []
     }
 
-    pub fun getNFTCountFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : UInt64 {
+    access(all) fun getNFTCountFromCap(collectionIdentifier: String, collectionCap : Capability<&{ViewResolver.ResolverCollection}>) : UInt64 {
         pre {
             NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
@@ -69,7 +69,7 @@ pub contract NFTRetrieval {
             var count : UInt64 = 0
             for id in collectionRef.getIDs() {
                 let nftResolver = collectionRef.borrowViewResolver(id: id)
-                let nftViews = MetadataViews.getNFTView(id: id, viewResolver: nftResolver)
+                let nftViews = MetadataViews.getNFTView(id: id, viewResolver: nftResolver!)
                 if nftViews.display!.name == value.collectionDisplay.name {
                     count = count + 1
                 }   
@@ -79,7 +79,7 @@ pub contract NFTRetrieval {
         return 0 
     }
 
-    pub fun getAllMetadataViewsFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : {String: AnyStruct} {
+    access(all) fun getAllMetadataViewsFromCap(collectionIdentifier: String, collectionCap : Capability<&{ViewResolver.ResolverCollection}>) : {String: AnyStruct} {
         pre {
             NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
@@ -92,7 +92,7 @@ pub contract NFTRetrieval {
         if collectionCap.check() {
             let collectionRef = collectionCap.borrow()!
             for id in collectionRef.getIDs() {
-                let nftResolver = collectionRef.borrowViewResolver(id: id)
+                let nftResolver = collectionRef.borrowViewResolver(id: id)!
                 let supportedNftViewTypes = nftResolver.getViews()
                 for supportedViewType in supportedNftViewTypes {
                     if let view = nftResolver.resolveView(supportedViewType) {
@@ -108,7 +108,7 @@ pub contract NFTRetrieval {
         return items
     }
 
-    pub fun getNFTViewsFromCap(collectionIdentifier: String, collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : [MetadataViews.NFTView] {
+    access(all) fun getNFTViewsFromCap(collectionIdentifier: String, collectionCap : Capability<&{ViewResolver.ResolverCollection}>) : [MetadataViews.NFTView] {
         pre {
             NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
@@ -122,7 +122,7 @@ pub contract NFTRetrieval {
             let collectionRef = collectionCap.borrow()!
             for id in collectionRef.getIDs() {
                 let nftResolver = collectionRef.borrowViewResolver(id: id)
-                let nftViews = MetadataViews.getNFTView(id: id, viewResolver: nftResolver)
+                let nftViews = MetadataViews.getNFTView(id: id, viewResolver: nftResolver!)
                 if !hasMultipleCollections {
                     items.append(nftViews)
                 } else if nftViews.display!.name == value.collectionDisplay.name {
@@ -135,7 +135,7 @@ pub contract NFTRetrieval {
         return items
     }
 
-    pub fun getNFTViewsFromIDs(collectionIdentifier : String, ids: [UInt64], collectionCap : Capability<&AnyResource{MetadataViews.ResolverCollection}>) : [MetadataViews.NFTView] {
+    access(all) fun getNFTViewsFromIDs(collectionIdentifier : String, ids: [UInt64], collectionCap : Capability<&{ViewResolver.ResolverCollection}>) : [MetadataViews.NFTView] {
         pre {
              NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
         }
@@ -152,7 +152,7 @@ pub contract NFTRetrieval {
                     continue
                 }
                 let nftResolver = collectionRef.borrowViewResolver(id: id)
-                let nftViews = MetadataViews.getNFTView(id: id, viewResolver: nftResolver)
+                let nftViews = MetadataViews.getNFTView(id: id, viewResolver: nftResolver!)
                 if !hasMultipleCollections {
                     items.append(nftViews)
                 } else if nftViews.display!.name == value.collectionDisplay.name {
@@ -184,13 +184,13 @@ pub contract NFTRetrieval {
 
 
     //LEGACY - DO NOT USE
-    pub struct BaseNFTViewsV1 {
-        pub let id: UInt64
-        pub let display: MetadataViews.Display?
-        pub let externalURL: MetadataViews.ExternalURL?
-        pub let collectionData: MetadataViews.NFTCollectionData?
-        pub let collectionDisplay: MetadataViews.NFTCollectionDisplay?
-        pub let royalties: MetadataViews.Royalties?
+    access(all) struct BaseNFTViewsV1 {
+        access(all) let id: UInt64
+        access(all) let display: MetadataViews.Display?
+        access(all) let externalURL: MetadataViews.ExternalURL?
+        access(all) let collectionData: MetadataViews.NFTCollectionData?
+        access(all) let collectionDisplay: MetadataViews.NFTCollectionDisplay?
+        access(all) let royalties: MetadataViews.Royalties?
 
         init(
             id : UInt64,

@@ -1,5 +1,5 @@
-import TransactionGeneration from "../contracts/TransactionGeneration.cdc"
+import TransactionGeneration from "TransactionGeneration"
 
-pub fun main() : [String] {
+access(all) fun main() : [String] {
     return TransactionGeneration.getSupportedScripts()
 }

@@ -12,24 +12,24 @@
 import NonFungibleToken from "./NonFungibleToken.cdc"
 import MetadataViews from "./MetadataViews.cdc"
 
-pub contract NonStandardNFT: NonFungibleToken {
+access(all) contract NonStandardNFT: NonFungibleToken {
 
-    pub var totalSupply: UInt64
+    access(all) var totalSupply: UInt64
 
-    pub event ContractInitialized()
-    pub event Withdraw(id: UInt64, from: Address?)
-    pub event Deposit(id: UInt64, to: Address?)
+    access(all) event ContractInitialized()
+    access(all) event Withdraw(id: UInt64, from: Address?)
+    access(all) event Deposit(id: UInt64, to: Address?)
 
-    pub let CollectionStoragePath: StoragePath
-    pub let CollectionPublicPath: PublicPath
-    pub let MinterStoragePath: StoragePath
+    access(all) let CollectionStoragePath: StoragePath
+    access(all) let CollectionPublicPath: PublicPath
+    access(all) let MinterStoragePath: StoragePath
 
-    pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
-        pub let id: UInt64
+    access(all) resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
+        access(all) let id: UInt64
 
-        pub let name: String
-        pub let description: String
-        pub let thumbnail: String
+        access(all) let name: String
+        access(all) let description: String
+        access(all) let thumbnail: String
         access(self) let royalties: [MetadataViews.Royalty]
 
         init(
@@ -46,7 +46,7 @@ pub contract NonStandardNFT: NonFungibleToken {
             self.royalties = royalties
         }
     
-        pub fun getViews(): [Type] {
+        access(all) fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Royalties>(),
                 Type<MetadataViews.Editions>(),
@@ -55,7 +55,7 @@ pub contract NonStandardNFT: NonFungibleToken {
             ]
         }
 
-        pub fun resolveView(_ view: Type): AnyStruct? {
+        access(all) fun resolveView(_ view: Type): AnyStruct? {
             switch view {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
@@ -86,11 +86,11 @@ pub contract NonStandardNFT: NonFungibleToken {
         }
     }
 
-    pub resource interface NonStandardNFTCollectionPublic {
-        pub fun deposit(token: @NonFungibleToken.NFT)
-        pub fun getIDs(): [UInt64]
-        pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
-        pub fun borrowNonStandardNFT(id: UInt64): &NonStandardNFT.NFT? {
+    access(all) resource interface NonStandardNFTCollectionPublic {
+        access(all) fun deposit(token: @NonFungibleToken.NFT)
+        access(all) fun getIDs(): [UInt64]
+        access(all) fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
+        access(all) fun borrowNonStandardNFT(id: UInt64): &NonStandardNFT.NFT? {
             post {
                 (result == nil) || (result?.id == id):
                     "Cannot borrow NonStandardNFT reference: the ID of the returned reference is incorrect"
@@ -98,17 +98,17 @@ pub contract NonStandardNFT: NonFungibleToken {
         }
     }
 
-    pub resource Collection: NonStandardNFTCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
+    access(all) resource Collection: NonStandardNFTCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         // dictionary of NFT conforming tokens
         // NFT is a resource type with an `UInt64` ID field
-        pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
+        access(all) var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         init () {
             self.ownedNFTs <- {}
         }
 
         // withdraw removes an NFT from the collection and moves it to the caller
-        pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
+        access(all) fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
             let token <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing NFT")
 
             emit Withdraw(id: token.id, from: self.owner?.address)
@@ -118,7 +118,7 @@ pub contract NonStandardNFT: NonFungibleToken {
 
         // deposit takes a NFT and adds it to the collections dictionary
         // and adds the ID to the id array
-        pub fun deposit(token: @NonFungibleToken.NFT) {
+        access(all) fun deposit(token: @NonFungibleToken.NFT) {
             let token <- token as! @NonStandardNFT.NFT
 
             let id: UInt64 = token.id
@@ -132,50 +132,45 @@ pub contract NonStandardNFT: NonFungibleToken {
         }
 
         // getIDs returns an array of the IDs that are in the collection
-        pub fun getIDs(): [UInt64] {
+        access(all) fun getIDs(): [UInt64] {
             return self.ownedNFTs.keys
         }
 
         // borrowNFT gets a reference to an NFT in the collection
         // so that the caller can read its metadata and call its methods
-        pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
+        access(all) fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
             return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
         }
- 
-        pub fun borrowNonStandardNFT(id: UInt64): &NonStandardNFT.NFT? {
+
+        access(all) fun borrowNonStandardNFT(id: UInt64): &NonStandardNFT.NFT? {
             if self.ownedNFTs[id] != nil {
-                // Create an authorized reference to allow downcasting
-                let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-                return ref as! &NonStandardNFT.NFT
+                return &self.ownedNFTs[id] as &NonStandardNFT.NFT?
             }
 
             return nil
         }
 
-        pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
-            let nft = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-            let nonStandardNFT = nft as! &NonStandardNFT.NFT
-            return nonStandardNFT as &AnyResource{MetadataViews.Resolver}
-        }
-
-        destroy() {
-            destroy self.ownedNFTs
+        access(all) fun borrowViewResolver(id: UInt64): &{MetadataViews.Resolver}? {
+            if let nft = &self.ownedNFTs[id] as &NonStandardNFT.NFT? {
+                return nft as &{MetadataViews.Resolver}
+            }
+            return nil
         }
     }
 
     // public function that anyone can call to create a new empty collection
-    pub fun createEmptyCollection(): @NonFungibleToken.Collection {
+    access(all) fun createEmptyCollection(): @NonFungibleToken.Collection {
         return <- create Collection()
     }
 
     // Resource that an admin or something similar would own to be
     // able to mint new NFTs
     //
-    pub resource NFTMinter {
+    access(all) resource NFTMinter {
 
         // mintNFT mints a new NFT with a new ID
         // and deposit it in the recipients collection using their collection reference
-        pub fun mintNFT(
+        access(all) fun mintNFT(
             recipient: &{NonFungibleToken.CollectionPublic},
             name: String,
             description: String,
@@ -210,17 +205,15 @@ pub contract NonStandardNFT: NonFungibleToken {
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
-        self.account.save(<-collection, to: self.CollectionStoragePath)
+        self.account.storage.save(<-collection, to: self.CollectionStoragePath)
 
         // create a public capability for the collection
-        self.account.link<&NonStandardNFT.Collection{NonFungibleToken.CollectionPublic, NonStandardNFT.NonStandardNFTCollectionPublic, MetadataViews.ResolverCollection}>(
-            self.CollectionPublicPath,
-            target: self.CollectionStoragePath
-        )
+        let collectionCap = self.account.capabilities.storage.issue<&NonStandardNFT.Collection>(self.CollectionStoragePath)
+        self.account.capabilities.publish(collectionCap, at: self.CollectionPublicPath)
 
         // Create a Minter resource and save it to storage
         let minter <- create NFTMinter()
-        self.account.save(<-minter, to: self.MinterStoragePath)
+        self.account.storage.save(<-minter, to: self.MinterStoragePath)
 
         emit ContractInitialized()
     }

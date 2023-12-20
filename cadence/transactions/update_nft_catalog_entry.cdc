@@ -1,6 +1,6 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
+import MetadataViews from "MetadataViews"
+import NFTCatalog from "NFTCatalog"
+import NFTCatalogAdmin from "NFTCatalogAdmin"
 
 transaction(
         collectionIdentifier : String,
@@ -10,10 +10,10 @@ transaction(
         addressWithNFT: Address,
         publicPathIdentifier: String
 ) {
-        let adminProxyResource : &NFTCatalogAdmin.AdminProxy
+        let adminProxyRef : &NFTCatalogAdmin.AdminProxy
 
-        prepare(acct: AuthAccount) {
-                self.adminProxyResource = acct.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
+        prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
+                self.adminProxyRef = acct.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
         }
 
         execute {
@@ -46,6 +46,6 @@ transaction(
                         collectionDisplay : collectionDisplay
                 )
                 
-                self.adminProxyResource.getCapability()!.borrow()!.updateCatalogEntry(collectionIdentifier : collectionIdentifier, metadata : catalogData)
+                self.adminProxyRef.getCapability()!.borrow()!.updateCatalogEntry(collectionIdentifier : collectionIdentifier, metadata : catalogData)
         }
 }

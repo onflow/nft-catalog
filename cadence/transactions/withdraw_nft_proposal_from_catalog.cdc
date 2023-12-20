@@ -1,12 +1,12 @@
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import NFTCatalog from "NFTCatalog.cdc"
 
 transaction(
     proposalID : UInt64
 ) {
     let nftCatalogProposalResourceRef : &NFTCatalog.NFTCatalogProposalManager
 
-    prepare(acct: AuthAccount) {
-        self.nftCatalogProposalResourceRef = acct.borrow<&NFTCatalog.NFTCatalogProposalManager>(from: NFTCatalog.ProposalManagerStoragePath)!
+    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
+        self.nftCatalogProposalResourceRef = acct.storage.borrow<&NFTCatalog.NFTCatalogProposalManager>(from: NFTCatalog.ProposalManagerStoragePath)!
     }
 
     execute {

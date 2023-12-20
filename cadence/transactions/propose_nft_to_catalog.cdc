@@ -1,5 +1,5 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import MetadataViews from "MetadataViews"
+import NFTCatalog from "NFTCatalog"
 
 transaction(
     collectionIdentifier : String,
@@ -12,7 +12,7 @@ transaction(
     publicLinkedTypeIdentifier : String,
     publicLinkedTypeRestrictions : [String],
     privateLinkedTypeIdentifier : String,
-    privateLinkedTypeRestrictions : [String],
+    privateLinkedTypeEntitlements : [String],
     collectionName : String,
     collectionDescription: String,
     externalURL : String,
@@ -26,30 +26,36 @@ transaction(
 
     let nftCatalogProposalResourceRef : &NFTCatalog.NFTCatalogProposalManager
     
-    prepare(acct: AuthAccount) {
+    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
         
-        if acct.borrow<&NFTCatalog.NFTCatalogProposalManager>(from: NFTCatalog.ProposalManagerStoragePath) == nil {
-             let proposalManager <- NFTCatalog.createNFTCatalogProposalManager()
-             acct.save(<-proposalManager, to: NFTCatalog.ProposalManagerStoragePath)
-             acct.link<&NFTCatalog.NFTCatalogProposalManager{NFTCatalog.NFTCatalogProposalManagerPublic}>(NFTCatalog.ProposalManagerPublicPath, target: NFTCatalog.ProposalManagerStoragePath)
+        if acct.storage.borrow<&NFTCatalog.NFTCatalogProposalManager>(from: NFTCatalog.ProposalManagerStoragePath) == nil {
+            let proposalManager <- NFTCatalog.createNFTCatalogProposalManager()
+            acct.storage.save(<-proposalManager, to: NFTCatalog.ProposalManagerStoragePath)
+            let proposalManagerCap = acct.capabilities.storage.issue<&NFTCatalog.NFTCatalogProposalManager>(
+                NFTCatalog.ProposalManagerStoragePath
+            )
+            acct.capabilities.publish(
+                proposalManagerCap,
+                at: NFTCatalog.ProposalManagerPublicPath
+            )
         }
 
-        self.nftCatalogProposalResourceRef = acct.borrow<&NFTCatalog.NFTCatalogProposalManager>(from: NFTCatalog.ProposalManagerStoragePath)!
+        self.nftCatalogProposalResourceRef = acct.storage.borrow<&NFTCatalog.NFTCatalogProposalManager>(from: NFTCatalog.ProposalManagerStoragePath)!
     }
     
     execute {
         var privateLinkedType: Type? = nil
-        if (privateLinkedTypeRestrictions.length == 0) {
+        if (privateLinkedTypeEntitlements.length == 0) {
             privateLinkedType = CompositeType(publicLinkedTypeIdentifier)
         } else {
-            privateLinkedType = RestrictedType(identifier : privateLinkedTypeIdentifier, restrictions: privateLinkedTypeRestrictions)
+            privateLinkedType = ReferenceType(entitlements: privateLinkedTypeEntitlements, type: CompositeType(publicLinkedTypeIdentifier)!)
         }
         
         let collectionData = NFTCatalog.NFTCollectionData(
             storagePath: StoragePath(identifier: storagePathIdentifier)!,
             publicPath: PublicPath(identifier : publicPathIdentifier)!,
             privatePath: PrivatePath(identifier: privatePathIdentifier)!,
-            publicLinkedType : RestrictedType(identifier : publicLinkedTypeIdentifier, restrictions: publicLinkedTypeRestrictions)!,
+            publicLinkedType : CompositeType(publicLinkedTypeIdentifier)!,
             privateLinkedType : privateLinkedType!
         )
 
