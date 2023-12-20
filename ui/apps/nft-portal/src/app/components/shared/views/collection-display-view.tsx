@@ -146,18 +146,25 @@ export function CollectionDisplayView(props: any) {
     </div>
   );
 
-  let collectionSquareImage =
-    view.squareImage && view.squareImage.file
-      ? view.squareImage.file.url
-      : view.collectionSquareImage.file.url;
+  // Check if IPS File
+  let collectionSquareImage;
+  if(view.squareImage?.file?.cid != null) {
+    collectionSquareImage = 'https://ipfs.io/ipfs/' + view.squareImage?.file?.cid;
+  } else {
+    collectionSquareImage =
+      view.squareImage && view.squareImage.file
+        ? view.squareImage.file.url
+        : view.collectionSquareImage.file.url;
+    if (collectionSquareImage.startsWith('ipfs://')) {
+      collectionSquareImage =
+        'https://ipfs.io/ipfs/' + collectionSquareImage.substring(7);
+    }
+  }
+
   const externalURL =
     view && view.externalURL && view.externalURL.url
       ? view.externalURL.url
       : view.externalURL;
-  if (collectionSquareImage.startsWith('ipfs://')) {
-    collectionSquareImage =
-      'https://ipfs.io/ipfs/' + collectionSquareImage.substring(7);
-  }
   return (
     <>
       <div className="flex xs:flex-col md:flex-row">
