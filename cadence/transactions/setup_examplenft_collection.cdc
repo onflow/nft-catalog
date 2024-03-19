@@ -8,15 +8,17 @@ import "MetadataViews"
 transaction {
 
     prepare(signer: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
-        let collectionData: MetadataViews.NFTCollectionData = ExampleNFT.getCollectionData(nftType: Type<@ExampleNFT.NFT>())
-            ?? panic("ExampleNFT did not resolve NFTCollectionData view")
+        
+        let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+            ?? panic("ViewResolver does not resolve NFTCollectionData view")
+
         // Return early if the account already has a collection
         if signer.storage.borrow<&ExampleNFT.Collection>(from: collectionData.storagePath) != nil {
             return
         }
 
         // Create a new empty collection
-        let collection <- ExampleNFT.createEmptyCollection(collectionType: Type<@ExampleNFT.Collection>())
+        let collection <- ExampleNFT.createEmptyCollection(nftType: Type<@ExampleNFT.NFT>())
 
         // save it to the account
         signer.storage.save(<-collection, to: collectionData.storagePath)
