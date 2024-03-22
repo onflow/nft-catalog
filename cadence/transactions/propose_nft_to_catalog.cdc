@@ -8,11 +8,7 @@ transaction(
     nftTypeIdentifer: String,
     storagePathIdentifier: String,
     publicPathIdentifier: String,
-    privatePathIdentifier: String,
     publicLinkedTypeIdentifier : String,
-    publicLinkedTypeRestrictions : [String],
-    privateLinkedTypeIdentifier : String,
-    privateLinkedTypeEntitlements : [String],
     collectionName : String,
     collectionDescription: String,
     externalURL : String,
@@ -44,19 +40,10 @@ transaction(
     }
     
     execute {
-        var privateLinkedType: Type? = nil
-        if (privateLinkedTypeEntitlements.length == 0) {
-            privateLinkedType = CompositeType(publicLinkedTypeIdentifier)
-        } else {
-            privateLinkedType = ReferenceType(entitlements: privateLinkedTypeEntitlements, type: CompositeType(publicLinkedTypeIdentifier)!)
-        }
-        
         let collectionData = NFTCatalog.NFTCollectionData(
             storagePath: StoragePath(identifier: storagePathIdentifier)!,
             publicPath: PublicPath(identifier : publicPathIdentifier)!,
-            privatePath: PrivatePath(identifier: privatePathIdentifier)!,
             publicLinkedType : CompositeType(publicLinkedTypeIdentifier)!,
-            privateLinkedType : privateLinkedType!
         )
 
         let squareMedia = MetadataViews.Media(

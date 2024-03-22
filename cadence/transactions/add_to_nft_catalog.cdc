@@ -1,3 +1,4 @@
+import NonFungibleToken from "NonFungibleToken"
 import MetadataViews from "MetadataViews"
 import NFTCatalog from "NFTCatalog"
 import NFTCatalogAdmin from "NFTCatalogAdmin"
@@ -13,27 +14,23 @@ transaction(
 ) {
     let adminProxyRef : &NFTCatalogAdmin.AdminProxy
 
-    prepare(acct: AuthAccount) {
-        self.adminProxyRef = acct.storage.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
+    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
+        self.adminProxyRef = acct.storage.borrow<&NFTCatalogAdmin.AdminProxy>(from: NFTCatalogAdmin.AdminProxyStoragePath)!
     }
 
     execute {
         let nftAccount = getAccount(addressWithNFT)
         let pubPath = PublicPath(identifier: publicPathIdentifier)!
-        let collectionCap = nftAccount.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(pubPath)
-        assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
-        let collectionRef = collectionCap.borrow()!
+        let collectionRef = nftAccount.capabilities.borrow<&{NonFungibleToken.Collection}>(pubPath) ?? panic("Could not get collection public capability")
         assert(collectionRef.getIDs().length > 0, message: "No NFTs exist in this collection.")
-        let nftResolver = collectionRef.borrowViewResolver(id: nftID)
+        let nftResolver = collectionRef.borrowViewResolver(id: nftID)!
         
         let metadataCollectionData = nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
         
         let collectionData = NFTCatalog.NFTCollectionData(
             storagePath: metadataCollectionData.storagePath,
             publicPath: metadataCollectionData.publicPath,
-            privatePath: metadataCollectionData.providerPath,
             publicLinkedType : metadataCollectionData.publicLinkedType,
-            privateLinkedType : metadataCollectionData.providerLinkedType
         )
 
         let collectionDisplay = nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay

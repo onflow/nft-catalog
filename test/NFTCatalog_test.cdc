@@ -85,52 +85,162 @@ fun testAdminSetup() {
     )
     Test.expect(txResult, Test.beSucceeded())
 
-
     isAdmin = (scriptExecutor("is_catalog_admin.cdc", [admin.address])) as! Bool?
     Test.assertEqual(isAdmin!, true)
-
-
 }
 
-
-/*
 access(all)
-fun testSetupAccount() {
-    let code = loadCode("setup_account.cdc", "transactions")
-    let tx = Test.Transaction(
-        code: code,
-        authorizers: [seller.address],
-        signers: [seller],
-        arguments: [],
+fun testAddNFTToCatalog() {
+    // Add to the catalog as an admin.
+    let addToCatalogCode = loadCode("add_to_nft_catalog.cdc", "cadence/transactions")
+    
+    let nftID = (scriptExecutor("get_examplenft_collection_ids.cdc", [user.address]) as! [UInt64]?)![0]!
+    let nftTypeIdentifier = "A.0000000000000008.ExampleNFT.NFT"
+
+    var txResult = Test.executeTransaction(
+        Test.Transaction(
+            code: addToCatalogCode,
+            authorizers: [admin.address],
+            signers: [admin],
+            arguments: ["TestCollection", "ExampleNFT", exampleNFTAccount.address, nftTypeIdentifier, user.address, nftID, "cadenceExampleNFTCollection"],
+        )
     )
-    let txResult = Test.executeTransaction(tx)
     Test.expect(txResult, Test.beSucceeded())
 }
 
 access(all)
-fun testSellItem() {
-    var code = loadCode("get_ids.cdc", "scripts/example-nft")
+fun testRemoveFromCatalog() {
+    let removeFromCatalogCode = loadCode("remove_from_nft_catalog.cdc", "cadence/transactions")
+    
+    let nftCatalogSize = (scriptExecutor("get_nft_catalog_count.cdc", []) as! Int?)!
+    Test.assertEqual(nftCatalogSize, 1)
 
-    var result = Test.executeScript(code, [seller.address, /public/cadenceExampleNFTCollection])
-    Test.expect(result, Test.beSucceeded())
-    Test.assertEqual((result.returnValue! as! [UInt64]).length, 1)
-    let nftID = (result.returnValue! as! [UInt64])[0]
+    var nftCatalogIdentifiers = (scriptExecutor("get_nft_catalog_identifiers.cdc", []) as! [String]?)!
+    Test.assertEqual(nftCatalogIdentifiers.length, 1)
 
-    code = loadCode("sell_item.cdc", "transactions")
-    var tx = Test.Transaction(
-        code: code,
-        authorizers: [seller.address],
-        signers: [seller],
-        arguments: [
-            nftID, // sale item id
-            10.0, // sale item price
-            "Custom", // custom id
-            0.1, // commission amount
-            UInt64(2025908543), // 10 years in the future
-            [] // Marketplaces address
-        ],
+    var txResult = Test.executeTransaction(
+        Test.Transaction(
+            code: removeFromCatalogCode,
+            authorizers: [admin.address],
+            signers: [admin],
+            arguments: ["TestCollection"]
+        )
     )
-    var txResult = Test.executeTransaction(tx)
+    Test.expect(txResult, Test.beSucceeded())
+
+    nftCatalogIdentifiers = (scriptExecutor("get_nft_catalog_identifiers.cdc", []) as! [String]?)!
+    Test.assertEqual(nftCatalogIdentifiers.length, 0)
+}
+
+access(all)
+fun testProposeAdditionToCatalog() {
+    let proposeNFTToCatalogCode = loadCode("propose_nft_to_catalog.cdc", "cadence/transactions")
+    let nftTypeIdentifier = "A.0000000000000008.ExampleNFT.NFT"
+    let socials: {String: String} = {}
+    var txResult = Test.executeTransaction(
+        Test.Transaction(
+            code: proposeNFTToCatalogCode,
+            authorizers: [user.address],
+            signers: [user],
+            arguments: [
+                "TestCollection",
+                "ExampleNFT",
+                exampleNFTAccount.address,
+                nftTypeIdentifier,
+                "cadenceExampleNFTCollection",
+                "cadenceExampleNFTCollection",
+                nftTypeIdentifier,
+                "TestCollection",
+                "Test collection",
+                "https://test.com",
+                "https://squareimage.com",
+                "png",
+                "https://bannerimage.com",
+                "png",
+                socials,
+                "Add the test collection to catalog"
+            ]
+        )
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    let res = (scriptExecutor("get_nft_catalog_proposals_count.cdc", []) as! Int?)!
+    Test.assertEqual(res, 1)
+}
+
+access(all)
+fun testApproveToCatalog() {
+    let getNFTProposalsCode = loadCode("get_nft_catalog_proposal_ids.cdc", "cadence/scripts")
+    let approveToCatalogCode = loadCode("approve_nft_catalog_proposal.cdc", "cadence/transactions")
+    var res = (scriptExecutor("get_nft_catalog_proposal_ids.cdc", []) as! [UInt64]?)!
+
+    var txResult = Test.executeTransaction(
+        Test.Transaction(
+            code: approveToCatalogCode,
+            authorizers: [admin.address],
+            signers: [admin],
+            arguments: [res[0]!]
+        )
+    )
     Test.expect(txResult, Test.beSucceeded())
 }
-*/
+
+access(all)
+fun testProposeUpdateToCatalog() {
+    let proposeNFTToCatalogCode = loadCode("propose_nft_to_catalog.cdc", "cadence/transactions")
+    let nftTypeIdentifier = "A.0000000000000008.ExampleNFT.NFT"
+    let socials: {String: String} = {}
+    var txResult = Test.executeTransaction(
+        Test.Transaction(
+            code: proposeNFTToCatalogCode,
+            authorizers: [user.address],
+            signers: [user],
+            arguments: [
+                "TestCollection",
+                "ExampleNFT",
+                exampleNFTAccount.address,
+                nftTypeIdentifier,
+                "cadenceExampleNFTCollection",
+                "cadenceExampleNFTCollection",
+                nftTypeIdentifier,
+                "TestCollection",
+                "Test collection",
+                "https://test.com",
+                "https://squareimage.com",
+                "png",
+                "https://bannerimage.com",
+                "png",
+                socials,
+                "Add the test collection to catalog"
+            ]
+        )
+    )
+    Test.expect(txResult, Test.beSucceeded())
+
+    let res = (scriptExecutor("get_nft_catalog_proposals_count.cdc", []) as! Int?)!
+    Test.assertEqual(res, 2)
+}
+
+access(all)
+fun testRejectProposal() {
+    let getNFTProposalsCode = loadCode("get_nft_catalog_proposal_ids.cdc", "cadence/scripts")
+    let rejectToCatalogCode = loadCode("reject_nft_catalog_proposal.cdc", "cadence/transactions")
+    var res = (scriptExecutor("get_nft_catalog_proposal_ids.cdc", []) as! [UInt64]?)!
+
+    var txResult = Test.executeTransaction(
+        Test.Transaction(
+            code: rejectToCatalogCode,
+            authorizers: [admin.address],
+            signers: [admin],
+            arguments: [res[1]!]
+        )
+    )
+    Test.expect(txResult, Test.beSucceeded())
+}
+
+access(all)
+fun testGetNFTsInAccount() {
+    let res = (scriptExecutor("get_nft_ids_in_account.cdc", [user.address]) as! {String: [UInt64]}?)!
+    Test.assert(res["TestCollection"] != nil, message: "Expected TestCollection to exist")
+    Test.assertEqual(res.keys.length, 1)
+}
