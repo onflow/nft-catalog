@@ -10,6 +10,7 @@
             "source": "./cadence/contracts/NonFungibleToken.cdc",
             "aliases": {
                 "emulator": "0xf8d6e0586b0a20c7",
+                "previewnet": "0xb6763b4399a888c8",
                 "testnet": "0x631e88ae7f1d7c20",
                 "mainnet": "0x1d7e57aa55817448"
             }
@@ -18,6 +19,7 @@
             "source": "./cadence/contracts/ViewResolver.cdc",
             "aliases": {
                 "emulator": "0xf8d6e0586b0a20c7",
+                "previewnet": "0xb6763b4399a888c8",
                 "testnet": "0x631e88ae7f1d7c20",
                 "mainnet": "0x1d7e57aa55817448"
             }
@@ -26,6 +28,7 @@
             "source": "./cadence/contracts/MetadataViews.cdc",
             "aliases": {
                 "emulator": "0xf8d6e0586b0a20c7",
+                "previewnet": "0xb6763b4399a888c8",
                 "testnet": "0x631e88ae7f1d7c20",
                 "mainnet": "0x1d7e57aa55817448"
             }
@@ -34,6 +37,7 @@
             "source": "./cadence/contracts/FungibleToken.cdc",
             "aliases": {
                 "emulator": "0xee82856bf20e2aa6",
+                "previewnet": "0xa0225e7000ac82a9",
                 "testnet": "0x9a0766d93b6608b7",
                 "mainnet": "0xf233dcee88fe0abe"
             }
@@ -42,6 +46,7 @@
             "source": "./cadence/contracts/FlowToken.cdc",
             "aliases": {
                 "emulator": "0x0ae53cb6e3f42a79",
+                "previewnet": "0x4445e7ad11568276",
                 "testnet": "0x7e60df042a9c0868",
                 "mainnet": "0x1654653399040a61"
             }
@@ -88,6 +93,7 @@
     },
     "networks": {
         "emulator": "127.0.0.1:3569",
+        "previewnet": "access.previewnet.nodes.onflow.org:9000",
         "mainnet": "access.mainnet.nodes.onflow.org:9000",
         "testnet": "access.devnet.nodes.onflow.org:9000"
     },
@@ -95,6 +101,10 @@
         "emulator-account": {
             "address": "0xf8d6e0586b0a20c7",
             "key": "bac3b8f568b9d39bac8ccfc23b3cf340840cbf4db186f4eb1bb24b8924d65e62"
+        },
+        "catalog-previewnet-account": {
+            "address": "0xd5a5e5c94f9cdb36",
+            "key": "$CATALOG_PREVIEWNET_ACCOUNT_PRIVATE_KEY"
         },
         "catalog-testnet-account": {
             "address": "0x324c34e1c517e4db",
@@ -163,6 +173,13 @@
                 "TransactionGenerationUtils",
                 "TransactionTemplates",
                 "TransactionGeneration"
+            ]
+        },
+        "previewnet": {
+            "catalog-previewnet-account": [
+                "NFTCatalog",
+                "NFTCatalogAdmin",
+                "NFTRetrieval"
             ]
         },
         "testnet": {
