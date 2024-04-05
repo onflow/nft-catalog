@@ -1,6 +1,6 @@
-import MetadataViews from "MetadataViews"
-import NFTCatalog from "NFTCatalog"
-import NFTCatalogAdmin from "NFTCatalogAdmin"
+import "MetadataViews"
+import "NFTCatalog"
+import "NFTCatalogAdmin"
 
 transaction(
         collectionIdentifier : String,

@@ -1,5 +1,5 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import "MetadataViews"
+import "NFTCatalog"
 
 transaction(collectionIdentifiers: [String]) {
     let snapshotResource: &NFTCatalog.Snapshot

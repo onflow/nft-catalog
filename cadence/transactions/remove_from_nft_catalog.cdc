@@ -1,5 +1,5 @@
-import NFTCatalog from "NFTCatalog"
-import NFTCatalogAdmin from "NFTCatalogAdmin"
+import "NFTCatalog"
+import "NFTCatalogAdmin"
 
 transaction(
     collectionIdentifier : String

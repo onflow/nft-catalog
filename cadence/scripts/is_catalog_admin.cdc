@@ -1,4 +1,4 @@
-import NFTCatalogAdmin from "NFTCatalogAdmin"
+import "NFTCatalogAdmin"
 
 access(all) fun main(ownerAddress: Address) : Bool {
     let owner = getAccount(ownerAddress)

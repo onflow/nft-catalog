@@ -1,4 +1,4 @@
-import NFTCatalogAdmin from "NFTCatalogAdmin"
+import "NFTCatalogAdmin"
 
 transaction(proxyAddress: Address) {
     let adminCap : Capability<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.Admin>

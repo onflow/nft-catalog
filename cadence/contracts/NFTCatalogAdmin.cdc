@@ -1,4 +1,4 @@
-import NFTCatalog from "./NFTCatalog.cdc"
+import "NFTCatalog"
 
 // NFTCatalogAdmin
 //
@@ -144,11 +144,11 @@ access(all) contract NFTCatalogAdmin {
             self.capability = capability
         }
 
-        access(all) fun getCapability() : Capability<auth(CatalogActions) &Admin>? {
+        access(all) view fun getCapability() : Capability<auth(CatalogActions) &Admin>? {
             return self.capability
         }
 
-        access(all) fun hasCapability() : Bool {
+        access(all) view fun hasCapability() : Bool {
             return self.capability != nil
         }
 

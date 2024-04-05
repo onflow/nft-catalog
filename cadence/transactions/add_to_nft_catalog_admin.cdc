@@ -1,7 +1,7 @@
-import MetadataViews from "MetadataViews"
-import NFTCatalog from "NFTCatalog"
-import NFTCatalogAdmin from "NFTCatalogAdmin"
-import NonFungibleToken from "NonFungibleToken"
+import "MetadataViews"
+import "NFTCatalog"
+import "NFTCatalogAdmin"
+import "NonFungibleToken"
 
 transaction(
     collectionIdentifier : String,

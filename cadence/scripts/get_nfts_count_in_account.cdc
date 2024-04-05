@@ -1,7 +1,7 @@
-import MetadataViews from "MetadataViews"
-import NFTCatalog from "NFTCatalog"
-import NFTRetrieval from "NFTRetrieval"
-import ViewResolver from "ViewResolver"
+import "MetadataViews"
+import "NFTCatalog"
+import "NFTRetrieval"
+import "ViewResolver"
 
 access(all) fun main(ownerAddress: Address): {String: Number} {
     let account = getAuthAccount<auth(Storage,BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account>(ownerAddress)

@@ -1,6 +1,6 @@
-import MetadataViews from "./MetadataViews.cdc"
-import NFTCatalog from "./NFTCatalog.cdc"
-import ViewResolver from "./ViewResolver.cdc"
+import "MetadataViews"
+import "NFTCatalog"
+import "ViewResolver"
 
 // NFTRetrieval
 //
@@ -9,7 +9,7 @@ import ViewResolver from "./ViewResolver.cdc"
 
 access(all) contract NFTRetrieval {
     
-    access(all) fun getRecommendedViewsTypes(version: String) : [Type] {
+    access(all) view fun getRecommendedViewsTypes(version: String) : [Type] {
         switch version {
             case "v1":
                 return [
@@ -21,7 +21,7 @@ access(all) contract NFTRetrieval {
                 ]
             default:
                 panic("Version not supported")
-        } 
+        }
     }
 
     access(all) fun getNFTIDsFromCap(collectionIdentifier: String, collectionCap : Capability<&{ViewResolver.ResolverCollection}>) : [UInt64] {
@@ -166,7 +166,7 @@ access(all) contract NFTRetrieval {
         return items
     }
 
-    access(contract) fun hasMultipleCollections(nftTypeIdentifier : String): Bool {
+    access(contract) view fun hasMultipleCollections(nftTypeIdentifier : String): Bool {
         let typeCollections = NFTCatalog.getCollectionsForType(nftTypeIdentifier: nftTypeIdentifier)!
         var numberOfCollections = 0
         for identifier in typeCollections.keys {

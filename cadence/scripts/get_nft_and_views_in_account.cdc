@@ -1,7 +1,7 @@
-import MetadataViews from "MetadataViews"
-import NFTCatalog from "NFTCatalog"
-import NFTRetrieval from "NFTRetrieval"
-import ViewResolver from "ViewResolver"
+import "MetadataViews"
+import "NFTCatalog"
+import "NFTRetrieval"
+import "ViewResolver"
 
 access(all) struct NFTCollectionData {
     access(all) let storagePath: StoragePath

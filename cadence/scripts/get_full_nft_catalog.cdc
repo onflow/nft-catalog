@@ -1,4 +1,4 @@
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import "NFTCatalog"
 
 // NOT RECOMMENDED FOR USE.
 // This is used for automated testing of the

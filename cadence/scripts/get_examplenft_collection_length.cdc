@@ -1,6 +1,6 @@
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
-import MetadataViews from "MetadataViews"
+import "NonFungibleToken"
+import "ExampleNFT"
+import "MetadataViews"
 
 access(all) fun main(address: Address): Int {
     let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?

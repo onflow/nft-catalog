@@ -1,4 +1,4 @@
-import NFTCatalog from "NFTCatalog"
+import "NFTCatalog"
 
 access(all) fun main(proposalIDs: [UInt64]): {UInt64 : NFTCatalog.NFTCatalogProposal} {
     var data : {UInt64 : NFTCatalog.NFTCatalogProposal}  = {}

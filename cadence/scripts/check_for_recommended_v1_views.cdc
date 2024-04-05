@@ -1,6 +1,6 @@
-import MetadataViews from "MetadataViews"
-import NFTRetrieval from "NFTRetrieval"
-import ViewResolver from "ViewResolver"
+import "MetadataViews"
+import "NFTRetrieval"
+import "ViewResolver"
 
 /*
     Script to check for the implementation of all recommended MetadataViews.

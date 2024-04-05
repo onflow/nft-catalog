@@ -1,4 +1,4 @@
-import NFTStorefrontV2 from "NFTStorefrontV2"
+import "NFTStorefrontV2"
 
 /// This transaction installs the Storefront ressource in an account.
 ///

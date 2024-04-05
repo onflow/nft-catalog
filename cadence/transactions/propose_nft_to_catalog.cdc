@@ -1,5 +1,5 @@
-import MetadataViews from "MetadataViews"
-import NFTCatalog from "NFTCatalog"
+import "MetadataViews"
+import "NFTCatalog"
 
 transaction(
     collectionIdentifier : String,

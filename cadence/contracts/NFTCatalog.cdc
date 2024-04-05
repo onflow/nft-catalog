@@ -1,4 +1,4 @@
-import MetadataViews from "./MetadataViews.cdc"
+import "MetadataViews"
 
 // NFTCatalog
 //
@@ -103,7 +103,7 @@ access(all) contract NFTCatalog {
             self.shouldUseSnapshot = shouldUseSnapshot
         }
 
-        access(all) fun getCatalogSnapshot(): {String : NFTCatalogMetadata} {
+        access(all) view fun getCatalogSnapshot(): {String : NFTCatalogMetadata} {
             return self.catalogSnapshot
         }
 
@@ -182,7 +182,7 @@ access(all) contract NFTCatalog {
         If obtaining all elements from the catalog is essential, please
         use the getCatalogKeys and forEachCatalogKey methods instead.
      */
-    access(all) fun getCatalog() : {String : NFTCatalogMetadata} {
+    access(all) view fun getCatalog() : {String : NFTCatalogMetadata} {
         let snapshot = self.account.storage.borrow<&NFTCatalog.Snapshot>(from: /storage/CatalogSnapshot)
         if snapshot != nil {
             let snapshot = snapshot!
@@ -196,7 +196,7 @@ access(all) contract NFTCatalog {
         }
     }
 
-    access(all) fun getCatalogKeys(): [String] {
+    access(all) view fun getCatalogKeys(): [String] {
         return self.catalog.keys
     }
 
@@ -208,11 +208,11 @@ access(all) contract NFTCatalog {
         return self.catalog[collectionIdentifier]
     }
 
-    access(all) fun getCollectionsForType(nftTypeIdentifier: String) : {String : Bool}? {
+    access(all) view fun getCollectionsForType(nftTypeIdentifier: String) : {String : Bool}? {
         return self.catalogTypeData[nftTypeIdentifier]
     }
 
-    access(all) fun getCatalogTypeData() : {String : {String : Bool}} {
+    access(all) view fun getCatalogTypeData() : {String : {String : Bool}} {
         return self.catalogTypeData
     }
 
@@ -254,7 +254,7 @@ access(all) contract NFTCatalog {
         self.removeCatalogProposal(proposalID : proposalID)
     }
 
-    access(all) fun getCatalogProposals() : {UInt64 : NFTCatalogProposal} {
+    access(all) view fun getCatalogProposals() : {UInt64 : NFTCatalogProposal} {
         return self.catalogProposals
     }
 
@@ -262,7 +262,7 @@ access(all) contract NFTCatalog {
         return self.catalogProposals[proposalID]
     }
 
-    access(all) fun getCatalogProposalKeys() : [UInt64] {
+    access(all) view fun getCatalogProposalKeys() : [UInt64] {
         return self.catalogProposals.keys
     }
 

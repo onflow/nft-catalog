@@ -1,4 +1,4 @@
-import NFTCatalog from "NFTCatalog"
+import "NFTCatalog"
 
 access(all) fun main(identifiers : [String]): {String : NFTCatalog.NFTCatalogMetadata} {
 

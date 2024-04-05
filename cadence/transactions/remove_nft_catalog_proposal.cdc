@@ -1,4 +1,4 @@
-import NFTCatalogAdmin from "NFTCatalogAdmin"
+import "NFTCatalogAdmin"
 
 transaction(proposalID : UInt64) {
     let adminProxyRef : &NFTCatalogAdmin.AdminProxy

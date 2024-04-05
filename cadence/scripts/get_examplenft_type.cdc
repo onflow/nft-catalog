@@ -1,5 +1,5 @@
-import NonFungibleToken from "NonFungibleToken"
-import ExampleNFT from "ExampleNFT"
+import "NonFungibleToken"
+import "ExampleNFT"
 
 access(all) fun main(): String {
     let x = ReferenceType(entitlements: ["A.f8d6e0586b0a20c7.NonFungibleToken.Withdrawable"], type: CompositeType(Type<@ExampleNFT.Collection>().identifier)!)

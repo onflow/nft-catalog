@@ -1,6 +1,6 @@
-import MetadataViews from "MetadataViews"
-import NFTRetrieval from "NFTRetrieval"
-import ViewResolver from "ViewResolver"
+import "MetadataViews"
+import "NFTRetrieval"
+import "ViewResolver"
 
 access(all) struct DisplayView {
     access(all)  let name : String
