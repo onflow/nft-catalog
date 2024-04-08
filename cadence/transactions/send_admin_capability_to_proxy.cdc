@@ -3,7 +3,7 @@ import "NFTCatalogAdmin"
 transaction(proxyAddress: Address) {
     let adminCap : Capability<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.Admin>
     
-    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
+    prepare(acct: auth(IssueStorageCapabilityController) &Account) {
         self.adminCap = acct.capabilities.storage.issue<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.Admin>(
             NFTCatalogAdmin.AdminStoragePath
         )

@@ -14,7 +14,7 @@ transaction(
 ) {
     let adminProxyRef : &NFTCatalogAdmin.AdminProxy
 
-    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
+    prepare(acct: auth(BorrowValue) &Account) {
         self.adminProxyRef = acct.storage.borrow<&NFTCatalogAdmin.AdminProxy>(from: NFTCatalogAdmin.AdminProxyStoragePath)!
     }
 

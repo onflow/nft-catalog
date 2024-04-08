@@ -22,7 +22,7 @@ transaction(
 
     let nftCatalogProposalResourceRef : &NFTCatalog.NFTCatalogProposalManager
     
-    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
+    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
         
         if acct.storage.borrow<&NFTCatalog.NFTCatalogProposalManager>(from: NFTCatalog.ProposalManagerStoragePath) == nil {
             let proposalManager <- NFTCatalog.createNFTCatalogProposalManager()

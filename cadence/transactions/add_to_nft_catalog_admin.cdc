@@ -15,7 +15,7 @@ transaction(
     
     let adminResource: auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.Admin
     
-    prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account) {
+    prepare(acct: auth(BorrowValue) &Account) {
         self.adminResource = acct.storage.borrow<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.Admin>(from: NFTCatalogAdmin.AdminStoragePath)!
     }
     
