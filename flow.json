@@ -51,45 +51,10 @@
                 "mainnet": "0x1654653399040a61"
             }
         },
-        "DapperUtilityCoin": {
-            "source": "./cadence/contracts/DapperUtilityCoin.cdc",
-            "aliases": {
-                "testnet": "0x82ec283f88a62e65",
-                "mainnet": "0xead892083b3e2c6c"
-            }
-        },
-        "FlowUtilityToken": {
-            "source": "./cadence/contracts/FlowUtilityToken.cdc",
-            "aliases": {
-                "testnet": "0x82ec283f88a62e65",
-                "mainnet": "0xead892083b3e2c6c"
-            }
-        },
-        "NFTStorefrontV2": {
-            "source": "./cadence/contracts/NFTStorefrontV2.cdc",
-            "aliases": {
-                "testnet": "0x2d55b98eb200daef",
-                "mainnet": "0x4eb8a10cb9f87357"
-            }
-        },
-        "TokenForwarding": {
-            "source": "./cadence/contracts/TokenForwarding.cdc",
-            "aliases": {
-                "testnet": "0x51ea0e37c27a1f1a",
-                "mainnet": "0xe544175ee0461c4b"
-            }
-        },
-        "MultipleNFT": "./cadence/contracts/MultipleNFT.cdc",
         "ExampleNFT": "./cadence/contracts/ExampleNFT.cdc",
-        "NonStandardNFT": "./cadence/contracts/NonStandardNFT.cdc",
         "NFTCatalog": "./cadence/contracts/NFTCatalog.cdc",
         "NFTCatalogAdmin": "./cadence/contracts/NFTCatalogAdmin.cdc",
-        "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc",
-        "TransactionGenerationUtils": "./cadence/contracts/TransactionGenerationUtils.cdc",
-        "TransactionGeneration": "./cadence/contracts/TransactionGeneration.cdc",
-        "TransactionTemplates": "./cadence/contracts/TransactionTemplates.cdc",
-        "StringUtils": "./cadence/contracts/StringUtils.cdc",
-        "ArrayUtils": "./cadence/contracts/ArrayUtils.cdc"
+        "NFTRetrieval": "./cadence/contracts/NFTRetrieval.cdc"
     },
     "networks": {
         "emulator": "127.0.0.1:3569",
@@ -161,18 +126,7 @@
             "emulator-account": [
                 "NFTCatalog",
                 "NFTCatalogAdmin",
-                "NFTRetrieval",
-                "ArrayUtils",
-                "StringUtils",
-                "TokenForwarding",
-                "MultipleNFT",
-                "ExampleNFT",
-                "DapperUtilityCoin",
-                "NFTStorefrontV2",
-                "FlowUtilityToken",
-                "TransactionGenerationUtils",
-                "TransactionTemplates",
-                "TransactionGeneration"
+                "NFTRetrieval"
             ]
         },
         "previewnet": {
@@ -187,13 +141,6 @@
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
-            ],
-            "transaction-generation-testnet-account": [
-                "ArrayUtils",
-                "StringUtils",
-                "TransactionGenerationUtils",
-                "TransactionTemplates",
-                "TransactionGeneration"
             ]
         },
         "mainnet": {
@@ -201,13 +148,6 @@
                 "NFTCatalog",
                 "NFTCatalogAdmin",
                 "NFTRetrieval"
-            ],
-            "mainnet-transaction-generation-account": [
-                "ArrayUtils",
-                "StringUtils",
-                "TransactionGenerationUtils",
-                "TransactionTemplates",
-                "TransactionGeneration"
             ]
         }
     }
