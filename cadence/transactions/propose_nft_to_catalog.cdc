@@ -20,7 +20,7 @@ transaction(
     message: String
 ) {
 
-    let nftCatalogProposalResourceRef : &NFTCatalog.NFTCatalogProposalManager
+    let nftCatalogProposalResourceRef : auth(NFTCatalog.ProposalActionOwner) &NFTCatalog.NFTCatalogProposalManager
     
     prepare(acct: auth(BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
         
@@ -36,7 +36,7 @@ transaction(
             )
         }
 
-        self.nftCatalogProposalResourceRef = acct.storage.borrow<&NFTCatalog.NFTCatalogProposalManager>(from: NFTCatalog.ProposalManagerStoragePath)!
+        self.nftCatalogProposalResourceRef = acct.storage.borrow<auth(NFTCatalog.ProposalActionOwner) &NFTCatalog.NFTCatalogProposalManager>(from: NFTCatalog.ProposalManagerStoragePath)!
     }
     
     execute {
