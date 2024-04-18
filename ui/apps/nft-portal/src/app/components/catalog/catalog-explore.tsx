@@ -155,7 +155,7 @@ export function CatalogItem(props: any) {
             target="_blank"
             href={`https://${
               network === 'testnet' ? 'testnet.' : ''
-            }flowscan.org/contract/${item.subtext.replace(/.NFT$/, '')}`}
+            }flowdiver.io/contract/${item.subtext.replace(/.NFT$/, '')}`}
             className="flex flex-row rounded bg-primary-gray-50 px-2 py-1 mb-2"
             style={{ width: 'fit-content' }}
             rel="noreferrer"

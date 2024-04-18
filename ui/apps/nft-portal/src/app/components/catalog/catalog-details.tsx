@@ -54,7 +54,7 @@ export function CatalogDetails({
   } else if (!collectionData) {
     content = <Spinner />
   } else {
-    const link = `https://${network === "testnet" ? 'testnet.' : ''}flowscan.org/contract/${collectionData.nftType.typeID.replace(/\.NFT/, '')}}`
+    const link = `https://${network === "testnet" ? 'testnet.' : ''}flowdiver.io/contract/${collectionData.nftType.typeID.replace(/\.NFT/, '')}}`
     content = (
       <>
         <CollectionDisplayView proposalData={ type === "Proposals" ? collectionData : null } view={collectionData.collectionDisplay} withRawView={false} />
