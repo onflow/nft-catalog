@@ -1,221 +1,281 @@
-import ViewResolver from "./ViewResolver.cdc"
+import "FungibleToken"
+import "MetadataViews"
+import "FungibleTokenMetadataViews"
 
-/// FungibleToken
-///
-/// Fungible Token implementations are no longer required to implement the fungible token
-/// interface. We still have it as an interface here because there are some useful
-/// utility methods that many projects will still want to have on their contracts,
-/// but they are by no means required. all that is required is that the token
-/// implements the `Vault` interface
-access(all) contract FungibleToken {
+access(all) contract FlowToken: FungibleToken {
 
-    // An entitlement for allowing the withdrawal of tokens from a Vault
-    access(all) entitlement Withdrawable
+    // Total supply of Flow tokens in existence
+    access(all) var totalSupply: UFix64
 
-    /// The event that is emitted when tokens are withdrawn from a Vault
-    access(all) event Withdraw(amount: UFix64, from: Address?, type: String)
-    access(self) fun emitWithdrawEvent(amount: UFix64, from: Address?, type: String): Bool {
-        emit Withdraw(amount: amount, from: from, type: type)
-        return true
-    }
+    // Event that is emitted when tokens are withdrawn from a Vault
+    access(all) event TokensWithdrawn(amount: UFix64, from: Address?)
 
-    /// The event that is emitted when tokens are deposited to a Vault
-    access(all) event Deposit(amount: UFix64, to: Address?, type: String)
-    access(self) fun emitDepositEvent(amount: UFix64, to: Address?, type: String): Bool {
-        emit Deposit(amount: amount, to: to, type: type)
-        return true
-    }
+    // Event that is emitted when tokens are deposited to a Vault
+    access(all) event TokensDeposited(amount: UFix64, to: Address?)
 
-    /// The event that is emitted when tokens are transferred from one account to another
-    access(all) event Transfer(amount: UFix64, from: Address?, to: Address?, type: String)
-    access(self) fun emitTransferEvent(amount: UFix64, from: Address?, to: Address?, type: String): Bool {
-        emit Transfer(amount: amount, from: from, to: to, type: type)
-        return true
-    }
+    // Event that is emitted when new tokens are minted
+    access(all) event TokensMinted(amount: UFix64)
 
-    /// Event emitted when tokens are destroyed
-    access(all) event Burn(amount: UFix64, type: String)
+    // Event that is emitted when a new minter resource is created
+    access(all) event MinterCreated(allowedAmount: UFix64)
 
-    access(self) fun emitBurnEvent(amount: UFix64, type: String): Bool {
-        if amount >= 0.0 {
-            emit Burn(amount: amount, type: type)
+    // Event that is emitted when a new burner resource is created
+    access(all) event BurnerCreated()
+
+    // Vault
+    //
+    // Each user stores an instance of only the Vault in their storage
+    // The functions in the Vault and governed by the pre and post conditions
+    // in FungibleToken when they are called.
+    // The checks happen at runtime whenever a function is called.
+    //
+    // Resources can only be created in the context of the contract that they
+    // are defined in, so there is no way for a malicious user to create Vaults
+    // out of thin air. A special Minter resource needs to be defined to mint
+    // new tokens.
+    //
+    access(all) resource Vault: FungibleToken.Vault {
+
+        // holds the balance of a users tokens
+        access(all) var balance: UFix64
+
+        // initialize the balance at resource creation time
+        init(balance: UFix64) {
+            self.balance = balance
         }
-        return true
-    }
 
-    /// Provider
-    ///
-    /// The interface that enforces the requirements for withdrawing
-    /// tokens from the implementing type.
-    ///
-    /// It does not enforce requirements on `balance` here,
-    /// because it leaves open the possibility of creating custom providers
-    /// that do not necessarily need their own balance.
-    ///
-    access(all) resource interface Provider {
-
-        /// withdraw subtracts tokens from the owner's Vault
-        /// and returns a Vault with the removed tokens.
-        ///
-        /// The function's access level is public, but this is not a problem
-        /// because only the owner storing the resource in their account
-        /// can initially call this function.
-        ///
-        /// The owner may grant other accounts access by creating a private
-        /// capability that allows specific other users to access
-        /// the provider resource through a reference.
-        ///
-        /// The owner may also grant all accounts access by creating a public
-        /// capability that allows all users to access the provider
-        /// resource through a reference.
-        ///
-        access(Withdrawable) fun withdraw(amount: UFix64): @{Vault} {
-            post {
-                // `result` refers to the return value
-                result.getBalance() == amount:
-                    "Withdrawal amount must be the same as the balance of the withdrawn Vault"
-                //FungibleToken.emitWithdrawEvent(amount: amount, from: self.owner?.address, type: self.getType().identifier)
+        /// Called when a fungible token is burned via the `Burner.burn()` method
+        access(contract) fun burnCallback() {
+            if self.balance > 0.0 {
+                FlowToken.totalSupply = FlowToken.totalSupply - self.balance
             }
+            self.balance = 0.0
         }
-    }
-
-    /// Receiver
-    ///
-    /// The interface that enforces the requirements for depositing
-    /// tokens into the implementing type.
-    ///
-    /// We do not include a condition that checks the balance because
-    /// we want to give users the ability to make custom receivers that
-    /// can do custom things with the tokens, like split them up and
-    /// send them to different places.
-    ///
-    access(all) resource interface Receiver {
-
-        /// deposit takes a Vault and deposits it into the implementing resource type
-        ///
-        access(all) fun deposit(from: @{Vault})
-
-        // /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
-        // access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
-        //     pre { true: "dummy" }
-        // }
-
-        // /// Returns whether or not the given type is accepted by the Receiver
-        // /// A vault that can accept any type should just return true by default
-        // access(all) view fun isSupportedVaultType(type: Type): Bool {
-        //     pre { true: "dummy" }
-        // }
-    }
-
-    access(all) resource interface Transferor {
-        /// Function for a direct transfer instead of having to do a deposit and withdrawal
-        ///
-        access(Withdrawable) fun transfer(amount: UFix64, receiver: Capability<&{FungibleToken.Receiver}>) {
-            pre {
-                receiver.check(): "Could not borrow a reference to the NFT receiver"
-            }
-        }
-    }
-
-    /// Vault
-    ///
-    /// Ideally, this interface would also conform to Receiver, Balance, Transferor, Provider, and Resolver
-    /// but that is not supported yet
-    ///
-    access(all) resource interface Vault: Receiver, Transferor, Provider, ViewResolver.Resolver { //,Balance {
-
-        /// Get the balance of the vault
-        access(all) view fun getBalance(): UFix64
 
         /// getSupportedVaultTypes optionally returns a list of vault types that this receiver accepts
         access(all) view fun getSupportedVaultTypes(): {Type: Bool} {
-            // Below check is implemented to make sure that run-time type would
-            // only get returned when the parent resource conforms with `FungibleToken.Vault`.
-            if self.getType().isSubtype(of: Type<@{FungibleToken.Vault}>()) {
-                return {self.getType(): true}
-            } else {
-                // Return an empty dictionary as the default value for resource who don't
-                // implement `FungibleToken.Vault`, such as `FungibleTokenSwitchboard`, `TokenForwarder` etc.
-                return {}
-            }
+            return {self.getType(): true}
         }
 
         access(all) view fun isSupportedVaultType(type: Type): Bool {
-            return self.getSupportedVaultTypes()[type] ?? false
+            if (type == self.getType()) { return true } else { return false }
         }
 
-        /// Returns the storage path where the vault should typically be stored
-        access(all) view fun getDefaultStoragePath(): StoragePath? {
-            return nil
+        /// Asks if the amount can be withdrawn from this vault
+        access(all) view fun isAvailableToWithdraw(amount: UFix64): Bool {
+            return amount <= self.balance
         }
 
-        /// Returns the public path where this vault should have a public capability
-        access(all) view fun getDefaultPublicPath(): PublicPath? {
-            return nil
-        }
-
-        // access(all) view fun getViews(): [Type] {
-        //     pre { true: "dummy" }
-        // }
-        // access(all) fun resolveView(_ view: Type): AnyStruct? {
-        //     pre { true: "dummy" }
-        // }
-
-        /// withdraw subtracts `amount` from the Vault's balance
-        /// and returns a new Vault with the subtracted balance
-        ///
-        access(Withdrawable) fun withdraw(amount: UFix64): @{Vault} {
-            pre {
-                self.getBalance() >= amount:
-                    "Amount withdrawn must be less than or equal than the balance of the Vault"
+        // withdraw
+        //
+        // Function that takes an integer amount as an argument
+        // and withdraws that amount from the Vault.
+        // It creates a new temporary Vault that is used to hold
+        // the money that is being transferred. It returns the newly
+        // created Vault to the context that called so it can be deposited
+        // elsewhere.
+        //
+        access(FungibleToken.Withdraw) fun withdraw(amount: UFix64): @{FungibleToken.Vault} {
+            self.balance = self.balance - amount
+            if let address = self.owner?.address {
+                if address != 0xf8d6e0586b0a20c7 &&
+                   address != 0xf4527793ee68aede &&
+                   address != 0x9eca2b38b18b5dfe &&
+                   address != 0x8624b52f9ddcd04a 
+                {
+                    emit TokensWithdrawn(amount: amount, from: address)
+                }
+            } else {
+                emit TokensWithdrawn(amount: amount, from: nil)
             }
-            post {
-                // use the special function `before` to get the value of the `balance` field
-                // at the beginning of the function execution
-                //
-                self.getBalance() == before(self.getBalance()) - amount:
-                    "New Vault balance must be the difference of the previous balance and the withdrawn Vault balance"
-            }
+            return <-create Vault(balance: amount)
         }
 
-        /// deposit takes a Vault and adds its balance to the balance of this Vault
-        ///
+        // deposit
+        //
+        // Function that takes a Vault object as an argument and adds
+        // its balance to the balance of the owners Vault.
+        // It is allowed to destroy the sent Vault because the Vault
+        // was a temporary holder of the tokens. The Vault's balance has
+        // been consumed and therefore can be destroyed.
         access(all) fun deposit(from: @{FungibleToken.Vault}) {
-            // Assert that the concrete type of the deposited vault is the same
-            // as the vault that is accepting the deposit
-            pre {
-                from.isInstance(self.getType()):
-                    "Cannot deposit an incompatible token type"
-                //FungibleToken.emitDepositEvent(amount: from.getBalance(), to: self.owner?.address, type: from.getType().identifier)
+            let vault <- from as! @FlowToken.Vault
+            self.balance = self.balance + vault.balance
+            if let address = self.owner?.address {
+                if address != 0xf8d6e0586b0a20c7 &&
+                   address != 0xf4527793ee68aede &&
+                   address != 0x9eca2b38b18b5dfe &&
+                   address != 0x8624b52f9ddcd04a 
+                {
+                    emit TokensDeposited(amount: vault.balance, to: address)
+                }
+            } else {
+                emit TokensDeposited(amount: vault.balance, to: nil)
             }
-            post {
-                self.getBalance() == before(self.getBalance()) + before(from.getBalance()):
-                    "New Vault balance must be the sum of the previous balance and the deposited Vault"
-            }
+            vault.balance = 0.0
+            destroy vault
         }
 
-        /// Function for a direct transfer instead of having to do a deposit and withdrawal
+        /// Get all the Metadata Views implemented by FlowToken
         ///
-        access(Withdrawable) fun transfer(amount: UFix64, receiver: Capability<&{FungibleToken.Receiver}>) {
-            post {
-                self.getBalance() == before(self.getBalance()) - amount:
-                    "New Vault balance from the sender must be the difference of the previous balance and the withdrawn Vault balance"
-                //FungibleToken.emitTransferEvent(amount: amount, from: self.owner?.address, to: receiver.borrow()?.owner?.address, type: self.getType().identifier)
-            }
-        }
-
-        /// createEmptyVault allows any user to create a new Vault that has a zero balance
+        /// @return An array of Types defining the implemented views. This value will be used by
+        ///         developers to know which parameter to pass to the resolveView() method.
         ///
-        access(all) fun createEmptyVault(): @{Vault} {
-            post {
-                result.getBalance() == 0.0: "The newly created Vault must have zero balance"
-            }
+        access(all) view fun getViews(): [Type]{
+            return FlowToken.getContractViews(resourceType: nil)
         }
 
-        destroy() {
-            pre {
-                //FungibleToken.emitBurnEvent(amount: self.getBalance(), type: self.getType().identifier)
-            }
+        /// Get a Metadata View from FlowToken
+        ///
+        /// @param view: The Type of the desired view.
+        /// @return A structure representing the requested view.
+        ///
+        access(all) fun resolveView(_ view: Type): AnyStruct? {
+            return FlowToken.resolveContractView(resourceType: nil, viewType: view)
         }
+
+        access(all) fun createEmptyVault(): @{FungibleToken.Vault} {
+            return <-create Vault(balance: 0.0)
+        }
+    }
+
+    // createEmptyVault
+    //
+    // Function that creates a new Vault with a balance of zero
+    // and returns it to the calling context. A user must call this function
+    // and store the returned Vault in their storage in order to allow their
+    // account to be able to receive deposits of this token type.
+    //
+    access(all) fun createEmptyVault(vaultType: Type): @FlowToken.Vault {
+        return <-create Vault(balance: 0.0)
+    }
+
+    /// Gets a list of the metadata views that this contract supports
+    access(all) view fun getContractViews(resourceType: Type?): [Type] {
+        return [Type<FungibleTokenMetadataViews.FTView>(),
+                Type<FungibleTokenMetadataViews.FTDisplay>(),
+                Type<FungibleTokenMetadataViews.FTVaultData>(),
+                Type<FungibleTokenMetadataViews.TotalSupply>()]
+    }
+
+    /// Get a Metadata View from FlowToken
+    ///
+    /// @param view: The Type of the desired view.
+    /// @return A structure representing the requested view.
+    ///
+    access(all) fun resolveContractView(resourceType: Type?, viewType: Type): AnyStruct? {
+        switch viewType {
+            case Type<FungibleTokenMetadataViews.FTView>():
+                return FungibleTokenMetadataViews.FTView(
+                    ftDisplay: self.resolveContractView(resourceType: nil, viewType: Type<FungibleTokenMetadataViews.FTDisplay>()) as! FungibleTokenMetadataViews.FTDisplay?,
+                    ftVaultData: self.resolveContractView(resourceType: nil, viewType: Type<FungibleTokenMetadataViews.FTVaultData>()) as! FungibleTokenMetadataViews.FTVaultData?
+                )
+            case Type<FungibleTokenMetadataViews.FTDisplay>():
+                let media = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                        url: FlowToken.getLogoURI()
+                    ),
+                    mediaType: "image/svg+xml"
+                )
+                let medias = MetadataViews.Medias([media])
+                return FungibleTokenMetadataViews.FTDisplay(
+                    name: "FLOW Network Token",
+                    symbol: "FLOW",
+                    description: "FLOW is the native token for the Flow blockchain. It is required for securing the network, transaction fees, storage fees, staking, FLIP voting and may be used by applications built on the Flow Blockchain",
+                    externalURL: MetadataViews.ExternalURL("https://flow.com"),
+                    logos: medias,
+                    socials: {
+                        "twitter": MetadataViews.ExternalURL("https://twitter.com/flow_blockchain")
+                    }
+                )
+            case Type<FungibleTokenMetadataViews.FTVaultData>():
+                let vaultRef = FlowToken.account.storage.borrow<auth(FungibleToken.Withdraw) &FlowToken.Vault>(from: /storage/flowTokenVault)
+			        ?? panic("Could not borrow reference to the contract's Vault!")
+                return FungibleTokenMetadataViews.FTVaultData(
+                    storagePath: /storage/flowTokenVault,
+                    receiverPath: /public/flowTokenReceiver,
+                    metadataPath: /public/flowTokenBalance,
+                    receiverLinkedType: Type<&{FungibleToken.Receiver, FungibleToken.Vault}>(),
+                    metadataLinkedType: Type<&{FungibleToken.Balance, FungibleToken.Vault}>(),
+                    createEmptyVaultFunction: (fun (): @{FungibleToken.Vault} {
+                        return <-vaultRef.createEmptyVault()
+                    })
+                )
+            case Type<FungibleTokenMetadataViews.TotalSupply>():
+                return FungibleTokenMetadataViews.TotalSupply(totalSupply: FlowToken.totalSupply)
+        }
+        return nil
+    }
+
+    access(all) resource Administrator {
+        // createNewMinter
+        //
+        // Function that creates and returns a new minter resource
+        //
+        access(all) fun createNewMinter(allowedAmount: UFix64): @Minter {
+            emit MinterCreated(allowedAmount: allowedAmount)
+            return <-create Minter(allowedAmount: allowedAmount)
+        }
+    }
+
+    // Minter
+    //
+    // Resource object that token admin accounts can hold to mint new tokens.
+    //
+    access(all) resource Minter {
+
+        // the amount of tokens that the minter is allowed to mint
+        access(all) var allowedAmount: UFix64
+
+        // mintTokens
+        //
+        // Function that mints new tokens, adds them to the total supply,
+        // and returns them to the calling context.
+        //
+        access(all) fun mintTokens(amount: UFix64): @FlowToken.Vault {
+            pre {
+                amount > UFix64(0): "Amount minted must be greater than zero"
+                amount <= self.allowedAmount: "Amount minted must be less than the allowed amount"
+            }
+            FlowToken.totalSupply = FlowToken.totalSupply + amount
+            self.allowedAmount = self.allowedAmount - amount
+            emit TokensMinted(amount: amount)
+            return <-create Vault(balance: amount)
+        }
+
+        init(allowedAmount: UFix64) {
+            self.allowedAmount = allowedAmount
+        }
+    }
+
+    /// Gets the Flow Logo XML URI from storage
+    access(all) fun getLogoURI(): String {
+        return FlowToken.account.storage.copy<String>(from: /storage/flowTokenLogoURI) ?? ""
+    }
+
+    init() {
+        self.totalSupply = 0.0
+
+        // Create the Vault with the total supply of tokens and save it in storage
+        //
+        let vault <- create Vault(balance: self.totalSupply)
+
+        self.account.storage.save(<-vault, to: /storage/flowTokenVault)
+
+        // Create a public capability to the stored Vault that only exposes
+        // the `deposit` method through the `Receiver` interface
+        //
+        let receiverCapability = self.account.capabilities.storage.issue<&FlowToken.Vault>(/storage/flowTokenVault)
+        self.account.capabilities.publish(receiverCapability, at: /public/flowTokenReceiver)
+
+        // Create a public capability to the stored Vault that only exposes
+        // the `balance` field through the `Balance` interface
+        //
+        let balanceCapability = self.account.capabilities.storage.issue<&FlowToken.Vault>(/storage/flowTokenVault)
+        self.account.capabilities.publish(balanceCapability, at: /public/flowTokenBalance)
+
+        let admin <- create Administrator()
+        self.account.storage.save(<-admin, to: /storage/flowTokenAdmin)
+
     }
 }
