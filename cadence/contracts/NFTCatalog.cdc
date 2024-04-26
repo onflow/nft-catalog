@@ -71,12 +71,16 @@ access(all) contract NFTCatalog {
     // NFTCatalogProposalManager
     // Used to authenticate proposals made to the catalog
 
+    access(all) resource interface NFTCatalogProposalManagerPublic {
+        access(all) view fun getCurrentProposalEntry(): String?
+    }
+
     access(all) entitlement ProposalActionOwner
 
-    access(all) resource NFTCatalogProposalManager {
+    access(all) resource NFTCatalogProposalManager: NFTCatalogProposalManagerPublic {
             access(self) var currentProposalEntry: String?
 
-            access(all) fun getCurrentProposalEntry(): String? {
+            access(all) view fun getCurrentProposalEntry(): String? {
                 return self.currentProposalEntry
             }
 
