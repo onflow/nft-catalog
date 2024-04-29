@@ -102,7 +102,7 @@ fun testAddNFTToCatalog() {
             code: addToCatalogCode,
             authorizers: [admin.address],
             signers: [admin],
-            arguments: ["TestCollection", "ExampleNFT", exampleNFTAccount.address, nftTypeIdentifier, user.address, nftID, "cadenceExampleNFTCollection"],
+            arguments: ["TestCollection", "ExampleNFT", exampleNFTAccount.address, nftTypeIdentifier, user.address, nftID, "exampleNFTCollection"],
         )
     )
     Test.expect(txResult, Test.beSucceeded())
@@ -147,8 +147,8 @@ fun testProposeAdditionToCatalog() {
                 "ExampleNFT",
                 exampleNFTAccount.address,
                 nftTypeIdentifier,
-                "cadenceExampleNFTCollection",
-                "cadenceExampleNFTCollection",
+                "exampleNFTCollection",
+                "exampleNFTCollection",
                 nftTypeIdentifier,
                 "TestCollection",
                 "Test collection",
@@ -200,8 +200,8 @@ fun testProposeUpdateToCatalog() {
                 "ExampleNFT",
                 exampleNFTAccount.address,
                 nftTypeIdentifier,
-                "cadenceExampleNFTCollection",
-                "cadenceExampleNFTCollection",
+                "exampleNFTCollection",
+                "exampleNFTCollection",
                 nftTypeIdentifier,
                 "TestCollection",
                 "Test collection",
