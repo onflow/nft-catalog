@@ -1,5 +1,5 @@
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import "NFTCatalog"
 
-pub fun main(collectionIdentifier: String): NFTCatalog.NFTCatalogMetadata? {
+access(all) fun main(collectionIdentifier: String): NFTCatalog.NFTCatalogMetadata? {
     return NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)
 }

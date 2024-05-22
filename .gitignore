@@ -32,3 +32,4 @@ lerna-debug.log*
 
 # emulator datastore
 flowdb
+coverage.json

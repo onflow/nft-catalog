@@ -1,6 +1,7 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
+import "NonFungibleToken"
+import "MetadataViews"
+import "NFTCatalog"
+import "NFTCatalogAdmin"
 
 transaction(
     collectionIdentifier : String,
@@ -11,29 +12,25 @@ transaction(
     nftID: UInt64,
     publicPathIdentifier: String
 ) {
-    let adminProxyResource : &NFTCatalogAdmin.AdminProxy
+    let adminProxyRef : auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy
 
-    prepare(acct: AuthAccount) {
-        self.adminProxyResource = acct.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
+    prepare(acct: auth(BorrowValue) &Account) {
+        self.adminProxyRef = acct.storage.borrow<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy>(from: NFTCatalogAdmin.AdminProxyStoragePath)!
     }
 
     execute {
         let nftAccount = getAccount(addressWithNFT)
         let pubPath = PublicPath(identifier: publicPathIdentifier)!
-        let collectionCap = nftAccount.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(pubPath)
-        assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
-        let collectionRef = collectionCap.borrow()!
+        let collectionRef = nftAccount.capabilities.borrow<&{NonFungibleToken.Collection}>(pubPath) ?? panic("Could not get collection public capability")
         assert(collectionRef.getIDs().length > 0, message: "No NFTs exist in this collection.")
-        let nftResolver = collectionRef.borrowViewResolver(id: nftID)
+        let nftResolver = collectionRef.borrowViewResolver(id: nftID)!
         
         let metadataCollectionData = nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
         
         let collectionData = NFTCatalog.NFTCollectionData(
             storagePath: metadataCollectionData.storagePath,
             publicPath: metadataCollectionData.publicPath,
-            privatePath: metadataCollectionData.providerPath,
             publicLinkedType : metadataCollectionData.publicLinkedType,
-            privateLinkedType : metadataCollectionData.providerLinkedType
         )
 
         let collectionDisplay = nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
@@ -46,6 +43,6 @@ transaction(
             collectionDisplay : collectionDisplay
         )
         
-        self.adminProxyResource.getCapability()!.borrow()!.addCatalogEntry(collectionIdentifier : collectionIdentifier, metadata : catalogData)
+        self.adminProxyRef.getCapability()!.borrow()!.addCatalogEntry(collectionIdentifier : collectionIdentifier, metadata : catalogData)
     }
 }

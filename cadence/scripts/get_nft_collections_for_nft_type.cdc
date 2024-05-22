@@ -1,5 +1,5 @@
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import "NFTCatalog"
 
-pub fun main(nftTypeIdentifer: String): {String : Bool}? {
+access(all) fun main(nftTypeIdentifer: String): {String : Bool}? {
     return NFTCatalog.getCollectionsForType(nftTypeIdentifier: CompositeType(nftTypeIdentifer)!.identifier)
 }

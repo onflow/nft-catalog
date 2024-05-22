@@ -5,7 +5,7 @@ import {
     shallPass,
     getAccountAddress,
     shallResolve
-} from 'flow-js-testing';
+} from '@onflow/flow-js-testing';
 import {
     deployExampleNFT, setupExampleNFTCollection, mintExampleNFT, getExampleNFTCollectionLength, transferExampleNFT
 } from '../src/examplenft';
@@ -20,9 +20,8 @@ jest.setTimeout(TIMEOUT);
 describe('Skeleton Example NFT Test Suite', () => {
     beforeEach(async () => {
         const basePath = path.resolve(__dirname, '../../');
-        const port = 7002;
-        await init(basePath, { port });
-        await emulator.start(port, false);
+        await init(basePath);
+        await emulator.start(false);
         return new Promise((resolve) => setTimeout(resolve, 1000));
     });
 

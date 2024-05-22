@@ -1,6 +1,6 @@
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import "NFTCatalog"
 
-pub fun main(): Int {
+access(all) fun main(): Int {
     let proposals = NFTCatalog.getCatalogProposalKeys()
     return proposals.length
 }

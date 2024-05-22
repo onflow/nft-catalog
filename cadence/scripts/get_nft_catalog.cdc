@@ -1,6 +1,6 @@
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import "NFTCatalog"
 
-pub fun main(identifiers : [String]): {String : NFTCatalog.NFTCatalogMetadata} {
+access(all) fun main(identifiers : [String]): {String : NFTCatalog.NFTCatalogMetadata} {
 
     var data : {String : NFTCatalog.NFTCatalogMetadata} = {}
 

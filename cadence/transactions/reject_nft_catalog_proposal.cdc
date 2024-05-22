@@ -1,13 +1,13 @@
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
+import "NFTCatalogAdmin"
 
 transaction(proposalID : UInt64) {
-    let adminProxyResource : &NFTCatalogAdmin.AdminProxy
+    let adminProxyRef : auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy
 
-    prepare(acct: AuthAccount) {
-        self.adminProxyResource = acct.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
+    prepare(acct: auth(BorrowValue) &Account) {
+        self.adminProxyRef = acct.storage.borrow<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
     }
 
     execute {
-        self.adminProxyResource.getCapability()!.borrow()!.rejectCatalogProposal(proposalID : proposalID)
+        self.adminProxyRef.getCapability()!.borrow()!.rejectCatalogProposal(proposalID : proposalID)
     }
 }

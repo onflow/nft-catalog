@@ -1,7 +1,7 @@
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
+import "NFTCatalogAdmin"
 
-pub fun main(ownerAddress: Address) : Bool {
+access(all) fun main(ownerAddress: Address) : Bool {
     let owner = getAccount(ownerAddress)
-    let proxyCap = owner.getCapability<&NFTCatalogAdmin.AdminProxy{NFTCatalogAdmin.IAdminProxy}>(NFTCatalogAdmin.AdminProxyPublicPath)
+    let proxyCap = owner.capabilities.get<&NFTCatalogAdmin.AdminProxy>(NFTCatalogAdmin.AdminProxyPublicPath)
     return proxyCap.check()
 }

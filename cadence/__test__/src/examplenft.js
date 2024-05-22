@@ -1,4 +1,4 @@
-import { mintFlow, deployContractByName, sendTransaction, executeScript } from 'flow-js-testing'
+import { mintFlow, deployContractByName, sendTransaction, executeScript } from '@onflow/flow-js-testing'
 import { getAdminAddress } from './common'
 
 export const deployExampleNFT = async () => {
