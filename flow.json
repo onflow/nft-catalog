@@ -104,11 +104,11 @@
         },
         "catalog-previewnet-account": {
             "address": "0xd5a5e5c94f9cdb36",
-            "key": "$CATALOG_PREVIEWNET_ACCOUNT_PRIVATE_KEY"
+            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
         },
         "catalog-testnet-account": {
             "address": "0x324c34e1c517e4db",
-            "key": "$CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY"
+            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
         },
         "examplenft-testnet-account": {
             "address": "0xa60cf32e8369f919",

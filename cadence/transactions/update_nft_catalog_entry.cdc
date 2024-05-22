@@ -10,10 +10,10 @@ transaction(
         addressWithNFT: Address,
         publicPathIdentifier: String
 ) {
-        let adminProxyRef : &NFTCatalogAdmin.AdminProxy
+        let adminProxyRef : auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy
 
         prepare(acct: auth(BorrowValue) &Account) {
-                self.adminProxyRef = acct.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
+                self.adminProxyRef = acct.borrow<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
         }
 
         execute {

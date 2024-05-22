@@ -122,7 +122,7 @@ access(all) contract NFTCatalog {
 
     // NFTCollectionData
     // Represents information about an NFT collection resource
-    // Note: Not suing the struct from Metadata standard due to
+    // Note: Not using the struct from Metadata standard due to
     // inability to store functions
     access(all) struct NFTCollectionData {
 

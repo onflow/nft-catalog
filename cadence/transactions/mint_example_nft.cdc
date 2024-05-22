@@ -53,7 +53,7 @@ transaction(
             let beneficiary = royaltyBeneficiaries[count]
             let beneficiaryCapability = getAccount(beneficiary).capabilities.get<&{FungibleToken.Receiver}>(
                     MetadataViews.getRoyaltyReceiverPublicPath()
-                ) ?? panic("Beneficiary does not have Receiver configured at RoyaltyReceiverPublicPath")
+                )
 
             royalties.append(
                 MetadataViews.Royalty(

@@ -54,7 +54,7 @@ fun setup() {
 access(all)
 fun testAdminSetup() {
     var hasAdminProxy = (scriptExecutor("has_admin_proxy.cdc", [admin.address])) as! Bool?
-    Test.assertEqual(hasAdminProxy!, false)
+    Test.assertEqual(false, hasAdminProxy!)
 
     let setupAdminProxyCode = loadCode("setup_nft_catalog_admin_proxy.cdc", "cadence/transactions")
     var txResult = Test.executeTransaction(
@@ -68,10 +68,10 @@ fun testAdminSetup() {
     Test.expect(txResult, Test.beSucceeded())
 
     hasAdminProxy = (scriptExecutor("has_admin_proxy.cdc", [admin.address])) as! Bool?
-    Test.assertEqual(hasAdminProxy!, true)
+    Test.assertEqual(true, hasAdminProxy!)
 
     var isAdmin = (scriptExecutor("is_catalog_admin.cdc", [admin.address])) as! Bool?
-    Test.assertEqual(isAdmin!, false)
+    Test.assertEqual(false, isAdmin!)
 
     // make admin a catalog admin
     let sendAdminCapabilityCode = loadCode("send_admin_capability_to_proxy.cdc", "cadence/transactions")
@@ -86,7 +86,7 @@ fun testAdminSetup() {
     Test.expect(txResult, Test.beSucceeded())
 
     isAdmin = (scriptExecutor("is_catalog_admin.cdc", [admin.address])) as! Bool?
-    Test.assertEqual(isAdmin!, true)
+    Test.assertEqual(true, isAdmin!)
 }
 
 access(all)

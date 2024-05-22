@@ -128,15 +128,15 @@ access(all) contract NFTCatalogAdmin {
     // A proxy resource that can store
     // a capability to admin controls
     access(all) resource interface IAdminProxy {
-        access(all) fun addCapability(capability : Capability<auth(CatalogActions) &Admin>)
-        access(all) fun hasCapability() : Bool
+        access(all) fun addCapability(capability: Capability<auth(CatalogActions) &Admin>)
+        access(all) fun hasCapability(): Bool
     }
 
-    access(all) resource AdminProxy : IAdminProxy {
+    access(all) resource AdminProxy: IAdminProxy {
         
-        access(self) var capability : Capability<auth(CatalogActions) &Admin>?
+        access(self) var capability: Capability<auth(CatalogActions) &Admin>?
 
-        access(all) fun addCapability(capability : Capability<auth(CatalogActions) &Admin>) {
+        access(all) fun addCapability(capability: Capability<auth(CatalogActions) &Admin>) {
             pre {
                 capability.check() : "Invalid Admin Capability"
                 self.capability == nil : "Admin Proxy already set"
@@ -144,7 +144,7 @@ access(all) contract NFTCatalogAdmin {
             self.capability = capability
         }
 
-        access(all) view fun getCapability() : Capability<auth(CatalogActions) &Admin>? {
+        access(CatalogActions) view fun getCapability() : Capability<auth(CatalogActions) &Admin>? {
             return self.capability
         }
 
@@ -169,7 +169,7 @@ access(all) contract NFTCatalogAdmin {
         self.AdminPrivatePath = /private/nftCatalogAdmin
         self.AdminStoragePath = /storage/nftCatalogAdmin
 
-        let admin    <- create Admin()
+        let admin <- create Admin()
 
         self.account.storage.save(<-admin, to: self.AdminStoragePath)
     }
