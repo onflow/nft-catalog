@@ -15,13 +15,13 @@
     "dependencies": {
         "@onflow/fcl": "^1.2.0",
         "@onflow/flow-cadut": "^0.3.0-stable-cadence.1",
-        "@onflow/flow-js-testing": "0.6.0-stable-cadence.2",
+        "@onflow/flow-js-testing": "0.6.0-stable-cadence.3",
         "install": "^0.13.0",
         "npm": "^10.8.0"
     },
     "devDependencies": {
         "@babel/core": "^7.19.3",
-        "@babel/preset-env": "c^7.19.3",
+        "@babel/preset-env": "^7.19.3",
         "@onflow/flow-cadut-generator": "^0.0.1",
         "@onflow/types": "^0.0.6",
         "babel-jest": "^28.0.3",

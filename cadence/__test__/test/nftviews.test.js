@@ -88,12 +88,12 @@ describe('NFT Retrieval Test Suite', () => {
         expect(result['ExampleNFT'][0].thumbnail).toBe(thumbnail);
 
         [result, error] = await shallResolve(getNFTsCountInAccount(Alice));
-        expect(result['ExampleNFT']).toBe(1)
+        expect(result['ExampleNFT']).toBe("1")
         expect(error).toBe(null);
 
         [result, error] = await shallResolve(getNFTIDsInAccount(Alice));
         expect(result['ExampleNFT'].length).toBe(1)
-        expect(result['ExampleNFT'][0]).toBe(0)
+        expect(result['ExampleNFT'][0]).toBe("0")
         expect(error).toBe(null);
     });
 
@@ -143,7 +143,7 @@ describe('NFT Retrieval Test Suite', () => {
         expect(error).toBe(null);
 
         [result, error] = await shallResolve(getNFTsCountInAccount(Alice));
-        expect(result['ExampleNFT']).toBe(1)
+        expect(result['ExampleNFT']).toBe("1")
         expect(result['NotARealNFT'] ?? null).toBe(null)
         expect(error).toBe(null);
 
@@ -269,12 +269,12 @@ describe('NFT Retrieval Test Suite', () => {
         expect(error).toBe(null);
 
         [result, error] = await shallResolve(getNFTsCountInAccount(Alice));
-        expect(result['ExampleNFT']).toBe(1)
+        expect(result['ExampleNFT']).toBe("1")
         expect(error).toBe(null);
 
         [result, error] = await shallResolve(getNFTIDsInAccount(Alice));
         expect(result['ExampleNFT'].length).toBe(1)
-        expect(result['ExampleNFT'][0]).toBe(0)
+        expect(result['ExampleNFT'][0]).toBe("0")
         expect(error).toBe(null);
 
     });
