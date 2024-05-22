@@ -1,4 +1,4 @@
-import { executeScript } from 'flow-js-testing'
+import { executeScript } from '@onflow/flow-js-testing'
 
 export const createTx = async (tx, collectionIdentifier, vaultIdentifier, merchantAddress) => {
     const name = "gen_tx";

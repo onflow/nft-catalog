@@ -3,7 +3,7 @@ import {
   getAccountAddress,
   sendTransaction,
   executeScript
-} from 'flow-js-testing';
+} from '@onflow/flow-js-testing';
 
 export const getAdminAddress = async () => getAccountAddress('Admin')
 
