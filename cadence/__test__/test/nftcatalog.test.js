@@ -6,7 +6,7 @@ import {
   shallResolve,
   getAccountAddress,
   shallRevert,
-} from "flow-js-testing";
+} from "@onflow/flow-js-testing";
 import {
   deployNFTCatalog,
   addToCatalogAdmin,
@@ -45,8 +45,7 @@ jest.setTimeout(TIMEOUT);
 describe("NFT Catalog Test Suite", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../../");
-    const port = 7002;
-    await init(basePath, { port });
+    await init(basePath);
     await emulator.start(true);
     return new Promise((resolve) => setTimeout(resolve, 1000));
   });
