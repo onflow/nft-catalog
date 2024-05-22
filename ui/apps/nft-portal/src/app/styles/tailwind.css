@@ -1011,6 +1011,10 @@ select {
   width: 75%;
 }
 
+.w-10 {
+  width: 2.5rem;
+}
+
 .w-8 {
   width: 2rem;
 }
@@ -1146,6 +1150,10 @@ select {
 
 .justify-between {
   justify-content: space-between;
+}
+
+.gap-1 {
+  gap: 0.25rem;
 }
 
 .gap-6 {
@@ -1408,6 +1416,11 @@ select {
 .bg-blue-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(219 234 254 / var(--tw-bg-opacity));
+}
+
+.bg-blue-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 123 255 / var(--tw-bg-opacity));
 }
 
 .bg-green-100 {
