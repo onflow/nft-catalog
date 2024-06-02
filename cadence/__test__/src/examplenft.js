@@ -7,7 +7,8 @@ export const deployExampleNFT = async () => {
 
     await deployContractByName({ to: ExampleNFTAdmin, name: 'NonFungibleToken' })
     await deployContractByName({ to: ExampleNFTAdmin, name: 'MetadataViews' })
-    return deployContractByName({ to: ExampleNFTAdmin, name: 'ExampleNFT' })
+    await deployContractByName({ to: ExampleNFTAdmin, name: 'PrivateReceiverForwarder' })
+    return deployContractByName({ to: ExampleNFTAdmin, name: 'DapperStorageRent' })
 }
 
 export const setupExampleNFTCollection = async (account) => {
