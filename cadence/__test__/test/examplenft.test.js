@@ -50,7 +50,7 @@ describe('Skeleton Example NFT Test Suite', () => {
 
         const [result, error] = await shallResolve(getExampleNFTCollectionLength(Alice))
 
-        expect(result).toBe(1);
+        expect(result).toBe("1");
         expect(error).toBe(null);
     });
 
@@ -66,11 +66,11 @@ describe('Skeleton Example NFT Test Suite', () => {
         await shallPass(transferExampleNFT(Alice, Bob, 0));
 
         let [result, error] = await shallResolve(getExampleNFTCollectionLength(Alice))
-        expect(result).toBe(0);
+        expect(result).toBe("0");
         expect(error).toBe(null);
 
         [result, error] = await shallResolve(getExampleNFTCollectionLength(Bob))
-        expect(result).toBe(1);
+        expect(result).toBe("1");
         expect(error).toBe(null);
     });
 });
