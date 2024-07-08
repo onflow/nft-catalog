@@ -172,9 +172,7 @@ access(all)  fun getNFTData(nftID: UInt64, collection: &{ViewResolver.ResolverCo
         nftCollectionData = NFTCollectionDataView(
             storagePath : collectionDataView!.storagePath,
             publicPath : collectionDataView!.publicPath,
-            privatePath : collectionDataView!.providerPath,
             publicLinkedType : collectionDataView!.publicLinkedType,
-            privateLinkedType : collectionDataView!.providerLinkedType,
         )
     }
 

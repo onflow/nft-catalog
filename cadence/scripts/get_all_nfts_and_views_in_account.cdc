@@ -6,22 +6,16 @@ import "ViewResolver"
 access(all) struct NFTCollectionData {
     access(all) let storagePath: StoragePath
     access(all) let publicPath: PublicPath
-    access(all) let privatePath: PrivatePath
     access(all) let publicLinkedType: Type
-    access(all) let privateLinkedType: Type
 
     init(
         storagePath: StoragePath,
         publicPath: PublicPath,
-        privatePath: PrivatePath,
         publicLinkedType: Type,
-        privateLinkedType: Type,
     ) {
         self.storagePath = storagePath
         self.publicPath = publicPath
-        self.privatePath = privatePath
         self.publicLinkedType = publicLinkedType
-        self.privateLinkedType = privateLinkedType
     }
 }
 
@@ -54,9 +48,7 @@ access(all) fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
         let collectionDataView = NFTCollectionData(
             storagePath: nftCollectionDisplayView!.storagePath,
             publicPath: nftCollectionDisplayView!.publicPath,
-            privatePath: nftCollectionDisplayView!.providerPath,
             publicLinkedType: nftCollectionDisplayView!.publicLinkedType,
-            privateLinkedType: nftCollectionDisplayView!.providerLinkedType,
         )
         views.insert(key: Type<MetadataViews.NFTCollectionData>().identifier, collectionDataView)
 

@@ -31,9 +31,7 @@ transaction(
                 let collectionData = NFTCatalog.NFTCollectionData(
                         storagePath: metadataCollectionData.storagePath,
                         publicPath: metadataCollectionData.publicPath,
-                        privatePath: metadataCollectionData.providerPath,
                         publicLinkedType : metadataCollectionData.publicLinkedType,
-                        privateLinkedType : metadataCollectionData.providerLinkedType
                 )
 
                 let collectionDisplay = nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay

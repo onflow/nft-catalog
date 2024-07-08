@@ -16,6 +16,8 @@ import "MetadataViews"
 
 access(all) contract ExampleNFT: NonFungibleToken {
 
+    access(all) var totalSupply: UInt64
+
     /// Standard Paths
     access(all) let CollectionStoragePath: StoragePath
     access(all) let CollectionPublicPath: PublicPath
@@ -42,13 +44,14 @@ access(all) contract ExampleNFT: NonFungibleToken {
         access(self) let metadata: {String: AnyStruct}
 
         init(
+            id: UInt64,
             name: String,
             description: String,
             thumbnail: String,
             royalties: [MetadataViews.Royalty],
             metadata: {String: AnyStruct},
         ) {
-            self.id = self.uuid
+            self.id = id
             self.name = name
             self.description = description
             self.thumbnail = thumbnail
@@ -333,6 +336,7 @@ access(all) contract ExampleNFT: NonFungibleToken {
 
             // create a new NFT
             var newNFT <- create NFT(
+                id: ExampleNFT.totalSupply,
                 name: name,
                 description: description,
                 thumbnail: thumbnail,
@@ -340,11 +344,15 @@ access(all) contract ExampleNFT: NonFungibleToken {
                 metadata: metadata,
             )
 
+            ExampleNFT.totalSupply = ExampleNFT.totalSupply + UInt64(1)
+
             return <-newNFT
         }
     }
 
     init() {
+
+        self.totalSupply = 0
 
         // Set the named paths
         self.CollectionStoragePath = /storage/exampleNFTCollection
