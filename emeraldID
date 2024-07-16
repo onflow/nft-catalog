@@ -1,0 +1,31 @@
+
+  import EmeraldIdentity from 0x39e42c67cc851cfb
+import FLOAT from 0x2d4c3caffbeab845
+
+  pub fun main(discordIds: [String]): {String: [String]} {
+    let response: {String: [String]} = {}
+    for discordId in discordIds {
+      var earnedRoles: [String] = []
+      for user in EmeraldIdentity.getEmeraldIDs(discordID: discordId).values {
+
+        
+    var success0 = false
+      
+    if let collection = getAccount(user).getCapability(FLOAT.FLOATCollectionPublicPath).borrow<&FLOAT.Collection{FLOAT.CollectionPublic}>() {
+      let eventId: UInt64 = 1321
+      let ids = collection.ownedIdsFromEvent(eventId: eventId)
+      if ids.length > 0 {
+        success0 = true
+      }
+    }
+      
+      if !earnedRoles.contains("1262097832387547276") && (success0) {
+        earnedRoles.append("1262097832387547276")
+      }
+
+      }
+      response[discordId] = earnedRoles
+    }
+
+    return response
+  }
