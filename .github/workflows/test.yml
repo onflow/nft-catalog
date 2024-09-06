@@ -15,8 +15,9 @@ jobs:
               with:
                   node-version: 16
 
-            - name: Install FLOW CLI
-              run: sh -ci "$(curl -fsSL https://storage.googleapis.com/flow-cli/install.sh)"
+              # This should be switched to the regular CLI once the stable-cadence branch is merged
+            - name: Install Cadence 1.0 Flow CLI
+              run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
 
             - name: Update PATH
               run: echo "/root/.local/bin" >> $GITHUB_PATH

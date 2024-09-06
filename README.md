@@ -18,7 +18,6 @@ Method signatures and their associating parameters/responses can be found in the
 
 ```
 checkForRecommendedV1Views
-genTx
 getAllNftsAndViewsInAccount
 getAllNftsInAccount
 getExamplenftCollectionLength
@@ -39,8 +38,6 @@ getNftsCountInAccount
 getNftsInAccount
 getNftsInAccountFromIds
 getNftsInAccountFromPath
-getSupportedGeneratedScripts
-getSupportedGeneratedTransactions
 hasAdminProxy
 isCatalogAdmin
 ```
@@ -52,7 +49,6 @@ addToNftCatalog
 addToNftCatalogAdmin
 approveNftCatalogProposal
 mintExampleNft
-mintNonstandardNft
 proposeNftToCatalog
 rejectNftCatalogProposal
 removeFromNftCatalog
@@ -60,8 +56,6 @@ removeNftCatalogProposal
 sendAdminCapabilityToProxy
 setupExamplenftCollection
 setupNftCatalogAdminProxy
-setupNonstandardnftCollection
-setupStorefront
 transferExamplenft
 updateNftCatalogEntry
 withdrawNftProposalFromCatalog
@@ -196,7 +190,7 @@ import NFTCatalog from 0x49a7cda3a1eecc29
     collection identifier.
     Due to the large size of the response, only the first 10 entries are returned.
 */
-pub fun main(): {String: NFTCatalog.NFTCatalogMetadata} {
+access(all) fun main(): {String: NFTCatalog.NFTCatalogMetadata} {
     let catalogKeys = NFTCatalog.getCatalogKeys()
     let keys = catalogKeys.slice(from: 0, upTo: 10)
     let collections: {String: NFTCatalog.NFTCatalogMetadata} = {}
@@ -214,7 +208,7 @@ pub fun main(): {String: NFTCatalog.NFTCatalogMetadata} {
 ```cadence
 import NFTCatalog from 0x49a7cda3a1eecc29
 
-pub fun main(): [String] {
+access(all) fun main(): [String] {
     let catalogKeys: {String: NFTCatalog.NFTCatalogMetadata} = NFTCatalog.getCatalogKeys()
     let catalogNames: [String] = []
 
@@ -233,7 +227,7 @@ import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
-pub fun main(ownerAddress: Address): {String: Number} {
+access(all) fun main(ownerAddress: Address): {String: Number} {
     let account = getAuthAccount(ownerAddress)
     let items: {String: Number} = {}
 
@@ -281,23 +275,23 @@ import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
-pub struct NFT {
-    pub let id: UInt64
-    pub let name: String
-    pub let description: String
-    pub let thumbnail: String
-    pub let externalURL: String
-    pub let storagePath: StoragePath
-    pub let publicPath: PublicPath
-    pub let privatePath: PrivatePath
-    pub let publicLinkedType: Type
-    pub let privateLinkedType: Type
-    pub let collectionName: String
-    pub let collectionDescription: String
-    pub let collectionSquareImage: String
-    pub let collectionBannerImage: String
-    pub let collectionExternalURL: String
-    pub let royalties: [MetadataViews.Royalty]
+access(all) struct NFT {
+    access(all) let id: UInt64
+    access(all) let name: String
+    access(all) let description: String
+    access(all) let thumbnail: String
+    access(all) let externalURL: String
+    access(all) let storagePath: StoragePath
+    access(all) let publicPath: PublicPath
+    access(all) let privatePath: PrivatePath
+    access(all) let publicLinkedType: Type
+    access(all) let privateLinkedType: Type
+    access(all) let collectionName: String
+    access(all) let collectionDescription: String
+    access(all) let collectionSquareImage: String
+    access(all) let collectionBannerImage: String
+    access(all) let collectionExternalURL: String
+    access(all) let royalties: [MetadataViews.Royalty]
 
     init(
         id: UInt64,
@@ -336,7 +330,7 @@ pub struct NFT {
     }
 }
 
-pub fun main(ownerAddress: Address): {String: [NFT]} {
+access(all) fun main(ownerAddress: Address): {String: [NFT]} {
     let account = getAuthAccount(ownerAddress)
     let items: [MetadataViews.NFTView] = []
     let data: {String: [NFT]} = {}
@@ -382,9 +376,7 @@ pub fun main(ownerAddress: Address): {String: [NFT]} {
                     externalURL: externalURLView!.url,
                     storagePath: collectionDataView!.storagePath,
                     publicPath: collectionDataView!.publicPath,
-                    privatePath: collectionDataView!.providerPath,
                     publicLinkedType: collectionDataView!.publicLinkedType,
-                    privateLinkedType: collectionDataView!.providerLinkedType,
                     collectionName: collectionDisplayView!.name,
                     collectionDescription: collectionDisplayView!.description,
                     collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
@@ -440,7 +432,7 @@ import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
-pub fun main(ownerAddress: Address): {String: [UInt64]} {
+access(all) fun main(ownerAddress: Address): {String: [UInt64]} {
     let account = getAuthAccount(ownerAddress)
     let items: {String: [UInt64]} = {}
 
@@ -480,23 +472,23 @@ import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
-pub struct NFT {
-    pub let id: UInt64
-    pub let name: String
-    pub let description: String
-    pub let thumbnail: String
-    pub let externalURL: String
-    pub let storagePath: StoragePath
-    pub let publicPath: PublicPath
-    pub let privatePath: PrivatePath
-    pub let publicLinkedType: Type
-    pub let privateLinkedType: Type
-    pub let collectionName: String
-    pub let collectionDescription: String
-    pub let collectionSquareImage: String
-    pub let collectionBannerImage: String
-    pub let collectionExternalURL: String
-    pub let royalties: [MetadataViews.Royalty]
+access(all) struct NFT {
+    access(all) let id: UInt64
+    access(all) let name: String
+    access(all) let description: String
+    access(all) let thumbnail: String
+    access(all) let externalURL: String
+    access(all) let storagePath: StoragePath
+    access(all) let publicPath: PublicPath
+    access(all) let privatePath: PrivatePath
+    access(all) let publicLinkedType: Type
+    access(all) let privateLinkedType: Type
+    access(all) let collectionName: String
+    access(all) let collectionDescription: String
+    access(all) let collectionSquareImage: String
+    access(all) let collectionBannerImage: String
+    access(all) let collectionExternalURL: String
+    access(all) let royalties: [MetadataViews.Royalty]
 
     init(
         id: UInt64,
@@ -535,7 +527,7 @@ pub struct NFT {
     }
 }
 
-pub fun main(ownerAddress: Address, collections: {String: [UInt64]}): {String: [NFT]} {
+access(all) fun main(ownerAddress: Address, collections: {String: [UInt64]}): {String: [NFT]} {
     let data: {String: [NFT]} = {}
     let account = getAuthAccount(ownerAddress)
 
@@ -582,9 +574,7 @@ pub fun main(ownerAddress: Address, collections: {String: [UInt64]}): {String: [
                         externalURL: externalURLView!.url,
                         storagePath: collectionDataView!.storagePath,
                         publicPath: collectionDataView!.publicPath,
-                        privatePath: collectionDataView!.providerPath,
                         publicLinkedType: collectionDataView!.publicLinkedType,
-                        privateLinkedType: collectionDataView!.providerLinkedType,
                         collectionName: collectionDisplayView!.name,
                         collectionDescription: collectionDisplayView!.description,
                         collectionSquareImage: collectionDisplayView!.squareImage.file.uri(),
@@ -612,12 +602,12 @@ import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
-pub struct NFTCollectionData {
-    pub let storagePath: StoragePath
-    pub let publicPath: PublicPath
-    pub let privatePath: PrivatePath
-    pub let publicLinkedType: Type
-    pub let privateLinkedType: Type
+access(all) struct NFTCollectionData {
+    access(all) let storagePath: StoragePath
+    access(all) let publicPath: PublicPath
+    access(all) let privatePath: PrivatePath
+    access(all) let publicLinkedType: Type
+    access(all) let privateLinkedType: Type
 
     init(
         storagePath: StoragePath,
@@ -634,7 +624,7 @@ pub struct NFTCollectionData {
     }
 }
 
-pub fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
+access(all) fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
     let account = getAuthAccount(ownerAddress)
     let items: [MetadataViews.NFTView] = []
     let data: {String: {String: AnyStruct}} = {}
@@ -667,9 +657,7 @@ pub fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
         let collectionDataView = NFTCollectionData(
             storagePath: nftCollectionDisplayView!.storagePath,
             publicPath: nftCollectionDisplayView!.publicPath,
-            privatePath: nftCollectionDisplayView!.providerPath,
             publicLinkedType: nftCollectionDisplayView!.publicLinkedType,
-            privateLinkedType: nftCollectionDisplayView!.providerLinkedType,
         )
         views.insert(key: Type<MetadataViews.NFTCollectionData>().identifier, collectionDataView)
 
@@ -692,18 +680,18 @@ import MetadataViews from 0x1d7e57aa55817448
 import NFTCatalog from 0x49a7cda3a1eecc29
 import NFTRetrieval from 0x49a7cda3a1eecc29
 
-pub struct NFTCollection {
-    pub let contractName: String
-    pub let contractAddress: String
-    pub let storagePath: StoragePath
-    pub let publicPath: PublicPath
-    pub let privatePath: PrivatePath
-    pub let publicLinkedType: Type
-    pub let privateLinkedType: Type
-    pub let collectionName: String
-    pub let collectionDescription: String
-    pub let collectionSquareImage: String
-    pub let collectionBannerImage: String
+access(all) struct NFTCollection {
+    access(all) let contractName: String
+    access(all) let contractAddress: String
+    access(all) let storagePath: StoragePath
+    access(all) let publicPath: PublicPath
+    access(all) let privatePath: PrivatePath
+    access(all) let publicLinkedType: Type
+    access(all) let privateLinkedType: Type
+    access(all) let collectionName: String
+    access(all) let collectionDescription: String
+    access(all) let collectionSquareImage: String
+    access(all) let collectionBannerImage: String
 
     init(
         contractName: String,
@@ -732,7 +720,7 @@ pub struct NFTCollection {
     }
 }
 
-pub fun main(collectionIdentifier : String) : NFTCollection? {
+access(all) fun main(collectionIdentifier : String) : NFTCollection? {
     pre {
         NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier) != nil : "Invalid collection identifier"
     }

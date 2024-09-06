@@ -1,9 +1,10 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
-import NFTRetrieval from "../contracts/NFTRetrieval.cdc"
+import "MetadataViews"
+import "NFTCatalog"
+import "NFTRetrieval"
+import "ViewResolver"
 
-pub fun main(ownerAddress: Address): {String: Number} {
-    let account = getAuthAccount(ownerAddress)
+access(all) fun main(ownerAddress: Address): {String: Number} {
+    let account = getAuthAccount<auth(Storage,BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account>(ownerAddress)
     let items: {String: Number} = {}
 
     NFTCatalog.forEachCatalogKey(fun (collectionIdentifier: String):Bool {
@@ -12,12 +13,8 @@ pub fun main(ownerAddress: Address): {String: Number} {
         let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
 
-        account.link<&{MetadataViews.ResolverCollection}>(
-            tempPublicPath,
-            target: value.collectionData.storagePath
-        )
-
-        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+        let collectionCap = account.capabilities.storage.issue<&{ViewResolver.ResolverCollection}>(value.collectionData.storagePath)
+        account.capabilities.publish(collectionCap, at: tempPublicPath)
 
         if !collectionCap.check() {
             return true

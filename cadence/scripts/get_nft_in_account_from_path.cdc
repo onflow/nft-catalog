@@ -1,10 +1,11 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTRetrieval from "../contracts/NFTRetrieval.cdc"
+import "MetadataViews"
+import "NFTRetrieval"
+import "ViewResolver"
 
-pub struct DisplayView {
-    pub let name : String
-    pub let description : String
-    pub let thumbnail : String
+access(all) struct DisplayView {
+    access(all)  let name : String
+    access(all)  let description : String
+    access(all)  let thumbnail : String
 
     init (
         name : String,
@@ -17,8 +18,8 @@ pub struct DisplayView {
     }
 }
 
-pub struct ExternalURLView {
-    pub let externalURL : String
+access(all)  struct ExternalURLView {
+    access(all)  let externalURL : String
 
     init (
         externalURL : String
@@ -27,12 +28,12 @@ pub struct ExternalURLView {
     }
 }
 
-pub struct NFTCollectionDataView {
-    pub let storagePath : StoragePath
-    pub let publicPath : PublicPath
-    pub let privatePath: PrivatePath
-    pub let publicLinkedType: Type
-    pub let privateLinkedType: Type
+access(all)  struct NFTCollectionDataView {
+    access(all)  let storagePath : StoragePath
+    access(all)  let publicPath : PublicPath
+    access(all)  let privatePath: PrivatePath
+    access(all)  let publicLinkedType: Type
+    access(all)  let privateLinkedType: Type
 
     init (
         storagePath : StoragePath,
@@ -49,13 +50,13 @@ pub struct NFTCollectionDataView {
     }
 }
 
-pub struct NFTCollectionDisplayView {
-    pub let collectionName : String
-    pub let collectionDescription: String
-    pub let collectionSquareImage : MetadataViews.Media
-    pub let collectionBannerImage : MetadataViews.Media
-    pub let externalURL : String
-    pub let socials : {String: MetadataViews.ExternalURL}
+access(all)  struct NFTCollectionDisplayView {
+    access(all)  let collectionName : String
+    access(all)  let collectionDescription: String
+    access(all)  let collectionSquareImage : MetadataViews.Media
+    access(all)  let collectionBannerImage : MetadataViews.Media
+    access(all)  let externalURL : String
+    access(all)  let socials : {String: MetadataViews.ExternalURL}
 
     init (
         collectionName : String,
@@ -74,8 +75,8 @@ pub struct NFTCollectionDisplayView {
     }
 }
 
-pub struct RoyaltiesView {
-    pub let royalties: [MetadataViews.Royalty]
+access(all)  struct RoyaltiesView {
+    access(all)  let royalties: [MetadataViews.Royalty]
 
     init (
         royalties : [MetadataViews.Royalty]
@@ -84,13 +85,13 @@ pub struct RoyaltiesView {
     }
 }
 
-pub struct NFT {
-    pub let id : UInt64
-    pub let display : DisplayView?
-    pub let externalURL : ExternalURLView?
-    pub let nftCollectionData : NFTCollectionDataView?
-    pub let nftCollectionDisplay : NFTCollectionDisplayView?
-    pub let royalties : RoyaltiesView?
+access(all)  struct NFT {
+    access(all)  let id : UInt64
+    access(all)  let display : DisplayView?
+    access(all)  let externalURL : ExternalURLView?
+    access(all)  let nftCollectionData : NFTCollectionDataView?
+    access(all)  let nftCollectionDisplay : NFTCollectionDisplayView?
+    access(all)  let royalties : RoyaltiesView?
 
     init(
             id: UInt64,
@@ -108,7 +109,7 @@ pub struct NFT {
         self.royalties = royalties
 }
 
-pub fun getMapping() : {String : AnyStruct} {
+access(all)  fun getMapping() : {String : AnyStruct} {
     return {
         "Id" : self.id,
         "Display" : self.display,
@@ -121,17 +122,14 @@ pub fun getMapping() : {String : AnyStruct} {
 
 }
 
-pub fun main(ownerAddress: Address, storagePathIdentifier: String, nftID: UInt64): {String : AnyStruct}    {
-    let owner = getAuthAccount(ownerAddress)
+access(all)  fun main(ownerAddress: Address, storagePathIdentifier: String, nftID: UInt64): {String : AnyStruct}    {
+    let owner = getAuthAccount<auth(Storage,BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account>(ownerAddress)
     
     let tempPathStr = "getNFTsInAccountFromPathNFTCatalog"
     let tempPublicPath = PublicPath(identifier: tempPathStr)!
-    owner.link<&{MetadataViews.ResolverCollection}>(
-        tempPublicPath,
-        target: StoragePath(identifier : storagePathIdentifier)!
-    )
+    let collectionCap = owner.capabilities.storage.issue<&{ViewResolver.ResolverCollection}>(StoragePath(identifier : storagePathIdentifier)!)
+    owner.capabilities.publish(collectionCap, at: tempPublicPath)
 
-    let collectionCap = owner.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
     assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
     let collection = collectionCap.borrow()!
     assert(collection.getIDs().length > 0, message: "No NFTs exist in this collection, ensure the provided account has at least 1 NFTs.")
@@ -140,8 +138,8 @@ pub fun main(ownerAddress: Address, storagePathIdentifier: String, nftID: UInt64
 }
 
 
-pub fun getNFTData(nftID: UInt64, collection: &AnyResource{MetadataViews.ResolverCollection} ): {String : AnyStruct} {
-    let nftResolver = collection.borrowViewResolver(id: nftID)
+access(all)  fun getNFTData(nftID: UInt64, collection: &{ViewResolver.ResolverCollection} ): {String : AnyStruct} {
+    let nftResolver = collection.borrowViewResolver(id: nftID)!
     let nftViews = MetadataViews.getNFTView(
         id : nftID,
         viewResolver: nftResolver
@@ -174,9 +172,7 @@ pub fun getNFTData(nftID: UInt64, collection: &AnyResource{MetadataViews.Resolve
         nftCollectionData = NFTCollectionDataView(
             storagePath : collectionDataView!.storagePath,
             publicPath : collectionDataView!.publicPath,
-            privatePath : collectionDataView!.providerPath,
             publicLinkedType : collectionDataView!.publicLinkedType,
-            privateLinkedType : collectionDataView!.providerLinkedType,
         )
     }
 

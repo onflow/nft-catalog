@@ -1,6 +1,6 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
+import "MetadataViews"
+import "NFTCatalog"
+import "NFTCatalogAdmin"
 
 transaction(
         collectionIdentifier : String,
@@ -10,10 +10,10 @@ transaction(
         addressWithNFT: Address,
         publicPathIdentifier: String
 ) {
-        let adminProxyResource : &NFTCatalogAdmin.AdminProxy
+        let adminProxyRef : auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy
 
-        prepare(acct: AuthAccount) {
-                self.adminProxyResource = acct.borrow<&NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
+        prepare(acct: auth(BorrowValue) &Account) {
+                self.adminProxyRef = acct.borrow<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
         }
 
         execute {
@@ -31,9 +31,7 @@ transaction(
                 let collectionData = NFTCatalog.NFTCollectionData(
                         storagePath: metadataCollectionData.storagePath,
                         publicPath: metadataCollectionData.publicPath,
-                        privatePath: metadataCollectionData.providerPath,
                         publicLinkedType : metadataCollectionData.publicLinkedType,
-                        privateLinkedType : metadataCollectionData.providerLinkedType
                 )
 
                 let collectionDisplay = nftResolver.resolveView(Type<MetadataViews.NFTCollectionDisplay>())! as! MetadataViews.NFTCollectionDisplay
@@ -46,6 +44,6 @@ transaction(
                         collectionDisplay : collectionDisplay
                 )
                 
-                self.adminProxyResource.getCapability()!.borrow()!.updateCatalogEntry(collectionIdentifier : collectionIdentifier, metadata : catalogData)
+                self.adminProxyRef.getCapability()!.borrow()!.updateCatalogEntry(collectionIdentifier : collectionIdentifier, metadata : catalogData)
         }
 }

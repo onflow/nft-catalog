@@ -1,4 +1,4 @@
-import { mintFlow, deployContractByName, sendTransaction, executeScript } from 'flow-js-testing'
+import { mintFlow, deployContractByName, sendTransaction, executeScript } from '@onflow/flow-js-testing'
 import { getAdminAddress } from './common'
 
 export const deployNFTCatalog = async () => {
@@ -8,15 +8,6 @@ export const deployNFTCatalog = async () => {
     await deployContractByName({ to: NFTCatalogAdmin, name: 'MetadataViews' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalog' })
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'ArrayUtils' })
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'StringUtils' })
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'DapperUtilityCoin' })
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'FlowUtilityToken' })
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTStorefrontV2' })
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'TokenForwarding' })
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGenerationUtils' });
-    await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionTemplates' });
-    return await deployContractByName({ to: NFTCatalogAdmin, name: 'TransactionGeneration' })
 }
 
 export const updateSnapshotAdmin = async(catalogAccount, collections) => {

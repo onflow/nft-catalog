@@ -1,4 +1,4 @@
-import { executeScript, mintFlow, deployContractByName } from 'flow-js-testing'
+import { executeScript, mintFlow, deployContractByName } from '@onflow/flow-js-testing'
 import { getAdminAddress } from './common'
 
 export const deployNFTRetrieval = async () => {

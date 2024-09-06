@@ -1,31 +1,26 @@
-import MetadataViews from "../contracts/MetadataViews.cdc"
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
-import NFTRetrieval from "../contracts/NFTRetrieval.cdc"
+import "MetadataViews"
+import "NFTCatalog"
+import "NFTRetrieval"
+import "ViewResolver"
 
-pub struct NFTCollectionData {
-    pub let storagePath: StoragePath
-    pub let publicPath: PublicPath
-    pub let privatePath: PrivatePath
-    pub let publicLinkedType: Type
-    pub let privateLinkedType: Type
+access(all) struct NFTCollectionData {
+    access(all) let storagePath: StoragePath
+    access(all) let publicPath: PublicPath
+    access(all) let publicLinkedType: Type
 
     init(
         storagePath: StoragePath,
         publicPath: PublicPath,
-        privatePath: PrivatePath,
         publicLinkedType: Type,
-        privateLinkedType: Type,
     ) {
         self.storagePath = storagePath
         self.publicPath = publicPath
-        self.privatePath = privatePath
         self.publicLinkedType = publicLinkedType
-        self.privateLinkedType = privateLinkedType
     }
 }
 
-pub fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
-    let account = getAuthAccount(ownerAddress)
+access(all) fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
+    let account = getAuthAccount<auth(Storage,BorrowValue, IssueStorageCapabilityController, PublishCapability, SaveValue, UnpublishCapability) &Account>(ownerAddress)
     let items: [MetadataViews.NFTView] = []
     let data: {String: {String: AnyStruct}} = {}
 
@@ -35,12 +30,8 @@ pub fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
         let tempPathStr = "catalog".concat(keyHash)
         let tempPublicPath = PublicPath(identifier: tempPathStr)!
 
-        account.link<&{MetadataViews.ResolverCollection}>(
-            tempPublicPath,
-            target: value.collectionData.storagePath
-        )
-
-        let collectionCap = account.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(tempPublicPath)
+        let collectionCap = account.capabilities.storage.issue<&{ViewResolver.ResolverCollection}>(value.collectionData.storagePath)
+        account.capabilities.publish(collectionCap, at: tempPublicPath)
 
         if !collectionCap.check() {
             return true
@@ -57,9 +48,7 @@ pub fun main(ownerAddress: Address): {String: {String: AnyStruct}} {
         let collectionDataView = NFTCollectionData(
             storagePath: nftCollectionDisplayView!.storagePath,
             publicPath: nftCollectionDisplayView!.publicPath,
-            privatePath: nftCollectionDisplayView!.providerPath,
             publicLinkedType: nftCollectionDisplayView!.publicLinkedType,
-            privateLinkedType: nftCollectionDisplayView!.providerLinkedType,
         )
         views.insert(key: Type<MetadataViews.NFTCollectionData>().identifier, collectionDataView)
 

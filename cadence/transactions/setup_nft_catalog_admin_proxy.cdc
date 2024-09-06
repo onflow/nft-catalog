@@ -1,9 +1,10 @@
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
+import "NFTCatalogAdmin"
 
 transaction() {
     
-    prepare(acct: AuthAccount) {
-        acct.save(<- NFTCatalogAdmin.createAdminProxy(), to: NFTCatalogAdmin.AdminProxyStoragePath)
-        acct.link<&NFTCatalogAdmin.AdminProxy{NFTCatalogAdmin.IAdminProxy}>(NFTCatalogAdmin.AdminProxyPublicPath, target: NFTCatalogAdmin.AdminProxyStoragePath)
+    prepare(acct: auth(IssueStorageCapabilityController, PublishCapability, SaveValue) &Account) {
+        acct.storage.save(<- NFTCatalogAdmin.createAdminProxy(), to: NFTCatalogAdmin.AdminProxyStoragePath)
+        let proxyCap = acct.capabilities.storage.issue<&NFTCatalogAdmin.AdminProxy>(NFTCatalogAdmin.AdminProxyStoragePath)
+        acct.capabilities.publish(proxyCap, at: NFTCatalogAdmin.AdminProxyPublicPath)
     }
 }

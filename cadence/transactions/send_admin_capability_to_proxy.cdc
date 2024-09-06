@@ -1,16 +1,18 @@
-import NFTCatalogAdmin from "../contracts/NFTCatalogAdmin.cdc"
+import "NFTCatalogAdmin"
 
 transaction(proxyAddress: Address) {
-    let adminCap : Capability<&NFTCatalogAdmin.Admin>
+    let adminCap : Capability<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.Admin>
     
-    prepare(acct: AuthAccount) {
-        self.adminCap = acct.getCapability<&NFTCatalogAdmin.Admin>(NFTCatalogAdmin.AdminPrivatePath)
+    prepare(acct: auth(IssueStorageCapabilityController) &Account) {
+        self.adminCap = acct.capabilities.storage.issue<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.Admin>(
+            NFTCatalogAdmin.AdminStoragePath
+        )
+        assert(self.adminCap.check(), message: "Missing or mis-typed Admin provider")
     }
 
     execute {
         let owner = getAccount(proxyAddress)
-        let proxy = owner.getCapability<&NFTCatalogAdmin.AdminProxy{NFTCatalogAdmin.IAdminProxy}>(NFTCatalogAdmin.AdminProxyPublicPath)
-            .borrow() ?? panic("Could not borrow Admin Proxy")
+        let proxy = owner.capabilities.borrow<&NFTCatalogAdmin.AdminProxy>(NFTCatalogAdmin.AdminProxyPublicPath) ?? panic("Could not borrow Admin Proxy")
         
         proxy.addCapability(capability : self.adminCap)
     }

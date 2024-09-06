@@ -1,5 +1,5 @@
-import NFTCatalog from "../contracts/NFTCatalog.cdc"
+import "NFTCatalog"
 
-pub fun main(): [UInt64] {
+access(all) fun main(): [UInt64] {
     return NFTCatalog.getCatalogProposalKeys()
 }
