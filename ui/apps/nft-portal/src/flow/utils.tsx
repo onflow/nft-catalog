@@ -52,6 +52,7 @@ export async function retrieveContractInformation(
       cadence: `
         import NonFungibleToken from ${fcl.withPrefix(nftStandardAddress)}
         import MetadataViews from ${fcl.withPrefix(nftStandardAddress)}
+        import ViewResolver from ${fcl.withPrefix(nftStandardAddress)}
         import ${name} from ${fcl.withPrefix(address)}
 
         access(all) fun main(): {String: AnyStruct} {
@@ -59,10 +60,10 @@ export async function retrieveContractInformation(
           var collectionConformsToMetadata = false
           var nftConformsToMetadata = false
 
-          isNFTContract = Type<${name}>().isSubtype(of: Type<NonFungibleToken>())
+          isNFTContract = Type<${name}>().isSubtype(of: Type<{NonFungibleToken}>())
           if (isNFTContract == true) {
-            collectionConformsToMetadata = Type<&${name}.Collection>().isSubtype(of: Type<&{MetadataViews.ResolverCollection}>())
-            nftConformsToMetadata = Type<&${name}.NFT>().isSubtype(of: Type<&{MetadataViews.Resolver}>())
+            collectionConformsToMetadata = Type<&${name}.Collection>().isSubtype(of: Type<&{ViewResolver.ResolverCollection}>())
+            nftConformsToMetadata = Type<&${name}.NFT>().isSubtype(of: Type<&{ViewResolver.Resolver}>())
           }
 
           return {

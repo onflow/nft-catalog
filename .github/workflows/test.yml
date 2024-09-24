@@ -20,7 +20,7 @@ jobs:
               run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
 
             - name: Update PATH
-              run: echo "/root/.local/bin" >> $GITHUB_PATH
+              run: echo "/home/.local/bin" >> $GITHUB_PATH
 
             - name: Checkout Repo
               uses: actions/checkout@v4
