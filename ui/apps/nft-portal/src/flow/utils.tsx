@@ -54,7 +54,7 @@ export async function retrieveContractInformation(
         import MetadataViews from ${fcl.withPrefix(nftStandardAddress)}
         import ${name} from ${fcl.withPrefix(address)}
 
-        pub fun main(): {String: AnyStruct} {
+        access(all) fun main(): {String: AnyStruct} {
           var isNFTContract = false
           var collectionConformsToMetadata = false
           var nftConformsToMetadata = false
