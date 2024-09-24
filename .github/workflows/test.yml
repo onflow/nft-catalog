@@ -11,9 +11,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Install Node
-              uses: actions/setup-node@v1
+              uses: actions/setup-node@v4
               with:
-                  node-version: 16
+                node-version: 18
 
               # This should be switched to the regular CLI once the stable-cadence branch is merged
             - name: Install Cadence 1.0 Flow CLI
@@ -23,7 +23,7 @@ jobs:
               run: echo "/root/.local/bin" >> $GITHUB_PATH
 
             - name: Checkout Repo
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Install Dependencies
               run: npm install
