@@ -26,16 +26,15 @@ jobs:
             
             - run: echo $(flow version)
 
+            - name: Install Dependencies
+              run: npm install
 
-            # - name: Install Dependencies
-            #   run: npm install
+            - name: Install UI Dependencies
+              run: npm run install-ui
 
-            # - name: Install UI Dependencies
-            #   run: npm run install-ui
-
-            # - name: Run Cadence Tests
-            #   if: always()
-            #   run: npm test
+            - name: Run Cadence Tests
+              if: always()
+              run: npm test
 
             # - name: Run E2E Cypress Tests
             #   if: always()
