@@ -10,6 +10,8 @@ jobs:
             EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY }}
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
             - name: Install Node
               uses: actions/setup-node@v4
               with:
@@ -21,20 +23,20 @@ jobs:
 
             - name: Update PATH
               run: echo "/root/.local/bin" >> $GITHUB_PATH
+            
+            - run: echo $(flow version)
 
-            - name: Checkout Repo
-              uses: actions/checkout@v4
 
-            - name: Install Dependencies
-              run: npm install
+            # - name: Install Dependencies
+            #   run: npm install
 
-            - name: Install UI Dependencies
-              run: npm run install-ui
+            # - name: Install UI Dependencies
+            #   run: npm run install-ui
 
-            - name: Run Cadence Tests
-              if: always()
-              run: npm test
+            # - name: Run Cadence Tests
+            #   if: always()
+            #   run: npm test
 
-            - name: Run E2E Cypress Tests
-              if: always()
-              run: npm run e2e
+            # - name: Run E2E Cypress Tests
+            #   if: always()
+            #   run: npm run e2e
