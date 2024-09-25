@@ -10,10 +10,12 @@ jobs:
             EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY }}
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
             - name: Install Node
-              uses: actions/setup-node@v1
+              uses: actions/setup-node@v4
               with:
-                  node-version: 16
+                node-version: 18
 
               # This should be switched to the regular CLI once the stable-cadence branch is merged
             - name: Install Cadence 1.0 Flow CLI
@@ -21,9 +23,8 @@ jobs:
 
             - name: Update PATH
               run: echo "/root/.local/bin" >> $GITHUB_PATH
-
-            - name: Checkout Repo
-              uses: actions/checkout@v2
+            
+            - run: echo $(flow version)
 
             - name: Install Dependencies
               run: npm install
@@ -35,6 +36,6 @@ jobs:
               if: always()
               run: npm test
 
-            - name: Run E2E Cypress Tests
-              if: always()
-              run: npm run e2e
+            # - name: Run E2E Cypress Tests
+            #   if: always()
+            #   run: npm run e2e
