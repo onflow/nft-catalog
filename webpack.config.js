@@ -18,6 +18,11 @@ module.exports = {
                 exclude: /node_modules/,
                 use: "babel-loader",
             },
+            {
+                test: /\.cdc$/,
+                exclude: /node_modules/,
+                use: 'raw-loader',
+            },
         ],
     },
     mode: "development",
