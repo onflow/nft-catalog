@@ -4,10 +4,12 @@
     "scripts": {
         "test": "jest --runInBand cadence/__test__",
         "test-individual": "jest --runInBand",
-        "build": "webpack",
+        "build": "cd ui && npm run build",
         "e2e": "cd ui && npx nx e2e nft-portal-e2e",
         "prepublishOnly": "npm run prepare && npm run build",
-        "install-ui": "cd ui && npm install"
+        "install-ui": "cd ui && npm install",
+        "postinstall": "install-ui",
+        "start": "cd ui && npm run start"
     },
     "author": "Ecosystem Growth",
     "license": "ISC",
