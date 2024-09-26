@@ -3,7 +3,7 @@ import { NetworkDropDown, Network } from '../catalog/network-dropdown';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CatalogSelect } from '../catalog/catalog-select';
 import { NFTContent } from './nft-content';
-import { changeFCLEnvironment } from 'apps/nft-portal/src/flow/setup';
+import { changeFCLEnvironment } from '../../../flow/setup';
 import { TextInput } from '../shared/text-input';
 
 type NFTParams = {

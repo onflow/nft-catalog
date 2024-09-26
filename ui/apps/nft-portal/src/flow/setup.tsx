@@ -1,6 +1,6 @@
 import { config } from "@onflow/fcl";
 import { Network } from "../app/components/catalog/network-dropdown";
-import FlowJSON from '../../../../../flow.json';
+import FlowJSON from "../../../../../flow.json";
 
 export function changeFCLEnvironment(input: Network) {
   if (input === 'mainnet') {
