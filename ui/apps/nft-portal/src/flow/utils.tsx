@@ -7,7 +7,7 @@ import { Network } from '../app/components/catalog/network-dropdown';
 import CheckForRecommendedV1Views from "../../../../../cadence/scripts/check_for_recommended_v1_views.cdc"
 import GetSupportedGeneratedScripts from "../../../../../cadence/scripts/get_supported_generated_scripts.cdc"
 import GetSupportedGeneratedTransactions from "../../../../../cadence/scripts/get_supported_generated_transactions.cdc"
-import GenTx from "../../../../../cadence/scripts/catalogJson.scripts.gen_tx.cdc"
+import GenTx from "../../../../../cadence/scripts/gen_tx.cdc"
 import GetNftCatalog from "../../../../../cadence/scripts/get_nft_catalog.cdc"
 import GetNftCatalogIdentifiers from "../../../../../cadence/scripts/get_nft_catalog_identifiers.cdc"
 import GetNftCatalogProposals from "../../../../../cadence/scripts/get_nft_catalog_proposals.cdc"

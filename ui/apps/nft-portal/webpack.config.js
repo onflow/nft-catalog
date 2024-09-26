@@ -19,6 +19,10 @@ module.exports = (config, context) => {
             }
           ]
         },
+        {
+          test: /\.cdc$/,
+          use: 'raw-loader',
+        }
       ],
     },
   };

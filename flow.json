@@ -88,6 +88,33 @@
                 "testnet": "0x324c34e1c517e4db",
                 "mainnet": "0x49a7cda3a1eecc29"
             }
+        },
+        "TransactionGeneration": {
+            "source": "",
+            "aliases": {
+                "previewnet": "0xd5a5e5c94f9cdb36",
+                "testing": "0x0000000000000007",
+                "testnet": "0x44051d81c4720882",
+                "mainnet": "0xe52522745adf5c34"
+            }
+        },
+        "TransactionGenerationUtils": {
+            "source": "",
+            "aliases": {
+                "previewnet": "0xd5a5e5c94f9cdb36",
+                "testing": "0x0000000000000007",
+                "testnet": "0x44051d81c4720882",
+                "mainnet": "0xe52522745adf5c34"
+            }
+        },
+        "TransactionTemplates": {
+            "source": "",
+            "aliases": {
+                "previewnet": "0xd5a5e5c94f9cdb36",
+                "testing": "0x0000000000000007",
+                "testnet": "0x44051d81c4720882",
+                "mainnet": "0xe52522745adf5c34"
+            }
         }
     },
     "networks": {
