@@ -1,6 +1,5 @@
 import * as fcl from '@onflow/fcl';
 import * as t from '@onflow/types';
-//@ts-ignore
 import { changeFCLEnvironment } from './setup';
 import { Network } from '../app/components/catalog/network-dropdown';
 import CheckForRecommendedV1Views from "../../../../../cadence/scripts/check_for_recommended_v1_views.cdc"
