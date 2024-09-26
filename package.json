@@ -15,16 +15,13 @@
     "license": "ISC",
     "main": "dist/index_bundle.js",
     "dependencies": {
-        "@onflow/fcl": "^1.2.0",
-        "@onflow/flow-cadut": "^0.3.0-stable-cadence.1",
-        "@onflow/flow-js-testing": "^0.6.0-stable-cadence.3",
+        "@onflow/fcl": "^1.12.0-alpha.0",
         "install": "^0.13.0",
         "npm": "^10.8.0"
     },
     "devDependencies": {
         "@babel/core": "^7.19.3",
         "@babel/preset-env": "^7.19.3",
-        "@onflow/flow-cadut-generator": "^0.0.1",
         "@onflow/types": "^0.0.6",
         "babel-jest": "^28.0.3",
         "babel-loader": "^8.2.5",
