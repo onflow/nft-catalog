@@ -1,7 +1,6 @@
 import * as fcl from '@onflow/fcl';
 import * as t from '@onflow/types';
 //@ts-ignore
-import * as catalogJson from './catalog_c2j.json';
 import { changeFCLEnvironment } from './setup';
 import { Network } from '../app/components/catalog/network-dropdown';
 import CheckForRecommendedV1Views from "../../../../../cadence/scripts/check_for_recommended_v1_views.cdc"
@@ -21,6 +20,12 @@ import HasAdminProxy from "../../../../../cadence/scripts/has_admin_proxy.cdc"
 import IsCatalogAdmin from "../../../../../cadence/scripts/is_catalog_admin.cdc"
 import CheckForLinks from "../../../../../cadence/scripts/check_for_links.cdc"
 import GetNftMetadataForCollectionIdentifier from "../../../../../cadence/scripts/get_nft_metadata_for_collection_identifier.cdc"
+
+import setup_nft_catalog_admin_proxy from "../../../../../cadence/transactions/setup_nft_catalog_admin_proxy.cdc"
+import approve_nft_catalog_proposal from "../../../../../cadence/transactions/approve_nft_catalog_proposal.cdc"
+import reject_nft_catalog_proposal from "../../../../../cadence/transactions/reject_nft_catalog_proposal.cdc"
+import propose_nft_to_catalog from "../../../../../cadence/transactions/propose_nft_to_catalog.cdc"
+import remove_nft_catalog_proposal from "../../../../../cadence/transactions/remove_nft_catalog_proposal.cdc"
 
 type AccountsMap = { [network in Network]: any };
 
@@ -458,7 +463,7 @@ export async function getAreLinksSetup(address: string, publicPath: string) {
 export async function createAdminProxy() {
   try {
     const txId = await fcl.mutate({
-      cadence: catalogJson.transactions.setup_nft_catalog_admin_proxy,
+      cadence: setup_nft_catalog_admin_proxy,
       limit: 9999,
       args: (arg: any, t: any) => [],
     });
@@ -472,7 +477,7 @@ export async function createAdminProxy() {
 export async function acceptProposal(proposalID: string) {
   try {
     const txId = await fcl.mutate({
-      cadence: catalogJson.transactions.approve_nft_catalog_proposal,
+      cadence: approve_nft_catalog_proposal,
       limit: 9999,
       args: (arg: any, t: any) => [fcl.arg(proposalID, t.UInt64)],
     });
@@ -486,7 +491,7 @@ export async function acceptProposal(proposalID: string) {
 export async function rejectProposal(proposalID: string) {
   try {
     const txId = await fcl.mutate({
-      cadence: catalogJson.transactions.reject_nft_catalog_proposal,
+      cadence: reject_nft_catalog_proposal,
       limit: 9999,
       args: (arg: any, t: any) => [fcl.arg(proposalID, t.UInt64)],
     });
@@ -500,7 +505,7 @@ export async function rejectProposal(proposalID: string) {
 export async function deleteProposal(proposalID: string) {
   try {
     const txId = await fcl.mutate({
-      cadence: catalogJson.transactions.remove_nft_catalog_proposal,
+      cadence: remove_nft_catalog_proposal,
       limit: 9999,
       args: (arg: any, t: any) => [fcl.arg(proposalID, t.UInt64)],
     });
@@ -542,7 +547,7 @@ export async function proposeNFTToCatalog(
     socialsDictionary.push(socialsObj);
   }
 
-  const cadence = catalogJson.transactions.propose_nft_to_catalog;
+  const cadence = propose_nft_to_catalog;
 
   // Check if the image is an IPFS one, and convert it to one that is
   // easily viewable from the catalog.
