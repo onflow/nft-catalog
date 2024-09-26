@@ -8,7 +8,7 @@
         "e2e": "cd ui && npx nx e2e nft-portal-e2e",
         "prepublishOnly": "npm run prepare && npm run build",
         "install-ui": "cd ui && npm install",
-        "postinstall": "install-ui",
+        "postinstall": "npm run install-ui",
         "start": "cd ui && npm run start"
     },
     "author": "Ecosystem Growth",
