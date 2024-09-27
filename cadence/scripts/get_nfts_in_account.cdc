@@ -27,9 +27,7 @@ access(all) struct NFT {
         externalURL: String,
         storagePath: StoragePath,
         publicPath: PublicPath,
-        privatePath: PrivatePath,
         publicLinkedType: Type,
-        privateLinkedType: Type,
         collectionName: String,
         collectionDescription: String,
         collectionSquareImage: String,
@@ -44,9 +42,7 @@ access(all) struct NFT {
         self.externalURL = externalURL
         self.storagePath = storagePath
         self.publicPath = publicPath
-        self.privatePath = privatePath
         self.publicLinkedType = publicLinkedType
-        self.privateLinkedType = privateLinkedType
         self.collectionName = collectionName
         self.collectionDescription = collectionDescription
         self.collectionSquareImage = collectionSquareImage

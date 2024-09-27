@@ -572,21 +572,6 @@ export async function proposeNFTToCatalog(
     collectionBannerImage = `https://gateway.pinata.cloud/ipfs/${cid}/${path}`;
   }
 
-  let privateLinkedType: string | null = null;
-  let privateRestrictedType: any = null;
-  try {
-    privateRestrictedType = buildRestrictedType(
-      sampleNFTView.NFTCollectionData.privateLinkedType.type
-    );
-    privateLinkedType =
-      sampleNFTView.NFTCollectionData.privateLinkedType.type.type.typeID;
-  } catch (err) {
-    // continue on with an empty array for private restricted type. This fails if it was not a restricted type
-    // to begin with.
-    privateLinkedType =
-      sampleNFTView.NFTCollectionData.privateLinkedType.type.typeID;
-    privateRestrictedType = [];
-  }
   try {
     const txId = await fcl.mutate({
       cadence: cadence,
@@ -608,10 +593,6 @@ export async function proposeNFTToCatalog(
           t.String
         ),
         fcl.arg(
-          sampleNFTView.NFTCollectionData.privatePath.identifier,
-          t.String
-        ),
-        fcl.arg(
           sampleNFTView.NFTCollectionData.publicLinkedType.type.type.typeID,
           t.String
         ),
@@ -621,8 +602,6 @@ export async function proposeNFTToCatalog(
           ),
           t.Array(t.String)
         ),
-        fcl.arg(privateLinkedType, t.String),
-        fcl.arg(privateRestrictedType, t.Array(t.String)),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionName, t.String),
         fcl.arg(
           sampleNFTView.NFTCollectionDisplay.collectionDescription,
