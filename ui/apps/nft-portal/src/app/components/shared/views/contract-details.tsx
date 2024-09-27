@@ -28,7 +28,6 @@ function ContractAttribute({ attribute, value }: { attribute: string, value: any
 
 export function ContractDetails({ contractLink, view }: GenericViewProps) {
   const publicTypeID = view.publicLinkedType.typeID ? view.publicLinkedType.typeID : view.publicLinkedType.type.typeID
-  const privateTypeID = view.privateLinkedType.typeID ? view.privateLinkedType.typeID : view.privateLinkedType.type.typeID
   return (
     <>
       <div className="flex flex-row justify-between pt-16 pb-8">
@@ -49,9 +48,7 @@ export function ContractDetails({ contractLink, view }: GenericViewProps) {
         <ContractAttribute attribute="Address" value={view.address} />
         <ContractAttribute attribute="Storage path" value={`/storage/${view.storagePath.identifier}`} />
         <ContractAttribute attribute="Public path" value={`/public/${view.publicPath.identifier}`} />
-        <ContractAttribute attribute="Private path" value={`/private/${view.privatePath.identifier}`} />
         <ContractAttribute attribute="Public Type" value={convertToReadableType(publicTypeID)} />
-        <ContractAttribute attribute="Private Type" value={convertToReadableType(privateTypeID)} />
       </div>
       
     </>
