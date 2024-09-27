@@ -24,18 +24,6 @@ declare module '@onflow/fcl' {
   function unauthenticate(): any;
 }
 
-declare module '@onflow/types' {
-  Address: string;
-  String: string;
-  Path: string;
-  function Address(): any;
-  function String(): any;
-  function Path(): any;
-  function UInt64(): any;
-  function Array(any): any;
-  function Optional(any): any;
-}
-
 declare module '@onflow/transport-http' {
   function send(): any;
 }

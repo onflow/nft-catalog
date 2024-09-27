@@ -125,26 +125,6 @@
         "testnet": "access.devnet.nodes.onflow.org:9000"
     },
     "accounts": {
-        "emulator-account": {
-            "address": "0xf8d6e0586b0a20c7",
-            "key": "bac3b8f568b9d39bac8ccfc23b3cf340840cbf4db186f4eb1bb24b8924d65e62"
-        },
-        "catalog-previewnet-account": {
-            "address": "0xd5a5e5c94f9cdb36",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
-        },
-        "catalog-testnet-account": {
-            "address": "0x324c34e1c517e4db",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
-        },
-        "examplenft-testnet-account": {
-            "address": "0xa60cf32e8369f919",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
-        },
-        "examplenft-testnet-holder-account": {
-            "address": "0x5f151d59c7128d8e",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
-        },
         "mainnet-nft-catalog-account": {
             "address": "0x49a7cda3a1eecc29",
             "key": {
@@ -177,36 +157,6 @@
                 "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog-admin/cryptoKeyVersions/1"
             },
             "chain": "flow-mainnet"
-        }
-    },
-    "deployments": {
-        "emulator": {
-            "emulator-account": [
-                "NFTCatalog",
-                "NFTCatalogAdmin",
-                "NFTRetrieval"
-            ]
-        },
-        "previewnet": {
-            "catalog-previewnet-account": [
-                "NFTCatalog",
-                "NFTCatalogAdmin",
-                "NFTRetrieval"
-            ]
-        },
-        "testnet": {
-            "catalog-testnet-account": [
-                "NFTCatalog",
-                "NFTCatalogAdmin",
-                "NFTRetrieval"
-            ]
-        },
-        "mainnet": {
-            "mainnet-nft-catalog-account": [
-                "NFTCatalog",
-                "NFTCatalogAdmin",
-                "NFTRetrieval"
-            ]
         }
     }
 }

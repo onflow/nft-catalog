@@ -46,7 +46,7 @@ export async function getAccount(
   address: string,
   network: Network
 ): Promise<any> {
-  changeFCLEnvironment(network);
+  await changeFCLEnvironment(network);
   try {
     const account = await fcl.account(address);
     return account;
@@ -187,7 +187,7 @@ export async function getGeneratedTransaction(
 
 export async function getAllCollections(): Promise<any> {
   const CHUNK = 50;
-  const collectionIdentifiers= await getCatalogCollectionIdentifiers();
+  const collectionIdentifiers= (await getCatalogCollectionIdentifiers()) || [];
   const catalogBatches: [string][] = [];
   for (let i = 0; i < collectionIdentifiers.length; i += CHUNK) {
     catalogBatches.push(collectionIdentifiers.slice(i, i + CHUNK));

@@ -25,8 +25,8 @@ export default function Layout() {
 
   const navigate = useNavigate();
 
-  const onNetworkChange = useCallback((network: Network) => {
-    changeFCLEnvironment(network);
+  const onNetworkChange = useCallback(async (network: Network) => {
+    await changeFCLEnvironment(network);
     navigate(`/nfts/${network}`);
   }, []);
 
