@@ -2,6 +2,7 @@ import Test
 import "test_helpers.cdc"
 import "FungibleToken"
 import "NonFungibleToken"
+import "NFTCatalog"
 
 access(all) let admin = Test.createAccount()
 access(all) let nftCreator = Test.createAccount()
@@ -164,8 +165,15 @@ fun testProposeAdditionToCatalog() {
     )
     Test.expect(txResult, Test.beSucceeded())
 
+    let expectedProposalsCount: Int = 1
+    let expectedProposalID: UInt64 = 1 // First proposal ID is 1-indexed
+
     let res = (scriptExecutor("get_nft_catalog_proposals_count.cdc", []) as! Int?)!
     Test.assertEqual(res, 1)
+
+    let proposalIDs = (scriptExecutor("get_nft_catalog_proposals.cdc", [[expectedProposalID]]) as! {UInt64 : NFTCatalog.NFTCatalogProposal}?)!
+    let proposal = proposalIDs[expectedProposalID]
+    Test.assert(proposal != nil, message: "Expected proposal to exist for id ".concat(expectedProposalID.toString()))
 }
 
 access(all)
@@ -217,22 +225,27 @@ fun testProposeUpdateToCatalog() {
     )
     Test.expect(txResult, Test.beSucceeded())
 
+    let expectedProposalsCount: Int = 2
+    let expectedProposalID: UInt64 = 1
+
     let res = (scriptExecutor("get_nft_catalog_proposals_count.cdc", []) as! Int?)!
-    Test.assertEqual(res, 2)
+    Test.assertEqual(expectedProposalsCount, res)
+
+    let proposalIDs = (scriptExecutor("get_nft_catalog_proposal_ids.cdc", []) as! [UInt64]?)!
 }
 
 access(all)
 fun testRejectProposal() {
     let getNFTProposalsCode = loadCode("get_nft_catalog_proposal_ids.cdc", "./scripts")
     let rejectToCatalogCode = loadCode("reject_nft_catalog_proposal.cdc", "./transactions")
-    var res = (scriptExecutor("get_nft_catalog_proposal_ids.cdc", []) as! [UInt64]?)!
+    let expectedProposalID: UInt64 = 2
 
     var txResult = Test.executeTransaction(
         Test.Transaction(
             code: rejectToCatalogCode,
             authorizers: [admin.address],
             signers: [admin],
-            arguments: [res[1]!]
+            arguments: [expectedProposalID]
         )
     )
     Test.expect(txResult, Test.beSucceeded())
