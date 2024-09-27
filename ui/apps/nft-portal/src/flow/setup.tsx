@@ -18,7 +18,7 @@ async function setupMainnet() {
     "discovery.wallet": "https://fcl-discovery.onflow.org/authn",
     "app.detail.title": "NFT Metadata",
     "app.detail.icon": "https://assets.website-files.com/5f734f4dbd95382f4fdfa0ea/62743866c2a1ff97d43bb844_Group%2010.svg"
-  }).load({ flowJSON: FlowJSON }, true);
+  }).load({ flowJSON: FlowJSON }, { ignoreConflicts: true });
 }
 
 async function setupTestnet() {
@@ -29,7 +29,7 @@ async function setupTestnet() {
     "discovery.wallet": "https://fcl-discovery.onflow.org/testnet/authn",
     "app.detail.title": "NFT Metadata",
     "app.detail.icon": "https://assets.website-files.com/5f734f4dbd95382f4fdfa0ea/62743866c2a1ff97d43bb844_Group%2010.svg"
-  }).load({ flowJSON: FlowJSON }, true);
+  }).load({ flowJSON: FlowJSON }, { ignoreConflicts: true });
 }
 
 if (process.env["FLOW_ENVIRONMENT"] === "mainnet") {
