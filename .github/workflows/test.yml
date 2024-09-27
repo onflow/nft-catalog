@@ -8,6 +8,7 @@ jobs:
       CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY: ${{ secrets.CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY }}
       EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY }}
       EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY }}
+      EMULATOR_ACCOUNT_PRIVATE_KEY: ${{ secrets.EMULATOR_ACCOUNT_PRIVATE_KEY }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -37,6 +38,7 @@ jobs:
         run: npm test
 
       - name: Run Cadence Tests
+        if: always()
         run: sh run-test.sh
 
       # - name: Run E2E Cypress Tests

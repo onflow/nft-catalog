@@ -127,10 +127,7 @@
     "accounts": {
         "emulator-account": {
             "address": "0xf8d6e0586b0a20c7",
-			"key": {
-				"type": "file",
-				"location": "./keys/emulator.pkey"
-			}
+			"key": "${EMULATOR_ACCOUNT_PRIVATE_KEY}"
         },
         "catalog-previewnet-account": {
             "address": "0xd5a5e5c94f9cdb36",
