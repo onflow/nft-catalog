@@ -125,6 +125,10 @@
         "testnet": "access.devnet.nodes.onflow.org:9000"
     },
     "accounts": {
+        "emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "d5457a187e9642a8e49d4032b3b4f85c92da7202c79681d9302c6e444e7033a8"
+		},
         "mainnet-nft-catalog-account": {
             "address": "0x49a7cda3a1eecc29",
             "key": {

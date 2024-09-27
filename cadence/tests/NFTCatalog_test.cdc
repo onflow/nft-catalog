@@ -12,7 +12,7 @@ access(all) var nftCount = 1
 
 access(all) fun mintNFTToUser() {
     // Mint some example NFTs to the user
-    let code = loadCode("mint_example_nft.cdc", "cadence/transactions")
+    let code = loadCode("mint_example_nft.cdc", "./transactions")
     let tx = Test.Transaction(
         code: code,
         authorizers: [exampleNFTAccount.address],
@@ -28,13 +28,13 @@ access(all)
 fun setup() {
     let serviceAccount = Test.serviceAccount()
 
-    deploy("NFTCatalog", "../cadence/contracts/NFTCatalog.cdc")
-    deploy("NFTCatalogAdmin", "../cadence/contracts/NFTCatalogAdmin.cdc")
-    deploy("NFTRetrieval", "../cadence/contracts/NFTRetrieval.cdc")
-    deploy("ExampleNFT", "../cadence/contracts/exampleNFT.cdc")
+    deploy("NFTCatalog", "../contracts/NFTCatalog.cdc")
+    deploy("NFTCatalogAdmin", "../contracts/NFTCatalogAdmin.cdc")
+    deploy("NFTRetrieval", "../contracts/NFTRetrieval.cdc")
+    deploy("ExampleNFT", "../contracts/exampleNFT.cdc")
 
     // Setup example nft
-    var code = loadCode("setup_examplenft_collection.cdc", "cadence/transactions")
+    var code = loadCode("setup_examplenft_collection.cdc", "./transactions")
     var tx = Test.Transaction(
         code: code,
         authorizers: [user.address],
@@ -56,7 +56,7 @@ fun testAdminSetup() {
     var hasAdminProxy = (scriptExecutor("has_admin_proxy.cdc", [admin.address])) as! Bool?
     Test.assertEqual(false, hasAdminProxy!)
 
-    let setupAdminProxyCode = loadCode("setup_nft_catalog_admin_proxy.cdc", "cadence/transactions")
+    let setupAdminProxyCode = loadCode("setup_nft_catalog_admin_proxy.cdc", "./transactions")
     var txResult = Test.executeTransaction(
         Test.Transaction(
             code: setupAdminProxyCode,
@@ -74,7 +74,7 @@ fun testAdminSetup() {
     Test.assertEqual(false, isAdmin!)
 
     // make admin a catalog admin
-    let sendAdminCapabilityCode = loadCode("send_admin_capability_to_proxy.cdc", "cadence/transactions")
+    let sendAdminCapabilityCode = loadCode("send_admin_capability_to_proxy.cdc", "./transactions")
     txResult = Test.executeTransaction(
         Test.Transaction(
             code: sendAdminCapabilityCode,
@@ -92,7 +92,7 @@ fun testAdminSetup() {
 access(all)
 fun testAddNFTToCatalog() {
     // Add to the catalog as an admin.
-    let addToCatalogCode = loadCode("add_to_nft_catalog.cdc", "cadence/transactions")
+    let addToCatalogCode = loadCode("add_to_nft_catalog.cdc", "./transactions")
     
     let nftID = (scriptExecutor("get_examplenft_collection_ids.cdc", [user.address]) as! [UInt64]?)![0]!
     let nftTypeIdentifier = "A.0000000000000008.ExampleNFT.NFT"
@@ -110,7 +110,7 @@ fun testAddNFTToCatalog() {
 
 access(all)
 fun testRemoveFromCatalog() {
-    let removeFromCatalogCode = loadCode("remove_from_nft_catalog.cdc", "cadence/transactions")
+    let removeFromCatalogCode = loadCode("remove_from_nft_catalog.cdc", "./transactions")
     
     let nftCatalogSize = (scriptExecutor("get_nft_catalog_count.cdc", []) as! Int?)!
     Test.assertEqual(nftCatalogSize, 1)
@@ -134,7 +134,7 @@ fun testRemoveFromCatalog() {
 
 access(all)
 fun testProposeAdditionToCatalog() {
-    let proposeNFTToCatalogCode = loadCode("propose_nft_to_catalog.cdc", "cadence/transactions")
+    let proposeNFTToCatalogCode = loadCode("propose_nft_to_catalog.cdc", "./transactions")
     let nftTypeIdentifier = "A.0000000000000008.ExampleNFT.NFT"
     let socials: {String: String} = {}
     var txResult = Test.executeTransaction(
@@ -170,8 +170,8 @@ fun testProposeAdditionToCatalog() {
 
 access(all)
 fun testApproveToCatalog() {
-    let getNFTProposalsCode = loadCode("get_nft_catalog_proposal_ids.cdc", "cadence/scripts")
-    let approveToCatalogCode = loadCode("approve_nft_catalog_proposal.cdc", "cadence/transactions")
+    let getNFTProposalsCode = loadCode("get_nft_catalog_proposal_ids.cdc", "./scripts")
+    let approveToCatalogCode = loadCode("approve_nft_catalog_proposal.cdc", "./transactions")
     var res = (scriptExecutor("get_nft_catalog_proposal_ids.cdc", []) as! [UInt64]?)!
 
     var txResult = Test.executeTransaction(
@@ -187,7 +187,7 @@ fun testApproveToCatalog() {
 
 access(all)
 fun testProposeUpdateToCatalog() {
-    let proposeNFTToCatalogCode = loadCode("propose_nft_to_catalog.cdc", "cadence/transactions")
+    let proposeNFTToCatalogCode = loadCode("propose_nft_to_catalog.cdc", "./transactions")
     let nftTypeIdentifier = "A.0000000000000008.ExampleNFT.NFT"
     let socials: {String: String} = {}
     var txResult = Test.executeTransaction(
@@ -223,8 +223,8 @@ fun testProposeUpdateToCatalog() {
 
 access(all)
 fun testRejectProposal() {
-    let getNFTProposalsCode = loadCode("get_nft_catalog_proposal_ids.cdc", "cadence/scripts")
-    let rejectToCatalogCode = loadCode("reject_nft_catalog_proposal.cdc", "cadence/transactions")
+    let getNFTProposalsCode = loadCode("get_nft_catalog_proposal_ids.cdc", "./scripts")
+    let rejectToCatalogCode = loadCode("reject_nft_catalog_proposal.cdc", "./transactions")
     var res = (scriptExecutor("get_nft_catalog_proposal_ids.cdc", []) as! [UInt64]?)!
 
     var txResult = Test.executeTransaction(
