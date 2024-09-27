@@ -187,10 +187,11 @@ export async function getGeneratedTransaction(
 
 export async function getAllCollections(): Promise<any> {
   const CHUNK = 50;
-  const collectionIdentifiers= (await getCatalogCollectionIdentifiers()) || [];
+  const collectionIdentifiers = (await getCatalogCollectionIdentifiers()) || [];
   const catalogBatches: [string][] = [];
-  for (let i = 0; i < collectionIdentifiers.length; i += CHUNK) {
-    catalogBatches.push(collectionIdentifiers.slice(i, i + CHUNK));
+  const filteredCollectionIdentifiers = collectionIdentifiers.filter((collectionIdentifier: string) => collectionIdentifier!=='Flowty-Wrapped')
+  for (let i = 0; i < filteredCollectionIdentifiers.length; i += CHUNK) {
+    catalogBatches.push(filteredCollectionIdentifiers.slice(i, i + CHUNK));
   }
   let collections: any = {};
   for (const catalogBatch of catalogBatches) {
@@ -593,14 +594,8 @@ export async function proposeNFTToCatalog(
           t.String
         ),
         fcl.arg(
-          sampleNFTView.NFTCollectionData.publicLinkedType.type.type.typeID,
+          sampleNFTView.NFTCollectionData.publicLinkedType.type.typeID,
           t.String
-        ),
-        fcl.arg(
-          buildRestrictedType(
-            sampleNFTView.NFTCollectionData.publicLinkedType.type
-          ),
-          t.Array(t.String)
         ),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionName, t.String),
         fcl.arg(
@@ -666,12 +661,4 @@ async function validateCatalogProposal(
       );
     }
   }
-}
-
-function buildRestrictedType(restrictedType: any) {
-  let res: any[] = [];
-  restrictedType.restrictions.forEach((value: { typeID: string }) => {
-    res.push(value.typeID);
-  });
-  return res;
 }
