@@ -126,9 +126,40 @@
     },
     "accounts": {
         "emulator-account": {
-			"address": "f8d6e0586b0a20c7",
-			"key": "d5457a187e9642a8e49d4032b3b4f85c92da7202c79681d9302c6e444e7033a8"
-		},
+            "address": "0xf8d6e0586b0a20c7",
+			"key": {
+				"type": "file",
+				"location": "./keys/emulator.pkey"
+			}
+        },
+        "catalog-previewnet-account": {
+            "address": "0xd5a5e5c94f9cdb36",
+			"key": {
+				"type": "file",
+				"location": "./keys/testnet.pkey"
+			}
+        },
+        "catalog-testnet-account": {
+            "address": "0x324c34e1c517e4db",
+			"key": {
+				"type": "file",
+				"location": "./keys/testnet.pkey"
+			}
+        },
+        "examplenft-testnet-account": {
+            "address": "0xa60cf32e8369f919",
+			"key": {
+				"type": "file",
+				"location": "./keys/testnet.pkey"
+			}
+        },
+        "examplenft-testnet-holder-account": {
+            "address": "0x5f151d59c7128d8e",
+			"key": {
+				"type": "file",
+				"location": "./keys/testnet.pkey"
+			}
+        },
         "mainnet-nft-catalog-account": {
             "address": "0x49a7cda3a1eecc29",
             "key": {
@@ -161,6 +192,36 @@
                 "resourceID": "projects/dl-flow-admin/locations/global/keyRings/nft-metadata/cryptoKeys/nft-catalog-admin/cryptoKeyVersions/1"
             },
             "chain": "flow-mainnet"
+        }
+    },
+    "deployments": {
+        "emulator": {
+            "emulator-account": [
+                "NFTCatalog",
+                "NFTCatalogAdmin",
+                "NFTRetrieval"
+            ]
+        },
+        "previewnet": {
+            "catalog-previewnet-account": [
+                "NFTCatalog",
+                "NFTCatalogAdmin",
+                "NFTRetrieval"
+            ]
+        },
+        "testnet": {
+            "catalog-testnet-account": [
+                "NFTCatalog",
+                "NFTCatalogAdmin",
+                "NFTRetrieval"
+            ]
+        },
+        "mainnet": {
+            "mainnet-nft-catalog-account": [
+                "NFTCatalog",
+                "NFTCatalogAdmin",
+                "NFTRetrieval"
+            ]
         }
     }
 }
