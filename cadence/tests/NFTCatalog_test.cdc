@@ -32,7 +32,7 @@ fun setup() {
     deploy("NFTCatalog", "../contracts/NFTCatalog.cdc")
     deploy("NFTCatalogAdmin", "../contracts/NFTCatalogAdmin.cdc")
     deploy("NFTRetrieval", "../contracts/NFTRetrieval.cdc")
-    deploy("ExampleNFT", "../contracts/exampleNFT.cdc")
+    deploy("ExampleNFT", "../contracts/ExampleNFT.cdc")
 
     // Setup example nft
     var code = loadCode("setup_examplenft_collection.cdc", "./transactions")
