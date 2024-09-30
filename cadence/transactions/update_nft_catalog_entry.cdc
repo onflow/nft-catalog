@@ -1,3 +1,4 @@
+import "ViewResolver"
 import "MetadataViews"
 import "NFTCatalog"
 import "NFTCatalogAdmin"
@@ -13,18 +14,19 @@ transaction(
         let adminProxyRef : auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy
 
         prepare(acct: auth(BorrowValue) &Account) {
-                self.adminProxyRef = acct.borrow<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
+                self.adminProxyRef = acct.storage.borrow<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy>(from : NFTCatalogAdmin.AdminProxyStoragePath)!
         }
 
         execute {
                 let nftAccount = getAccount(addressWithNFT)
                 let pubPath = PublicPath(identifier: publicPathIdentifier)!
-                let collectionCap = nftAccount.getCapability<&AnyResource{MetadataViews.ResolverCollection}>(pubPath)
+                let collectionCap = nftAccount.capabilities.get<&{ViewResolver.ResolverCollection}>(pubPath)
                 assert(collectionCap.check(), message: "MetadataViews Collection is not set up properly, ensure the Capability was created/linked correctly.")
                 let collectionRef = collectionCap.borrow()!
                 assert(collectionRef.getIDs().length > 0, message: "No NFTs exist in this collection, ensure the provided account has at least 1 NFTs.")
                 let testNftId = collectionRef.getIDs()[0]
                 let nftResolver = collectionRef.borrowViewResolver(id: testNftId)
+                        ?? panic("Could not borrow NFT with id ".concat(testNftId.toString()))
                 
                 let metadataCollectionData = nftResolver.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
                 
