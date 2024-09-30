@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Spinner } from '../shared/spinner';
-import { getNFTInAccountFromCatalog } from 'apps/nft-portal/src/flow/utils';
+import { getNFTInAccountFromCatalog } from '../../../flow/utils';
 import { Alert } from '../shared/alert';
 import { Box } from '../shared/box';
 import { DisplayView } from '../shared/views/display-view';

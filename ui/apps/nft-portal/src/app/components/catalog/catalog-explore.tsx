@@ -55,7 +55,7 @@ export function CatalogExplore({
 
   useEffect(() => {
     const setup = async () => {
-      changeFCLEnvironment(network);
+      await changeFCLEnvironment(network);
       let collections: [any] | [] = [];
       if (type === 'Catalog') {
         collections = (await getAllCollections()) || [];

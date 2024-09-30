@@ -1,11 +1,30 @@
 import * as fcl from '@onflow/fcl';
 import * as t from '@onflow/types';
-//@ts-ignore
-import * as json from './c2j.json';
-//@ts-ignore
-import * as catalogJson from './catalog_c2j.json';
 import { changeFCLEnvironment } from './setup';
 import { Network } from '../app/components/catalog/network-dropdown';
+import CheckForRecommendedV1Views from "../../../../../cadence/scripts/check_for_recommended_v1_views.cdc"
+import GetSupportedGeneratedScripts from "../../../../../cadence/scripts/get_supported_generated_scripts.cdc"
+import GetSupportedGeneratedTransactions from "../../../../../cadence/scripts/get_supported_generated_transactions.cdc"
+import GenTx from "../../../../../cadence/scripts/gen_tx.cdc"
+import GetNftCatalog from "../../../../../cadence/scripts/get_nft_catalog.cdc"
+import GetNftCatalogIdentifiers from "../../../../../cadence/scripts/get_nft_catalog_identifiers.cdc"
+import GetNftCatalogProposals from "../../../../../cadence/scripts/get_nft_catalog_proposals.cdc"
+import GetNftCatalogProposalIds from "../../../../../cadence/scripts/get_nft_catalog_proposal_ids.cdc"
+import GetNftProposalForId from "../../../../../cadence/scripts/get_nft_proposal_for_id.cdc"
+import GetNftsInAccountFromPath from "../../../../../cadence/scripts/get_nfts_in_account_from_path.cdc"
+import GetAllNftsInAccount from "../../../../../cadence/scripts/get_all_nfts_in_account.cdc"
+import GetNftInAccount from "../../../../../cadence/scripts/get_nft_in_account.cdc"
+import GetNftInAccountFromPath from "../../../../../cadence/scripts/get_nft_in_account_from_path.cdc"
+import HasAdminProxy from "../../../../../cadence/scripts/has_admin_proxy.cdc"
+import IsCatalogAdmin from "../../../../../cadence/scripts/is_catalog_admin.cdc"
+import CheckForLinks from "../../../../../cadence/scripts/check_for_links.cdc"
+import GetNftMetadataForCollectionIdentifier from "../../../../../cadence/scripts/get_nft_metadata_for_collection_identifier.cdc"
+
+import setup_nft_catalog_admin_proxy from "../../../../../cadence/transactions/setup_nft_catalog_admin_proxy.cdc"
+import approve_nft_catalog_proposal from "../../../../../cadence/transactions/approve_nft_catalog_proposal.cdc"
+import reject_nft_catalog_proposal from "../../../../../cadence/transactions/reject_nft_catalog_proposal.cdc"
+import propose_nft_to_catalog from "../../../../../cadence/transactions/propose_nft_to_catalog.cdc"
+import remove_nft_catalog_proposal from "../../../../../cadence/transactions/remove_nft_catalog_proposal.cdc"
 
 type AccountsMap = { [network in Network]: any };
 
@@ -27,7 +46,7 @@ export async function getAccount(
   address: string,
   network: Network
 ): Promise<any> {
-  changeFCLEnvironment(network);
+  await changeFCLEnvironment(network);
   try {
     const account = await fcl.account(address);
     return account;
@@ -91,7 +110,7 @@ export async function retrieveMetadataInformation(
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.check_for_recommended_v1_views),
+        fcl.script(CheckForRecommendedV1Views),
         fcl.args([
           fcl.arg(sampleAddress, t.Address),
           fcl.arg(
@@ -115,7 +134,7 @@ export async function getSupportedGeneratedScripts(): Promise<any> {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_supported_generated_scripts),
+        fcl.script(GetSupportedGeneratedScripts),
         fcl.args([]),
       ])
       .then(fcl.decode);
@@ -130,7 +149,7 @@ export async function getSupportedGeneratedTransactions(): Promise<any> {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_supported_generated_transactions),
+        fcl.script(GetSupportedGeneratedTransactions),
         fcl.args([]),
       ])
       .then(fcl.decode);
@@ -150,7 +169,7 @@ export async function getGeneratedTransaction(
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.gen_tx),
+        fcl.script(GenTx),
         fcl.args([
           fcl.arg(tx, t.String),
           fcl.arg(collectionIdentifer, t.String),
@@ -168,10 +187,11 @@ export async function getGeneratedTransaction(
 
 export async function getAllCollections(): Promise<any> {
   const CHUNK = 50;
-  const collectionIdentifiers= await getCatalogCollectionIdentifiers();
+  const collectionIdentifiers = (await getCatalogCollectionIdentifiers()) || [];
   const catalogBatches: [string][] = [];
-  for (let i = 0; i < collectionIdentifiers.length; i += CHUNK) {
-    catalogBatches.push(collectionIdentifiers.slice(i, i + CHUNK));
+  const filteredCollectionIdentifiers = collectionIdentifiers.filter((collectionIdentifier: string) => collectionIdentifier!=='Flowty-Wrapped')
+  for (let i = 0; i < filteredCollectionIdentifiers.length; i += CHUNK) {
+    catalogBatches.push(filteredCollectionIdentifiers.slice(i, i + CHUNK));
   }
   let collections: any = {};
   for (const catalogBatch of catalogBatches) {
@@ -190,7 +210,7 @@ export async function getCollections(
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nft_catalog),
+        fcl.script(GetNftCatalog),
         fcl.args([fcl.arg(collectionIdentifiers, t.Array(t.String))]),
       ])
       .then(fcl.decode);
@@ -205,7 +225,7 @@ export async function getCatalogCollectionIdentifiers(): Promise<any> {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nft_catalog_identifiers),
+        fcl.script(GetNftCatalogIdentifiers),
         fcl.args([]),
       ])
       .then(fcl.decode);
@@ -219,9 +239,10 @@ export async function getCatalogCollectionIdentifiers(): Promise<any> {
 export async function getAllProposals(): Promise<any> {
   const CHUNK = 50;
   const proposalIDs = await getProposalIds();
+  const filteredProposalIds = proposalIDs.filter((id: string, index: number) => !['1', '2', '4', '306'].includes(id)) // broken nfts
   const proposalBatches: [string][] = [];
-  for (let i = 0; i < proposalIDs.length; i += CHUNK) {
-    proposalBatches.push(proposalIDs.slice(i, i + CHUNK));
+  for (let i = 0; i < filteredProposalIds.length; i += CHUNK) {
+    proposalBatches.push(filteredProposalIds.slice(i, i + CHUNK));
   }
   let proposals: any = {};
   for (const proposalBatch of proposalBatches) {
@@ -240,7 +261,7 @@ export async function getProposals(
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nft_catalog_proposals),
+        fcl.script(GetNftCatalogProposals),
         fcl.args([fcl.arg(proposalIDs, t.Array(t.UInt64))]),
       ])
       .then(fcl.decode);
@@ -255,7 +276,7 @@ export async function getProposalIds(): Promise<any> {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nft_catalog_proposal_ids),
+        fcl.script(GetNftCatalogProposalIds),
         fcl.args([]),
       ])
       .then(fcl.decode);
@@ -270,7 +291,7 @@ export async function getProposal(proposalID: string): Promise<any> {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nft_proposal_for_id),
+        fcl.script(GetNftProposalForId),
         fcl.args([fcl.arg(proposalID, t.UInt64)]),
       ])
       .then(fcl.decode);
@@ -288,7 +309,7 @@ export async function getNFTsInAccount(
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nfts_in_account_from_path),
+        fcl.script(GetNftsInAccountFromPath),
         fcl.args([
           fcl.arg(sampleAddress, t.Address),
           fcl.arg(storagePath.replace('/storage/', ''), t.String),
@@ -306,7 +327,7 @@ export async function getAllNFTsInAccountFromCatalog(
 ): Promise<any> {
   const scriptResult = await fcl
     .send([
-      fcl.script(catalogJson.scripts.get_all_nfts_in_account),
+      fcl.script(GetAllNftsInAccount),
       fcl.args([fcl.arg(ownerAddress, t.Address)]),
     ])
     .then(fcl.decode);
@@ -320,7 +341,7 @@ export async function getNFTInAccountFromCatalog(
 ) {
   const scriptResult = await fcl
     .send([
-      fcl.script(catalogJson.scripts.get_nft_in_account),
+      fcl.script(GetNftInAccount),
       fcl.args([
         fcl.arg(ownerAddress, t.Address),
         fcl.arg(collectionIdentifier, t.String),
@@ -339,7 +360,7 @@ export async function getNFTInAccountFromPath(
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nft_in_account_from_path),
+        fcl.script(GetNftInAccountFromPath),
         fcl.args([
           fcl.arg(ownerAddress, t.Address),
           fcl.arg(storagePath.replace('/storage/', ''), t.String),
@@ -362,7 +383,7 @@ export async function getNFTInAccount(
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.get_nft_in_account),
+        fcl.script(GetNftInAccount),
         fcl.args([
           fcl.arg(sampleAddress, t.Address),
           fcl.arg(collectionIdentifier, t.String),
@@ -383,7 +404,7 @@ export async function getNFTMetadataForCollectionIdentifier(
     const scriptResult = await fcl
       .send([
         fcl.script(
-          catalogJson.scripts.get_nft_metadata_for_collection_identifier
+          GetNftMetadataForCollectionIdentifier
         ),
         fcl.args([fcl.arg(collectionIdentifier, t.String)]),
       ])
@@ -399,7 +420,7 @@ export async function getAccountHasAdminProxy(address: string) {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.has_admin_proxy),
+        fcl.script(HasAdminProxy),
         fcl.args([fcl.arg(address, t.Address)]),
       ])
       .then(fcl.decode);
@@ -414,7 +435,7 @@ export async function getIsAdmin(address: string) {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(catalogJson.scripts.is_catalog_admin),
+        fcl.script(IsCatalogAdmin),
         fcl.args([fcl.arg(address, t.Address)]),
       ])
       .then(fcl.decode);
@@ -429,7 +450,7 @@ export async function getAreLinksSetup(address: string, publicPath: string) {
   try {
     const scriptResult = await fcl
       .send([
-        fcl.script(json.scripts.check_for_links),
+        fcl.script(CheckForLinks),
         fcl.args([fcl.arg(address, t.Address), fcl.arg(publicPath, t.String)]),
       ])
       .then(fcl.decode);
@@ -443,7 +464,7 @@ export async function getAreLinksSetup(address: string, publicPath: string) {
 export async function createAdminProxy() {
   try {
     const txId = await fcl.mutate({
-      cadence: catalogJson.transactions.setup_nft_catalog_admin_proxy,
+      cadence: setup_nft_catalog_admin_proxy,
       limit: 9999,
       args: (arg: any, t: any) => [],
     });
@@ -457,7 +478,7 @@ export async function createAdminProxy() {
 export async function acceptProposal(proposalID: string) {
   try {
     const txId = await fcl.mutate({
-      cadence: catalogJson.transactions.approve_nft_catalog_proposal,
+      cadence: approve_nft_catalog_proposal,
       limit: 9999,
       args: (arg: any, t: any) => [fcl.arg(proposalID, t.UInt64)],
     });
@@ -471,7 +492,7 @@ export async function acceptProposal(proposalID: string) {
 export async function rejectProposal(proposalID: string) {
   try {
     const txId = await fcl.mutate({
-      cadence: catalogJson.transactions.reject_nft_catalog_proposal,
+      cadence: reject_nft_catalog_proposal,
       limit: 9999,
       args: (arg: any, t: any) => [fcl.arg(proposalID, t.UInt64)],
     });
@@ -485,7 +506,7 @@ export async function rejectProposal(proposalID: string) {
 export async function deleteProposal(proposalID: string) {
   try {
     const txId = await fcl.mutate({
-      cadence: catalogJson.transactions.remove_nft_catalog_proposal,
+      cadence: remove_nft_catalog_proposal,
       limit: 9999,
       args: (arg: any, t: any) => [fcl.arg(proposalID, t.UInt64)],
     });
@@ -527,7 +548,7 @@ export async function proposeNFTToCatalog(
     socialsDictionary.push(socialsObj);
   }
 
-  const cadence = catalogJson.transactions.propose_nft_to_catalog;
+  const cadence = propose_nft_to_catalog;
 
   // Check if the image is an IPFS one, and convert it to one that is
   // easily viewable from the catalog.
@@ -553,21 +574,6 @@ export async function proposeNFTToCatalog(
     collectionBannerImage = `https://gateway.pinata.cloud/ipfs/${cid}/${path}`;
   }
 
-  let privateLinkedType: string | null = null;
-  let privateRestrictedType: any = null;
-  try {
-    privateRestrictedType = buildRestrictedType(
-      sampleNFTView.NFTCollectionData.privateLinkedType.type
-    );
-    privateLinkedType =
-      sampleNFTView.NFTCollectionData.privateLinkedType.type.type.typeID;
-  } catch (err) {
-    // continue on with an empty array for private restricted type. This fails if it was not a restricted type
-    // to begin with.
-    privateLinkedType =
-      sampleNFTView.NFTCollectionData.privateLinkedType.type.typeID;
-    privateRestrictedType = [];
-  }
   try {
     const txId = await fcl.mutate({
       cadence: cadence,
@@ -589,21 +595,9 @@ export async function proposeNFTToCatalog(
           t.String
         ),
         fcl.arg(
-          sampleNFTView.NFTCollectionData.privatePath.identifier,
+          sampleNFTView.NFTCollectionData.publicLinkedType.type.typeID,
           t.String
         ),
-        fcl.arg(
-          sampleNFTView.NFTCollectionData.publicLinkedType.type.type.typeID,
-          t.String
-        ),
-        fcl.arg(
-          buildRestrictedType(
-            sampleNFTView.NFTCollectionData.publicLinkedType.type
-          ),
-          t.Array(t.String)
-        ),
-        fcl.arg(privateLinkedType, t.String),
-        fcl.arg(privateRestrictedType, t.Array(t.String)),
         fcl.arg(sampleNFTView.NFTCollectionDisplay.collectionName, t.String),
         fcl.arg(
           sampleNFTView.NFTCollectionDisplay.collectionDescription,
@@ -668,12 +662,4 @@ async function validateCatalogProposal(
       );
     }
   }
-}
-
-function buildRestrictedType(restrictedType: any) {
-  let res: any[] = [];
-  restrictedType.restrictions.forEach((value: { typeID: string }) => {
-    res.push(value.typeID);
-  });
-  return res;
 }

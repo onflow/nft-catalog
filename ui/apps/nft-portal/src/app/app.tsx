@@ -17,13 +17,11 @@ import { ToolsLayout } from './components/tools/tools-layout';
 import { Submitted } from './components/verifier/submitted';
 import { CatalogDetails } from './components/catalog/catalog-details';
 import { Docs } from './components/docs';
-import Notice from './components/shared/notice';
 
 export function App() {
   return (
     <>
       <Navbar />
-      <Notice />
       <div className="min-h-screen bg-primary-gray-50">
         <div className="pb-16">
           <Routes>

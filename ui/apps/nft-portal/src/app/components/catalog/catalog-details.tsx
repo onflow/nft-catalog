@@ -24,11 +24,11 @@ export function CatalogDetails({
   const [error, setError] = useState<string|null>(null)
 
   useEffect(() => {
-    changeFCLEnvironment(network);
     setCollectionData(null)
     setError(null)
     if (!collectionIdentifier) { return }
     const setup = async () => {
+      await changeFCLEnvironment(network);
       let res;
       if (type === 'Proposals') {
         res = await getProposal(collectionIdentifier)

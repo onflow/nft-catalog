@@ -7,17 +7,16 @@ import { AdditionalNftInfo } from "./additional-nft-info";
 import { AddToCatalog } from "./add-to-catalog";
 import { changeFCLEnvironment } from "../../../flow/setup";
 import { Network } from "../catalog/network-dropdown";
+import { useEffect } from "react";
 
-export default function ({
-}: {
-}) {
+export default function () {
   const query = useQuery()
   const navigate = useNavigate()
   const { selectedNetwork, selectedAddress, selectedContract } = useParams<any>()
 
-  if (selectedNetwork) {
+  useEffect(() => {
     changeFCLEnvironment(selectedNetwork as Network)
-  }
+  }, [selectedNetwork])
 
   const storagePath = query.get("path")
   const sampleAddress = query.get("sampleAddress")
@@ -69,8 +68,8 @@ export default function ({
         {
           steps[0].isActive && !steps[0].isComplete && (
             <ContractSelect
-              selectContract={(contractAddress: String, contractName: string, network: string) => {
-                changeFCLEnvironment(network as Network)
+              selectContract={async (contractAddress: String, contractName: string, network: string) => {
+                await changeFCLEnvironment(network as Network)
                 navigate(`/v/${network}/${contractAddress}/${contractName}`);
               }}
             />

@@ -36,7 +36,7 @@ export function CatalogSelect({
   useEffect(() => {
     setError(null);
     const setup = async () => {
-      changeFCLEnvironment(network);
+      await changeFCLEnvironment(network);
       // retrieve list of proposals or
       if (type === 'Proposals') {
         const proposals = await getAllProposals();

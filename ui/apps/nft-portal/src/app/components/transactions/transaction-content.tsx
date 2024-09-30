@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Network } from '../catalog/network-dropdown';
 import { Spinner } from '../shared/spinner';
 import { Alert } from '../shared/alert';
-import { getGeneratedTransaction } from 'apps/nft-portal/src/flow/utils';
+import { getGeneratedTransaction } from '../../../flow/utils';
 import { CopyBlock, dracula } from 'react-code-blocks';
 
 export function TransactionContent({

@@ -88,6 +88,33 @@
                 "testnet": "0x324c34e1c517e4db",
                 "mainnet": "0x49a7cda3a1eecc29"
             }
+        },
+        "TransactionGeneration": {
+            "source": "",
+            "aliases": {
+                "previewnet": "0xd5a5e5c94f9cdb36",
+                "testing": "0x0000000000000007",
+                "testnet": "0x44051d81c4720882",
+                "mainnet": "0xe52522745adf5c34"
+            }
+        },
+        "TransactionGenerationUtils": {
+            "source": "",
+            "aliases": {
+                "previewnet": "0xd5a5e5c94f9cdb36",
+                "testing": "0x0000000000000007",
+                "testnet": "0x44051d81c4720882",
+                "mainnet": "0xe52522745adf5c34"
+            }
+        },
+        "TransactionTemplates": {
+            "source": "",
+            "aliases": {
+                "previewnet": "0xd5a5e5c94f9cdb36",
+                "testing": "0x0000000000000007",
+                "testnet": "0x44051d81c4720882",
+                "mainnet": "0xe52522745adf5c34"
+            }
         }
     },
     "networks": {
@@ -100,23 +127,38 @@
     "accounts": {
         "emulator-account": {
             "address": "0xf8d6e0586b0a20c7",
-            "key": "bac3b8f568b9d39bac8ccfc23b3cf340840cbf4db186f4eb1bb24b8924d65e62"
+			"key": {
+				"type": "file",
+				"location": "./keys/emulator.pkey"
+			}
         },
         "catalog-previewnet-account": {
             "address": "0xd5a5e5c94f9cdb36",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
+			"key": {
+				"type": "file",
+				"location": "./keys/testnet.pkey"
+			}
         },
         "catalog-testnet-account": {
             "address": "0x324c34e1c517e4db",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
+			"key": {
+				"type": "file",
+				"location": "./keys/testnet.pkey"
+			}
         },
         "examplenft-testnet-account": {
             "address": "0xa60cf32e8369f919",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
+			"key": {
+				"type": "file",
+				"location": "./keys/testnet.pkey"
+			}
         },
         "examplenft-testnet-holder-account": {
             "address": "0x5f151d59c7128d8e",
-            "key": "ff735bbeae75401fbd8cd05c0b5f154038642bc226103eddc987c7e35bacb96d"
+			"key": {
+				"type": "file",
+				"location": "./keys/testnet.pkey"
+			}
         },
         "mainnet-nft-catalog-account": {
             "address": "0x49a7cda3a1eecc29",

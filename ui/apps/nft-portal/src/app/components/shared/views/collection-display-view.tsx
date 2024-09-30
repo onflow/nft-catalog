@@ -2,7 +2,7 @@ import { SocialIcon } from 'react-social-icons';
 import { LinkIcon } from '../link-icon';
 import { Badge } from '../badge';
 import { useEffect, useState } from "react"
-import { getNFTMetadataForCollectionIdentifier } from 'apps/nft-portal/src/flow/utils';
+import { getNFTMetadataForCollectionIdentifier } from '../../../../flow/utils';
 type GenericViewProps = {
   proposalData: any;
   view: any;
