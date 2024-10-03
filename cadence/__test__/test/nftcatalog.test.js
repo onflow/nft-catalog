@@ -57,7 +57,8 @@ describe("NFT Catalog Test Suite", () => {
   });
 
   it("should deploy NFTCatalog contract", async () => {
-    await shallPass(deployNFTCatalog());
+    const result = await deployNFTCatalog()
+    expect(result).toBe(undefined);
   });
 
   it("main admin should add to catalog", async () => {

@@ -48,7 +48,8 @@ describe('NFT Catalog Snapshots Test Suite', () => {
     });
 
     it('should deploy NFTCatalog contract', async () => {
-        await shallPass(deployNFTCatalog());
+        const result = await deployNFTCatalog()
+        expect(result).toBe(undefined);
     });
 
     it('should snapshot current state of catalog and persist it despite catalog changes', async () => {
