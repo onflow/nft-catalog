@@ -485,7 +485,7 @@ describe("NFT Catalog Test Suite", () => {
       )
     );
 
-    let [result, error] = await shallResolve(
+    const [result1, error1] = await shallResolve(
       getNFTInAccountFromPath(Bob, "exampleNFTCollection", 0)
     );
 
@@ -493,29 +493,29 @@ describe("NFT Catalog Test Suite", () => {
       Bob,
       nftCreationEvent,
       nftTypeIdentifier,
-      result
+      result1
     );
 
-    [result, error] = await shallResolve(
+    const [result2, error2] = await shallResolve(
       getNFTMetadataForCollectionIdentifier("ExampleNFT")
     );
-    expect(result).toBe(null);
+    expect(result2).toBe(null);
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result.status).toBe("IN_REVIEW");
-    expect(result.collectionIdentifier).toBe(nftCreationEvent.data.contract);
+    const [result3, error3] = await shallResolve(getNFTProposalForID(1));
+    expect(result3.status).toBe("IN_REVIEW");
+    expect(result3.collectionIdentifier).toBe(nftCreationEvent.data.contract);
 
     await shallPass(approveNFTProposal(Alice, 1));
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result.status).toBe("APPROVED");
+    const [result4, error4] = await shallResolve(getNFTProposalForID(1));
+    expect(result4.status).toBe("APPROVED");
 
-    [result, error] = await shallResolve(
+    const [result5, error5] = await shallResolve(
       getNFTMetadataForCollectionIdentifier("ExampleNFT")
     );
-    expect(result).not.toBe(null);
-    expect(result.contractName).toBe(nftCreationEvent.data.contract);
-    expect(error).toBe(null);
+    expect(result5).not.toBe(null);
+    expect(result5.contractName).toBe(nftCreationEvent.data.contract);
+    expect(error5).toBe(null);
   });
 
   it("should be able to make proposals to update", async () => {
@@ -550,7 +550,7 @@ describe("NFT Catalog Test Suite", () => {
       )
     );
 
-    let [result, error] = await shallResolve(
+    const [result1, error1] = await shallResolve(
       getNFTInAccountFromPath(Bob, "exampleNFTCollection", 0)
     );
 
@@ -558,32 +558,32 @@ describe("NFT Catalog Test Suite", () => {
       Bob,
       nftCreationEvent,
       nftTypeIdentifier,
-      result
+      result1
     );
 
-    [result, error] = await shallResolve(
+    const [result2, error2] = await shallResolve(
       getNFTMetadataForCollectionIdentifier("ExampleNFT")
     );
-    expect(result).toBe(null);
+    expect(result2).toBe(null);
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result.status).toBe("IN_REVIEW");
-    expect(result.collectionIdentifier).toBe(nftCreationEvent.data.contract);
+    const [result3, error3] = await shallResolve(getNFTProposalForID(1));
+    expect(result3.status).toBe("IN_REVIEW");
+    expect(result3.collectionIdentifier).toBe(nftCreationEvent.data.contract);
 
     await shallPass(approveNFTProposal(Alice, 1));
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result.status).toBe("APPROVED");
+    const [result4, error4] = await shallResolve(getNFTProposalForID(1));
+    expect(result4.status).toBe("APPROVED");
 
-    [result, error] = await shallResolve(
+    const [result5, error5] = await shallResolve(
       getNFTMetadataForCollectionIdentifier("ExampleNFT")
     );
-    expect(result).not.toBe(null);
-    expect(result.contractName).toBe(nftCreationEvent.data.contract);
-    expect(error).toBe(null);
+    expect(result5).not.toBe(null);
+    expect(result5.contractName).toBe(nftCreationEvent.data.contract);
+    expect(error5).toBe(null);
 
     // test updating path
-    [result, error] = await shallResolve(
+    const [result6, error6] = await shallResolve(
       getNFTInAccountFromPath(Bob, "exampleNFTCollection", 0)
     );
 
@@ -591,21 +591,21 @@ describe("NFT Catalog Test Suite", () => {
       Bob,
       nftCreationEvent,
       nftTypeIdentifier,
-      result
+      result6
     );
 
-    [result, error] = await shallResolve(getNFTProposalForID(2));
-    expect(result.status).toBe("IN_REVIEW");
-    expect(result.collectionIdentifier).toBe(nftCreationEvent.data.contract);
+    const [result7, error7] = await shallResolve(getNFTProposalForID(2));
+    expect(result7.status).toBe("IN_REVIEW");
+    expect(result7.collectionIdentifier).toBe(nftCreationEvent.data.contract);
 
     await shallPass(approveNFTProposal(Alice, 2));
 
-    [result, error] = await shallResolve(
+    const [result8, error8] = await shallResolve(
       getNFTMetadataForCollectionIdentifier("ExampleNFT")
     );
-    expect(result).not.toBe(null);
-    expect(result.contractName).toBe(nftCreationEvent.data.contract);
-    expect(error).toBe(null);
+    expect(result8).not.toBe(null);
+    expect(result8.contractName).toBe(nftCreationEvent.data.contract);
+    expect(error8).toBe(null);
   });
 
   it("should be able to reject proposals", async () => {
@@ -640,7 +640,7 @@ describe("NFT Catalog Test Suite", () => {
       )
     );
 
-    let [result, error] = await shallResolve(
+    const [result1, error1] = await shallResolve(
       getNFTInAccountFromPath(Bob, "exampleNFTCollection", 0)
     );
 
@@ -648,27 +648,27 @@ describe("NFT Catalog Test Suite", () => {
       Bob,
       nftCreationEvent,
       nftTypeIdentifier,
-      result
+      result1
     );
 
-    [result, error] = await shallResolve(
+    const [result2, error2] = await shallResolve(
       getNFTMetadataForCollectionIdentifier("ExampleNFT")
     );
-    expect(result).toBe(null);
+    expect(result2).toBe(null);
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result.status).toBe("IN_REVIEW");
-    expect(result.collectionIdentifier).toBe(nftCreationEvent.data.contract);
+    const [result3, error3] = await shallResolve(getNFTProposalForID(1));
+    expect(result3.status).toBe("IN_REVIEW");
+    expect(result3.collectionIdentifier).toBe(nftCreationEvent.data.contract);
 
     await shallPass(rejectNFTProposal(Alice, 1));
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result.status).toBe("REJECTED");
+    const [result4, error4] = await shallResolve(getNFTProposalForID(1));
+    expect(result4.status).toBe("REJECTED");
 
-    [result, error] = await shallResolve(
+    const [result5, error5] = await shallResolve(
       getNFTMetadataForCollectionIdentifier("ExampleNFT")
     );
-    expect(result).toBe(null);
+    expect(result5).toBe(null);
   });
 
   it("should be able to remove proposals", async () => {
@@ -703,7 +703,7 @@ describe("NFT Catalog Test Suite", () => {
       )
     );
 
-    let [result, error] = await shallResolve(
+    const [result1, error1] = await shallResolve(
       getNFTInAccountFromPath(Bob, "exampleNFTCollection", 0)
     );
 
@@ -711,27 +711,27 @@ describe("NFT Catalog Test Suite", () => {
       Bob,
       nftCreationEvent,
       nftTypeIdentifier,
-      result
+      result1
     );
 
-    [result, error] = await shallResolve(
+    const [result2, error2] = await shallResolve(
       getNFTMetadataForCollectionIdentifier("ExampleNFT")
     );
-    expect(result).toBe(null);
+    expect(result2).toBe(null);
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result.status).toBe("IN_REVIEW");
-    expect(result.collectionIdentifier).toBe(nftCreationEvent.data.contract);
+    const [result3, error3] = await shallResolve(getNFTProposalForID(1));
+    expect(result3.status).toBe("IN_REVIEW");
+    expect(result3.collectionIdentifier).toBe(nftCreationEvent.data.contract);
 
     await shallPass(removeNFTProposal(Alice, 1));
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result).toBe(null);
+    const [result4, error4] = await shallResolve(getNFTProposalForID(1));
+    expect(result4).toBe(null);
 
-    [result, error] = await shallResolve(
+    const [result5, error5] = await shallResolve(
       getNFTMetadataForCollectionIdentifier("ExampleNFT")
     );
-    expect(result).toBe(null);
+    expect(result5).toBe(null);
   });
 
   it("should be able to withdraw proposals", async () => {
@@ -760,7 +760,7 @@ describe("NFT Catalog Test Suite", () => {
       )
     );
 
-    let [result, error] = await shallResolve(
+    const [result1, error1] = await shallResolve(
       getNFTInAccountFromPath(Bob, "exampleNFTCollection", 0)
     );
 
@@ -768,20 +768,20 @@ describe("NFT Catalog Test Suite", () => {
       Bob,
       nftCreationEvent,
       nftTypeIdentifier,
-      result
+      result1
     );
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result.status).toBe("IN_REVIEW");
-    expect(result.collectionIdentifier).toBe(nftCreationEvent.data.contract);
+    const [result2, error2] = await shallResolve(getNFTProposalForID(1));
+    expect(result2.status).toBe("IN_REVIEW");
+    expect(result2.collectionIdentifier).toBe(nftCreationEvent.data.contract);
 
     const Alice = await getAccountAddress("Alice");
     await shallRevert(withdrawNFTProposalFromCatalog(Alice, 1));
 
     await shallPass(withdrawNFTProposalFromCatalog(Bob, 1));
 
-    [result, error] = await shallResolve(getNFTProposalForID(1));
-    expect(result).toBe(null);
+    const [result3, error3] = await shallResolve(getNFTProposalForID(1));
+    expect(result3).toBe(null);
   });
 });
 
@@ -804,8 +804,7 @@ const proposeNFTToCatalogWithData = async (
       nftTypeIdentifier,
       struct.NFTCollectionData.storagePath.identifier,
       struct.NFTCollectionData.publicPath.identifier,
-      struct.NFTCollectionData.publicLinkedType.type.type.typeID,
-      buildRestrictions(struct.NFTCollectionData.publicLinkedType.type),
+      struct.NFTCollectionData.publicLinkedType.type.typeID,
       struct.NFTCollectionDisplay.collectionName,
       struct.NFTCollectionDisplay.collectionDescription,
       struct.ExternalURL.externalURL,
@@ -817,12 +816,4 @@ const proposeNFTToCatalogWithData = async (
       "Please add my NFT to the Catalog"
     )
   );
-};
-
-const buildRestrictions = (restrictedType) => {
-  let res = [];
-  restrictedType.restrictions.forEach((value) => {
-    res.push(value.typeID);
-  });
-  return res;
 };
