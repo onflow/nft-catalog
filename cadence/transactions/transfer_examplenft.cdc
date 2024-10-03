@@ -3,8 +3,9 @@
 import "ViewResolver"
 import "MetadataViews"
 import "NonFungibleToken"
+import "ExampleNFT"
 
-transaction(contractAddress: Address, contractName: String, recipient: Address, withdrawID: UInt64) {
+transaction(recipient: Address, withdrawID: UInt64) {
 
     /// Reference to the withdrawer's collection
     let withdrawRef: auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Collection}
@@ -15,11 +16,11 @@ transaction(contractAddress: Address, contractName: String, recipient: Address, 
     prepare(signer: auth(BorrowValue) &Account) {
 
         // borrow the NFT contract as ViewResolver reference
-        let viewResolver = getAccount(contractAddress).contracts.borrow<&{ViewResolver}>(name: contractName)
-            ?? panic("Could not borrow ViewResolver of given name from address")
+        // let viewResolver = getAccount(contractAddress).contracts.borrow<&{ViewResolver}>(name: contractName)
+            // ?? panic("Could not borrow ViewResolver of given name from address")
 
         // resolve the NFT collection data from the NFT contract
-        let collectionData = viewResolver.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+        let collectionData = ExampleNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
             ?? panic("ViewResolver does not resolve NFTCollectionData view")
 
         // borrow a reference to the signer's NFT collection

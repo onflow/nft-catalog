@@ -265,7 +265,7 @@ describe('NFT Retrieval Test Suite', () => {
         )
 
         let [result, error] = await shallResolve(getAllNFTsAndViewsInAccount(Alice));
-        expect(Object.keys(result['ExampleNFT']).length).toBe(8);
+        expect(Object.keys(result['ExampleNFT']).length).toBe(9);
         expect(error).toBe(null);
 
         [result, error] = await shallResolve(getNFTsCountInAccount(Alice));

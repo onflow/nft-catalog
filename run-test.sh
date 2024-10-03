@@ -1,1 +1,1 @@
-flow test -f ./flow.json --cover --covercode="cadence/contracts/NFTCatalog.cdc" ./cadence/tests/NFTCatalog_test.cdc
+flow test -f "./flow.json" --cover --covercode="contracts" --coverprofile="coverage.lcov" cadence/tests/*.cdc

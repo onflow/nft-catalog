@@ -3,39 +3,44 @@ name: NFT Catalog Integration Tests
 on: pull_request
 
 jobs:
-    tests:
-        env:
-            CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY: ${{ secrets.CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY }}
-            EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY }}
-            EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY }}
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v4
-            - name: Install Node
-              uses: actions/setup-node@v4
-              with:
-                node-version: 18
+  tests:
+    env:
+      CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY: ${{ secrets.CATALOG_TESTNET_ACCOUNT_PRIVATE_KEY }}
+      EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_ACCOUNT_PRIVATE_KEY }}
+      EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY: ${{ secrets.EXAMPLENFT_TESTNET_HOLDER_ACCOUNT_PRIVATE_KEY }}
+      EMULATOR_ACCOUNT_PRIVATE_KEY: ${{ secrets.EMULATOR_ACCOUNT_PRIVATE_KEY }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-              # This should be switched to the regular CLI once the stable-cadence branch is merged
-            - name: Install Cadence 1.0 Flow CLI
-              run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
+        # This should be switched to the regular CLI once the stable-cadence branch is merged
+      - name: Install Cadence 1.0 Flow CLI
+        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
 
-            - name: Update PATH
-              run: echo "/root/.local/bin" >> $GITHUB_PATH
-            
-            - run: echo $(flow version)
+      - name: Update PATH
+        run: echo "/root/.local/bin" >> $GITHUB_PATH
 
-            - name: Install Dependencies
-              run: npm install
+      - run: echo $(flow version)
 
-            - name: Install UI Dependencies
-              run: npm run install-ui
+      - name: Install Dependencies
+        run: npm install
 
-            - name: Run Cadence Tests
-              if: always()
-              run: npm test
+      - name: Install UI Dependencies
+        run: npm run install-ui
 
-            # - name: Run E2E Cypress Tests
-            #   if: always()
-            #   run: npm run e2e
+      - name: Run Cadence javascript Tests
+        if: always()
+        run: npm test
+
+      - name: Run Cadence Tests
+        if: always()
+        run: sh run-test.sh
+
+      # - name: Run E2E Cypress Tests
+      #   if: always()
+      #   run: npm run e2e

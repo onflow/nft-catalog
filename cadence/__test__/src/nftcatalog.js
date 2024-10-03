@@ -10,7 +10,7 @@ export const deployNFTCatalog = async () => {
     await deployContractByName({ to: NFTCatalogAdmin, name: 'NFTCatalogAdmin' })
 }
 
-export const updateSnapshotAdmin = async(catalogAccount, collections) => {
+export const updateSnapshotAdmin = async (catalogAccount, collections) => {
     const name = 'update_snapshot_admin';
 
     const args = [collections]
@@ -19,7 +19,7 @@ export const updateSnapshotAdmin = async(catalogAccount, collections) => {
     return sendTransaction({ name, args, signers });
 }
 
-export const updateShouldUseSnapshotAdmin = async(catalogAccount, shouldUseSnapshot) => {
+export const updateShouldUseSnapshotAdmin = async (catalogAccount, shouldUseSnapshot) => {
     const name = 'set_snapshot_enabled_admin';
 
     const args = [shouldUseSnapshot]
@@ -84,9 +84,9 @@ export const sendAdminProxyCapability = async (ownerAccount) => {
     return sendTransaction({ name, args, signers });
 }
 
-export const proposeNFTToCatalog = async (account, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, storagePathIdentifier, publicPathIdentifier, publicLinkedTypeIdentifier, publicLinkedTypeRestrictions, collectionName, collectionDescription, externalURL, squareURL, squareMediaType, bannerURL, bannerMediaType, socials, message) => {
+export const proposeNFTToCatalog = async (account, collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, storagePathIdentifier, publicPathIdentifier, publicLinkedTypeIdentifier, collectionName, collectionDescription, externalURL, squareURL, squareMediaType, bannerURL, bannerMediaType, socials, message) => {
     const name = 'propose_nft_to_catalog';
-    const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, storagePathIdentifier, publicPathIdentifier, publicLinkedTypeIdentifier, publicLinkedTypeRestrictions, collectionName, collectionDescription, externalURL, squareURL, squareMediaType, bannerURL, bannerMediaType, socials, message];
+    const args = [collectionIdentifier, contractName, contractAddress, nftTypeIdentifier, storagePathIdentifier, publicPathIdentifier, publicLinkedTypeIdentifier, collectionName, collectionDescription, externalURL, squareURL, squareMediaType, bannerURL, bannerMediaType, socials, message];
     const signers = [account];
 
     return sendTransaction({ name, args, signers });

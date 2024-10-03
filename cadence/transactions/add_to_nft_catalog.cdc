@@ -13,8 +13,11 @@ transaction(
     publicPathIdentifier: String
 ) {
     let adminProxyRef : auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy
+    let nftType: Type
 
     prepare(acct: auth(BorrowValue) &Account) {
+        self.nftType = CompositeType(nftTypeIdentifer)
+            ?? panic("Could not construct NFT type from identifier ".concat(nftTypeIdentifer))
         self.adminProxyRef = acct.storage.borrow<auth(NFTCatalogAdmin.CatalogActions) &NFTCatalogAdmin.AdminProxy>(from: NFTCatalogAdmin.AdminProxyStoragePath)!
     }
 
@@ -38,7 +41,7 @@ transaction(
         let catalogData = NFTCatalog.NFTCatalogMetadata(
             contractName: contractName,
             contractAddress: contractAddress,
-            nftType: CompositeType(nftTypeIdentifer)!,
+            nftType: self.nftType,
             collectionData: collectionData,
             collectionDisplay : collectionDisplay
         )
