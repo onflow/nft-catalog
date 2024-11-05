@@ -3,7 +3,7 @@ import {FaExclamationTriangle} from 'react-icons/fa'
 
 export const DeprecationNotice = () => {
   return (
-    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-center flex justify-center" role="alert">
+    <div className="sticky top-0 w-full bg-yellow-50 border-l-4 border-yellow-400 p-4 text-center flex justify-center" role="alert">
       <div className="flex">
         <div className="flex flex-shrink-0 items-center">
           <FaExclamationTriangle size={32} />
