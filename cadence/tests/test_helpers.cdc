@@ -19,7 +19,7 @@ fun deploy(_ contractName: String, _ path: String) {
 
 access(all)
 fun scriptExecutor(_ scriptName: String, _ arguments: [AnyStruct]): AnyStruct? {
-    let scriptCode = loadCode(scriptName, "cadence/scripts")
+    let scriptCode = loadCode(scriptName, "./scripts")
     let scriptResult = Test.executeScript(scriptCode, arguments)
 
     if let failureError = scriptResult.error {
