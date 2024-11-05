@@ -17,10 +17,12 @@ import { ToolsLayout } from './components/tools/tools-layout';
 import { Submitted } from './components/verifier/submitted';
 import { CatalogDetails } from './components/catalog/catalog-details';
 import { Docs } from './components/docs';
+import { DeprecationNotice } from './components/shared/deprecation-notice';
 
 export function App() {
   return (
     <>
+      <DeprecationNotice />
       <Navbar />
       <div className="min-h-screen bg-primary-gray-50">
         <div className="pb-16">

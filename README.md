@@ -1,3 +1,9 @@
+# DEPRECATED
+
+This project is deprecated in favour of https://github.com/fixes-world/token-list
+
+for more information check the [forum post](https://forum.flow.com/t/replacing-nft-catalog-with-a-decentralized-alternative-proposal/6723)
+
 # NFT Catalog
 
 The NFT Catalog is an on chain registry listing NFT collections that exists on Flow which adhere to the NFT metadata standard. This empowers dApp developers to easily build on top of and discover interoperable NFT collections on Flow.
