@@ -202,7 +202,7 @@ access(all) fun main(): {String: NFTCatalog.NFTCatalogMetadata} {
     let collections: {String: NFTCatalog.NFTCatalogMetadata} = {}
 
     for key in keys {
-        collections[key] = catalog[key]
+        collections[key] = NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)
     }
 
     return collections
@@ -219,7 +219,7 @@ access(all) fun main(): [String] {
     let catalogNames: [String] = []
 
     for collectionIdentifier in catalogKeys {
-        catalogNames.append(catalog[collectionIdentifier]!.collectionDisplay.name)
+        catalogNames.append(NFTCatalog.getCatalogEntry(collectionIdentifier: collectionIdentifier)!.collectionDisplay.name)
     }
 
     return catalogNames
